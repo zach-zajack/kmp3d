@@ -39,7 +39,7 @@ module KMP3D
       refresh_html
     end
 
-    def onModelOpen(_)
+    def onOpenModel(_)
       Data.reload_types
       refresh_html
     end

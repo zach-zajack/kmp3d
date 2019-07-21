@@ -23,13 +23,13 @@ module KMP3D
     end
 
     def add_to_component(component)
-      component.definition = model
+      component.definition = @model
       component.name += component_settings
     end
 
     def add_to_model(pos)
       point = Geom::Point3d.new(pos)
-      component = Data.entities.add_instance(model, point)
+      component = Data.entities.add_instance(@model, point)
       component.name = component_settings
     end
 

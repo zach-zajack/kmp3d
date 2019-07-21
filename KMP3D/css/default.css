@@ -1,0 +1,39 @@
+* {
+  overflow: hidden;
+  white-space: nowrap;
+  word-break: break-all;
+  text-overflow: ellipsis;
+}
+
+.types, .types * {
+  width: 120px;
+  float: left;
+}
+
+.table {
+  width: calc(100% - 120px);
+  height: 100%;
+  float: right;
+  overflow: scroll;
+}
+
+.table th {
+  width: 0;
+  background-color: #ddd;
+}
+
+.table tr.selected {
+  background-color: #9ad;
+}
+
+.table span {
+  min-width: 2em;
+  width: 100%;
+  display: inline-block;
+  resize: horizontal;
+}
+
+.table input {
+  box-sizing: border-box;
+  width: 100%;
+}

@@ -3,7 +3,7 @@ module KMP3D
     include HTMLHelpers
 
     attr_reader :name, :group_settings, :settings, :model
-    attr_accessor :group, :selected_points
+    attr_accessor :group
 
     Settings = Struct.new(:type, :prompt, :default)
     PATTERNS = {
@@ -14,7 +14,6 @@ module KMP3D
     def initialize(model_type = "point")
       @model = Data.model.definitions.load("#{DIR}/models/#{model_type}.skp")
       @group = 0
-      @selected_points = []
       if @group_settings
         @group_inputs = []
         add_group
@@ -23,7 +22,7 @@ module KMP3D
     end
 
     def add_to_component(component)
-      component.definition = @model
+      component.definition = @model unless @model == "point"
       component.name += component_settings
     end
 
@@ -48,18 +47,15 @@ module KMP3D
     end
 
     def component_settings
-      "#{type_name}" \
-      "(#{@group}," \
-      "#{inputs.length - 1}," \
-      "#{inputs.last * ','}) "
+      "#{type_name}(#{@group},#{inputs.last * ','}) "
     end
 
     def inputs
       inputs = [@settings.map { |s| s.default }]
-      Data.kmp3d_entities.each do |ent|
+      Data.kmp3d_entities(type_name).each do |ent|
         settings = ent.kmp3d_settings(type_name)
-        next if settings.nil? || settings[0] != @group.to_s
-        inputs << settings[2..-1]
+        next if settings[0] != @group.to_s # spot 1 is for the group number
+        inputs << settings[1..-1]
       end
       return inputs
     end
@@ -110,7 +106,7 @@ module KMP3D
 
     def row_attribs(id)
       attribs = {}
-      attribs[:class] = "selected" if @selected_points.include?(id.to_s)
+      attribs[:class] = "selected" if Data.any_kmp3d_entity?(type_name, id)
       return attribs
     end
 

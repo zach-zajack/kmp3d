@@ -7,19 +7,23 @@ module KMP3D
     end
 
     def entities
-      model.entities
+      model.active_entities
     end
 
     def selection
       model.selection
     end
 
-    def kmp3d_entities
-      entities.select { |ent| ent.kmp3d_object? }
+    def kmp3d_entities(type_name)
+      entities.select { |ent| ent.kmp3d_object? && ent.type?(type_name) }
     end
 
     def get_entity(type_name, id)
-      entities.each { |ent| return ent if ent.kmp3d_id(type_name) == id }
+      entities.each { |ent| return ent if ent.kmp3d_id(type_name) == id.to_s }
+    end
+
+    def any_kmp3d_entity?(type_name, id)
+      selection.any? { |ent| ent.kmp3d_id(type_name) == id.to_s }
     end
 
     def types

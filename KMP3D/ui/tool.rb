@@ -50,16 +50,14 @@ module KMP3D
       ent = Data.get_entity(type_name, id)
       if Data.selection.include?(ent)
         Data.selection.remove(ent)
-        type.selected_points.delete(id)
       else
         Data.selection.add(ent)
-        type.selected_points << id
       end
       refresh_html
     end
 
     def edit_point(table_id)
-      id     = table_id.split(",").first
+      id = table_id.split(",").first
       row_id = table_id.split(",").last
       value = @dlg.get_element_value(table_id)
       ent = Data.get_entity(type_name, id)

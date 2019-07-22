@@ -30,12 +30,10 @@ module KMP3D
     end
 
     def onSelectionBulkChange(_)
-      type.selected_points = Data.selection.map { |s| s.kmp3d_id(type_name) }
       refresh_html
     end
 
     def onSelectionCleared(_)
-      type.selected_points = []
       refresh_html
     end
 

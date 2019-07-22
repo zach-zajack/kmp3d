@@ -2,8 +2,8 @@ module KMP3D
   class Type
     include HTMLHelpers
 
-    attr_reader :name, :group_settings, :settings, :model
-    attr_accessor :group, :group_inputs
+    attr_reader :name, :external_settings, :settings, :model
+    attr_accessor :group, :table
 
     Settings = Struct.new(:type, :prompt, :default)
     PATTERNS = {
@@ -14,13 +14,16 @@ module KMP3D
     def initialize(model_type = "point")
       @model = Data.load_def(model_type)
       @group = 0
-      @group_inputs = Data.model.get_attribute("KMP3D", type_name, ["0", "0"]) \
-        if @group_settings
+      if @external_settings # external settings deal with groups, mostly
+        @table = Data.model.get_attribute("KMP3D", \
+          type_name, [Array.new(@external_settings.length)])
+        add_group if @table.length == 1
+      end
     end
 
     def save_settings
-      return unless @group_settings
-      Data.model.set_attribute("KMP3D", type_name, @group_inputs)
+      return unless @external_settings
+      Data.model.set_attribute("KMP3D", type_name, @table)
     end
 
     def add_to_component(comp)
@@ -44,13 +47,13 @@ module KMP3D
     end
 
     def add_group
-      @group_inputs << @group_settings.map { |s| s.default }
+      @table << @external_settings.map { |s| s.default }
     end
 
     def to_html
       tag(:table) do
-        if on_group_settings?
-          table_rows(@group_inputs, @group_settings) * ""
+        if on_external_settings?
+          table_rows(@table, @external_settings) * ""
         else
           table_rows(inputs, @settings) * ""
         end
@@ -62,7 +65,7 @@ module KMP3D
     end
 
     def inputs
-      inputs = [@settings.map { |s| s.default }]
+      inputs = [Array.new(@settings.length)]
       Data.kmp3d_entities(type_name).each do |ent|
         settings = ent.kmp3d_settings(type_name)
         next if settings[0] != @group.to_s # spot 1 is for the group number
@@ -76,10 +79,10 @@ module KMP3D
     end
 
     def groups
-      @group_settings.nil? ? 1 : @group_inputs.length - 1
+      @external_settings.nil? ? 1 : @table.length - 1
     end
 
-    def on_group_settings?
+    def on_external_settings?
       @group == groups
     end
 
@@ -93,7 +96,7 @@ module KMP3D
     end
 
     def table_rows(inputs, settings)
-      offset = (on_group_settings? ? 0 : entities_before_group)
+      offset = (on_external_settings? ? 0 : entities_before_group)
       id = offset - 1
       inputs.map do |row|
         tag(:tr, row_attribs(id)) do

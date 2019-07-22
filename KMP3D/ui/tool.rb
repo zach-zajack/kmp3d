@@ -56,12 +56,12 @@ module KMP3D
       id = table_id.split(",").first
       row = table_id.split(",").last
       value = @dlg.get_element_value(table_id)
-      type.on_group_settings? ? \
-        edit_group(value, id) : edit_point(value, id, row)
+      type.on_external_settings? ? \
+        edit_group(value, id, row) : edit_point(value, id, row)
     end
 
-    def edit_group(value, id)
-      type.group_inputs[id.to_i + 1] = [value]
+    def edit_group(value, id, row)
+      type.table[id.to_i + 1][row.to_i] = value
     end
 
     def edit_point(value, id, row)
@@ -83,7 +83,7 @@ module KMP3D
     end
 
     def type_groups
-      return "" unless type.group_settings
+      return "" unless type.external_settings
       len = type.groups
       size = [len + 1, 10].min
       select(type.group,
@@ -95,7 +95,7 @@ module KMP3D
     end
 
     def group_button
-      return "" unless type.group_settings
+      return "" unless type.external_settings
       tag(:button, :onclick => callback("addGroup")) { "Add Group" }
     end
 

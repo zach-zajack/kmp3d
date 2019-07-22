@@ -2,7 +2,12 @@ module KMP3D
   class STGI < Type
     def initialize
       @name = "Stage Info"
-      @settings = [Settings.new(:float, "Size", "25.0")]
+      @external_settings = [
+        Settings.new(:int16, "Lap count", "3"),
+        Settings.new(:int16, "Pole position", "0"),
+        Settings.new(:int16, "Driver distance", "0"),
+        Settings.new(:float, "Speed", "0")
+      ]
       super
     end
 
@@ -12,8 +17,12 @@ module KMP3D
     def add_to_component(_)
     end
 
-    def save_settings
+    def external_settings
+      nil
+    end
 
+    def on_external_settings?
+      true
     end
   end
 end

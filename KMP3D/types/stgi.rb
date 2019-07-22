@@ -24,5 +24,9 @@ module KMP3D
     def on_external_settings?
       true
     end
+
+    def helper_text
+      "Update settings for how the track behaves, e.g. lap count."
+    end
   end
 end

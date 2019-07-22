@@ -20,8 +20,7 @@ module KMP3D
   tool_cmd = UI::Command.new("KMP3D Tool") { Data.model.select_tool(tool) }
   tool_cmd.small_icon = tool_cmd.large_icon = "#{DIR}/images/tool.png"
   Sketchup.add_observer(tool)
-  Data.selection.add_observer(tool)
-  Data.reload_types
+  Data.reload(tool)
 
   menu = UI.menu.add_submenu("KMP3D")
   menu.add_item(tool_cmd)

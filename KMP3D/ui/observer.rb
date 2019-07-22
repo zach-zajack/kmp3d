@@ -17,7 +17,7 @@ module KMP3D
 
     def onLButtonDown(flags, x, y, view)
       @ip.pick(view, x, y)
-      next unless @ip.valid?
+      return unless @ip.valid? && !type.on_group_settings?
       ph = view.pick_helper
       ph.do_pick(x, y)
       ent = ph.best_picked

@@ -82,11 +82,11 @@ module KMP3D
     end
 
     def table_rows(inputs, settings)
-      ents_before_group = entities_before_group
-      id = ents_before_group - 1
+      offset = (@group == groups ? 0 : entities_before_group)
+      id = offset - 1
       inputs.map do |row|
         tag(:tr, row_attribs(id)) do
-          if id < ents_before_group
+          if id < offset
             cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
           else
             cols = tag(:td, {:onclick => callback("selectRow", id)}) { id } + \

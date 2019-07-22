@@ -3,7 +3,7 @@ module KMP3D
     def initialize
       @name = "Respawns"
       @settings = [Settings.new(:float, "Size", "25.0")]
-      super
+      super("vector")
     end
   end
 end

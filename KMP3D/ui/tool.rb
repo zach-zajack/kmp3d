@@ -14,10 +14,6 @@ module KMP3D
       Data.types[type_index]
     end
 
-    def type_name
-      type.class.name
-    end
-
     def type_index
       @dlg.get_element_value("currentType").to_i
     end
@@ -47,7 +43,7 @@ module KMP3D
     end
 
     def select_point(id)
-      ent = Data.get_entity(type_name, id)
+      ent = Data.get_entity(type.type_name, id)
       if Data.selection.include?(ent)
         Data.selection.remove(ent)
       else
@@ -69,8 +65,8 @@ module KMP3D
     end
 
     def edit_point(value, id, row)
-      ent = Data.get_entity(type_name, id)
-      ent.kmp3d_settings_insert(type_name, row.to_i, value)
+      ent = Data.get_entity(type.type_name, id)
+      ent.kmp3d_settings_insert(type.type_name, row.to_i, value)
     end
 
     def group_index

@@ -12,26 +12,35 @@ module KMP3D
     }
 
     def initialize(model_type = "point")
-      @model = Data.model.definitions.load("#{DIR}/models/#{model_type}.skp")
+      @model = Data.load_def(model_type)
       @group = 0
       @group_inputs = Data.model.get_attribute("KMP3D", type_name, ["0", "0"]) \
         if @group_settings
     end
 
-    def save_group_settings
+    def save_settings
       return unless @group_settings
       Data.model.set_attribute("KMP3D", type_name, @group_inputs)
     end
 
-    def add_to_component(component)
-      component.definition = @model unless @model == "point"
-      component.name += component_settings
+    def add_to_component(comp)
+      return if comp.type?("KMP3D::CKPT") || comp.type?("KMP3D::GOBJ")
+      Data.model.start_operation("Add Settings to KMP3D Point", true)
+      comp.definition = @model if comp.definition == Data.load_def("point")
+      comp.name += component_settings
+      Data.model.commit_operation
     end
 
     def add_to_model(pos)
+      Data.model.start_operation("Add KMP3D Point", true)
       point = Geom::Point3d.new(pos)
       component = Data.entities.add_instance(@model, point)
       component.name = component_settings
+      Data.model.commit_operation
+    end
+
+    def helper_text
+      "Click to add a new point. Place on an existing point to combine settings."
     end
 
     def add_group

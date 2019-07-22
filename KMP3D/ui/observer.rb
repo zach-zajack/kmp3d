@@ -12,6 +12,7 @@ module KMP3D
     def onMouseMove(flags, x, y, view)
       @ip.pick(view, x, y)
       view.tooltip = @ip.tooltip if @ip.valid?
+      Sketchup.status_text = type.helper_text
       view.invalidate
     end
 
@@ -43,7 +44,7 @@ module KMP3D
     end
 
     def onPreSaveModel(_)
-      Data.types.each { |type| type.save_group_settings }
+      Data.types.each { |type| type.save_settings }
     end
 
     def draw(view)

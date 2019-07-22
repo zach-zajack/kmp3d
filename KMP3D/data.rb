@@ -30,6 +30,10 @@ module KMP3D
       @types
     end
 
+    def load_def(name)
+      model.definitions.load("#{DIR}/models/#{name}.skp")
+    end
+
     def reload(observer)
       model.add_observer(observer)
       selection.add_observer(observer)

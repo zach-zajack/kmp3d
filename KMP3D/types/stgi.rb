@@ -5,5 +5,15 @@ module KMP3D
       @settings = [Settings.new(:float, "Size", "25.0")]
       super
     end
+
+    def add_to_model(_)
+    end
+
+    def add_to_component(_)
+    end
+
+    def save_settings
+
+    end
   end
 end

@@ -31,6 +31,7 @@ module KMP3D
     end
 
     def reload(observer)
+      model.add_observer(observer)
       selection.add_observer(observer)
       @types = [
         KTPT.new, ENPT.new, ITPT.new, CKPT.new, GOBJ.new,

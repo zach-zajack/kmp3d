@@ -42,6 +42,10 @@ module KMP3D
       refresh_html
     end
 
+    def onPreSaveModel(_)
+      Data.types.each { |type| type.save_group_settings }
+    end
+
     def draw(view)
       @ip.draw(view)
     end

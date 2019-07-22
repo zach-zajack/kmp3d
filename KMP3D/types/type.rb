@@ -3,7 +3,7 @@ module KMP3D
     include HTMLHelpers
 
     attr_reader :name, :group_settings, :settings, :model
-    attr_accessor :group
+    attr_accessor :group, :group_inputs
 
     Settings = Struct.new(:type, :prompt, :default)
     PATTERNS = {
@@ -14,11 +14,13 @@ module KMP3D
     def initialize(model_type = "point")
       @model = Data.model.definitions.load("#{DIR}/models/#{model_type}.skp")
       @group = 0
-      if @group_settings
-        @group_inputs = []
-        add_group
-        add_new_group_settings
-      end
+      @group_inputs = Data.model.get_attribute("KMP3D", type_name, ["0", "0"]) \
+        if @group_settings
+    end
+
+    def save_group_settings
+      return unless @group_settings
+      Data.model.set_attribute("KMP3D", type_name, @group_inputs)
     end
 
     def add_to_component(component)
@@ -38,7 +40,7 @@ module KMP3D
 
     def to_html
       tag(:table) do
-        if @group == groups
+        if on_group_settings?
           table_rows(@group_inputs, @group_settings) * ""
         else
           table_rows(inputs, @settings) * ""
@@ -68,11 +70,11 @@ module KMP3D
       @group_settings.nil? ? 1 : @group_inputs.length - 1
     end
 
-    protected
-
-    def add_new_group_settings
-      @group_inputs << @group_inputs.last
+    def on_group_settings?
+      @group == groups
     end
+
+    protected
 
     def entities_before_group
       ents_before_group = Data.kmp3d_entities(type_name).select do |ent|
@@ -82,7 +84,7 @@ module KMP3D
     end
 
     def table_rows(inputs, settings)
-      offset = (@group == groups ? 0 : entities_before_group)
+      offset = (on_group_settings? ? 0 : entities_before_group)
       id = offset - 1
       inputs.map do |row|
         tag(:tr, row_attribs(id)) do

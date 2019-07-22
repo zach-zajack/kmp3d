@@ -33,7 +33,7 @@ module KMP3D
       @dlg.add_action_callback("setGroup") { set_group }
       @dlg.add_action_callback("addGroup") { add_group }
       @dlg.add_action_callback("selectRow") { |_, id| select_point(id) }
-      @dlg.add_action_callback("inputChange") { |_, id| edit_point(id) }
+      @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
     end
 
     def set_group
@@ -56,12 +56,21 @@ module KMP3D
       refresh_html
     end
 
-    def edit_point(table_id)
+    def edit_value(table_id)
       id = table_id.split(",").first
-      row_id = table_id.split(",").last
+      row = table_id.split(",").last
       value = @dlg.get_element_value(table_id)
+      type.on_group_settings? ? \
+        edit_group(value, id) : edit_point(value, id, row)
+    end
+
+    def edit_group(value, id)
+      type.group_inputs[id.to_i + 1] = [value]
+    end
+
+    def edit_point(value, id, row)
       ent = Data.get_entity(type_name, id)
-      ent.kmp3d_settings_insert(type_name, row_id.to_i, value)
+      ent.kmp3d_settings_insert(type_name, row.to_i, value)
     end
 
     def group_index

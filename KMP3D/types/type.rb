@@ -74,11 +74,19 @@ module KMP3D
       @group_inputs << @group_inputs.last
     end
 
+    def entities_before_group
+      ents_before_group = Data.kmp3d_entities(type_name).select do |ent|
+        ent.kmp3d_settings(type_name)[0].to_i < @group
+      end
+      return ents_before_group.length
+    end
+
     def table_rows(inputs, settings)
-      id = -1
+      ents_before_group = entities_before_group
+      id = ents_before_group - 1
       inputs.map do |row|
         tag(:tr, row_attribs(id)) do
-          if id < 0
+          if id < ents_before_group
             cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
           else
             cols = tag(:td, {:onclick => callback("selectRow", id)}) { id } + \

@@ -47,6 +47,14 @@ module KMP3D
       Data.types.each { |type| type.save_settings }
     end
 
+    def onTransactionUndo(_)
+      refresh_html
+    end
+
+    def onTransactionRedo(_)
+      refresh_html
+    end
+
     def draw(view)
       @ip.draw(view)
     end

@@ -44,7 +44,7 @@ module KMP3D
       angle = Math.atan(slope)
       angle += slope * (pos.x - pos1.x) + pos1.y < pos.y ? \
         Math::PI/2 : -Math::PI/2
-      scale = pos1.distance(pos2) / 3000.m # 3000m is the length of the model
+      scale = pos1.distance(pos2).to_m / 3000 # 3000m is the length of the model
       add_point(avg, angle, scale)
     end
 
@@ -54,7 +54,7 @@ module KMP3D
       comp = Data.entities.add_instance(@model, point)
       comp.transform!(Geom::Transformation.scaling(point, 1.0, scale, 1.0))
       comp.transform!(Geom::Transformation.rotation(point, [0, 0, 1], angle))
-      comp.name = component_settings
+      comp.name = "KMP3D " + component_settings
       Data.model.commit_operation
     end
   end

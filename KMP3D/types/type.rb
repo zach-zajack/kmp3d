@@ -38,7 +38,7 @@ module KMP3D
       Data.model.start_operation("Add KMP3D Point", true)
       point = Geom::Point3d.new(pos)
       component = Data.entities.add_instance(@model, point)
-      component.name = component_settings
+      component.name = "KMP3D " + component_settings
       Data.model.commit_operation
     end
 
@@ -76,7 +76,7 @@ module KMP3D
     end
 
     def type_name
-      self.class.name
+      self.class.name[7..-1]
     end
 
     def groups

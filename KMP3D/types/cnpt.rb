@@ -37,7 +37,7 @@ module KMP3D
       point = Geom::Point3d.new(pos)
       comp = Data.entities.add_instance(@model, point)
       comp.transform!(Geom::Transformation.rotation(point, [0, 0, 1], angle))
-      comp.name = component_settings
+      comp.name = "KMP3D " + component_settings
       Data.model.commit_operation
     end
   end

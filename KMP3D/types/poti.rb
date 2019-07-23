@@ -3,12 +3,12 @@ module KMP3D
     def initialize
       @name = "Routes"
       @external_settings = [
-        Settings.new(:int16, "Toggle Smooth Motion", "0"),
-        Settings.new(:int16, "Toggle Cyclic Motion", "0"),
+        Settings.new(:bool, "Toggle Smooth Motion", "0"),
+        Settings.new(:bool, "Toggle Cyclic Motion", "0")
       ]
       @settings = [
-        Settings.new(:int16, "Setting 1", "60"),
-        Settings.new(:int16, "Setting 2", "0")
+        Settings.new(:int, "Setting 1", "60"),
+        Settings.new(:int, "Setting 2", "0")
       ]
       super
     end

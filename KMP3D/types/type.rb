@@ -6,10 +6,6 @@ module KMP3D
     attr_accessor :group, :table
 
     Settings = Struct.new(:type, :prompt, :default)
-    PATTERNS = {
-      :int16 => /^[-]?\d+$/,
-      :float => /^[-]?\d*\.?\d+$/
-    }
 
     def initialize(model_type = "point")
       @model = Data.load_def(model_type)

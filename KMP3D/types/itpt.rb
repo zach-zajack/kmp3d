@@ -2,11 +2,12 @@ module KMP3D
   class ITPT < Type
     def initialize
       @name = "Item Routes"
-      @external_settings = [
-        Settings.new(:float, "Next 1", "0")
+      @external_settings = [Settings.new(:int, "Next Group(s)", "0")]
+      @settings = [
+        Settings.new(:float, "Size", "25.0"),
+        Settings.new(:int, "Setting 1", "0"),
+        Settings.new(:int, "Setting 2", "0")
       ]
-      @settings = [Settings.new(:float, "Size", "25.0")]
-      @groups = []
       super
     end
   end

@@ -61,10 +61,18 @@ module KMP3D
     end
 
     def edit_group(value, id, row)
+      if Data::PATTERNS[type.external_settings[row.to_i].type].match(value).nil?
+        refresh_html
+        return
+      end
       type.table[id.to_i + 1][row.to_i] = value
     end
 
     def edit_point(value, id, row)
+      if Data::PATTERNS[type.settings[row.to_i].type].match(value).nil?
+        refresh_html
+        return
+      end
       ent = Data.get_entity(type.type_name, id)
       ent.kmp3d_settings_insert(type.type_name, row.to_i, value)
     end

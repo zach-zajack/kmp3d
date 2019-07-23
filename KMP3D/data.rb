@@ -42,5 +42,11 @@ module KMP3D
         POTI.new, JGPT.new, CNPT.new, MSPT.new, STGI.new
       ]
     end
+
+    PATTERNS = {
+      :int => /^(0x|-)?\d+$/,
+      :bool => /^(0|1)$/,
+      :float => /^[-]?\d*\.?\d+$/
+    }
   end
 end

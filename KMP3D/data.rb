@@ -44,7 +44,7 @@ module KMP3D
     end
 
     PATTERNS = {
-      :int => /^(0x|-)?\d+$/,
+      :int => /^(0x(\d|[A-f])+|-?\d+)?$/,
       :bool => /^(0|1)$/,
       :float => /^[-]?\d*\.?\d+$/
     }

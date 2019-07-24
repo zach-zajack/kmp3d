@@ -20,6 +20,7 @@ module KMP3D
 
     def get_entity(type_name, id)
       entities.each { |ent| return ent if ent.kmp3d_id(type_name) == id.to_s }
+      return
     end
 
     def any_kmp3d_entity?(type_name, id)

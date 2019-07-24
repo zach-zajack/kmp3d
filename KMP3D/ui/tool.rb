@@ -28,6 +28,7 @@ module KMP3D
       @dlg.add_action_callback("refresh") { refresh_html }
       @dlg.add_action_callback("setGroup") { set_group }
       @dlg.add_action_callback("addGroup") { add_group }
+      @dlg.add_action_callback("deleteRow") { |_, id| delete_point(id) }
       @dlg.add_action_callback("selectRow") { |_, id| select_point(id) }
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
     end
@@ -39,6 +40,12 @@ module KMP3D
 
     def add_group
       type.add_group
+      refresh_html
+    end
+
+    def delete_point(id)
+      ent = Data.get_entity(type.type_name, id)
+      ent.remove_kmp3d_settings(type.type_name)
       refresh_html
     end
 

@@ -111,10 +111,15 @@ module KMP3D
 
     def table_columns(id, row, settings)
       table_id = -1
-      row.zip(settings).map do |col, setting|
+      table = row.zip(settings).map do |col, setting|
         table_id += 1
         tag(:td) { table_input("#{id},#{table_id}", col, setting) }
       end
+      table << tag(:td) { delete_button(id) }
+    end
+
+    def delete_button(id)
+      tag(:button, :onclick => callback("deleteRow", id)) { "x" }
     end
 
     def prompt_columns(row, settings)

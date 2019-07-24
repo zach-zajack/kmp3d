@@ -3,14 +3,45 @@ module KMP3D
     module_function
 
     def export
-      output = Data.types.map do |type|
+      path = UI.savepanel("Select a file to export to.")
+      output = file_head + Data.types.map do |type|
         "[#{type.type_name}]\n" + \
         if type.type_name == "POTI" then export_route(type)
         elsif type.type_name == "STGI" then export_stage_info
         else type.external_settings ? export_group(type) : export_points(type)
         end
       end
-      puts output
+      File.open(path, "w") { |f| f.write(output * "\n") }
+    end
+
+    def file_head
+      [ "#KMP",
+        "#####################################################################",
+        "# This is a textual representation of a KMP file used in Nintendo's #",
+        '# "Mario Kart Wii". "Wiimms SZS Tools" can convert binary (raw) and #',
+        "# text KMP files in both directions. The text parser supports       #",
+        "# variables, C like expressions and nested IF-THEN-ELSE and LOOP    #",
+        "# structures.                                                       #",
+        "#                                                                   #",
+        "# Info about the general parser syntax and semantics:               #",
+        "#   * https://szs.wiimm.de/doc/syntax                               #",
+        "#                                                                   #",
+        "# Info about the KMP text syntax and semantics:                     #",
+        "#   * https://szs.wiimm.de/doc/kmp/syntax                           #",
+        "#                                                                   #",
+        "# Reference list of KMP parser functions:                           #",
+        "#   * https://szs.wiimm.de/doc/kmp/func                             #",
+        "#                                                                   #",
+        "# Info about the KMP file format:                                   #",
+        "#   * https://szs.wiimm.de/r/wiki/KMP                               #",
+        "#####################################################################",
+        "# Exported via KMP3D, a SketchUp plugin that is used as a 3D        #",
+        "# interface for Nintendo KMP files.                                 #",
+        "#                                                                   #",
+        "# Download and tutorial for KMP3D:                                  #",
+        "#   * http://wiki.tockdom.com/wiki/KMP3D                            #",
+        "#####################################################################"
+      ]
     end
 
     def export_points(type)
@@ -65,7 +96,8 @@ module KMP3D
     end
 
     def point_settings(id, ent, settings)
-      " #{id} #{ent.transformation.origin.to_a * ' '} #{settings * ' '}"
+      " #{id} #{convert_transform(ent.transformation).first(3) * ' '}" \
+      " #{settings * ' '}"
     end
 
     def vector_settings(id, ent, settings)
@@ -76,7 +108,7 @@ module KMP3D
     def checkpoint_settings(id, ent, settings)
       transform = convert_transform(ent.transformation)
       x, y  = transform[0], transform[2] # y is used because 2d
-      angle = (transform[4] + 180).degrees
+      angle = (transform[4] - 90).degrees
       scale = 1500 * transform[8]
       x1 = x + scale * Math.cos(angle)
       y1 = y + scale * Math.sin(angle)

@@ -64,7 +64,8 @@ module KMP3D
       inputs = [@settings.map { |s| s.default }]
       Data.kmp3d_entities(type_name).each do |ent|
         settings = ent.kmp3d_settings(type_name)
-        next if settings[0] != @group.to_s # spot 1 is for the group number
+        add_group if settings[0].to_i >= groups #&& @external_settings
+        next unless settings[0] == @group.to_s # spot 1 is for the group number
         inputs << settings[1..-1]
       end
       return inputs

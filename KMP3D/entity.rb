@@ -46,12 +46,10 @@ class Sketchup::ComponentInstance
     start_end = kmp3d_settings_start_end(type_name)
     return if start_end.nil?
     index_start, index_end = start_end
-    KMP3D::Data.model.start_operation("Remove KMP3D Settings From Point", true)
     # 5 char to include name and parens
     self.name = name.sub(name[index_start - 5..index_end + 1], "")
     name == "KMP3D" ? \
       erase! : self.definition = KMP3D::Data.load_def(model_path)
-    KMP3D::Data.model.commit_operation
   end
 
   def kmp3d_settings_insert(type_name, index, value)

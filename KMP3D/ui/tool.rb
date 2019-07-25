@@ -28,7 +28,7 @@ module KMP3D
       @dlg.add_action_callback("refresh") { refresh_html }
       @dlg.add_action_callback("setGroup") { set_group }
       @dlg.add_action_callback("addGroup") { add_group }
-      @dlg.add_action_callback("deleteRow") { |_, id| delete_point(id) }
+      @dlg.add_action_callback("deleteRow") { |_, id| delete_row(id) }
       @dlg.add_action_callback("selectRow") { |_, id| select_point(id) }
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
     end
@@ -43,10 +43,26 @@ module KMP3D
       refresh_html
     end
 
+    def delete_row(id)
+      type.on_external_settings? ? delete_group(id) : delete_point(id)
+      refresh_html
+    end
+
+    def delete_group(id)
+      type.table.delete_at(id.to_i)
+      Data.model.start_operation("Remove Group and Settings", true)
+      Data.kmp3d_entities(type.type_name).each do |ent|
+        ent.remove_kmp3d_settings(type.type_name) if \
+          ent.kmp3d_settings(type.type_name)[0] == id
+      end
+      KMP3D::Data.model.commit_operation
+    end
+
     def delete_point(id)
+      KMP3D::Data.model.start_operation("Remove KMP3D Settings From Point", true)
       ent = Data.get_entity(type.type_name, id)
       ent.remove_kmp3d_settings(type.type_name)
-      refresh_html
+      KMP3D::Data.model.commit_operation
     end
 
     def select_point(id)
@@ -64,10 +80,10 @@ module KMP3D
       row = table_id.split(",").last
       value = @dlg.get_element_value(table_id)
       type.on_external_settings? ? \
-        edit_group(value, id, row) : edit_point(value, id, row)
+        edit_group_value(value, id, row) : edit_point_value(value, id, row)
     end
 
-    def edit_group(value, id, row)
+    def edit_group_value(value, id, row)
       if Data::PATTERNS[type.external_settings[row.to_i].type].match(value).nil?
         refresh_html
         return
@@ -75,7 +91,7 @@ module KMP3D
       type.table[id.to_i + 1][row.to_i] = value
     end
 
-    def edit_point(value, id, row)
+    def edit_point_value(value, id, row)
       if Data::PATTERNS[type.settings[row.to_i].type].match(value).nil?
         refresh_html
         return
@@ -122,8 +138,8 @@ module KMP3D
 
     def generate_body
       tag(:body) do
-        tag(:div, {:class => "types"}) { types + type_groups + group_button } + \
-        tag(:div, {:class => "table"}) { type.to_html }
+        tag(:div, {:class => "table"}) { type.to_html } + \
+        tag(:div, {:class => "types"}) { types + type_groups + group_button }
       end
     end
   end

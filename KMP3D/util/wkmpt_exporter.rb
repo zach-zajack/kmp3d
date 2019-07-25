@@ -61,8 +61,8 @@ module KMP3D
       Data.kmp3d_entities(type.type_name).each do |ent|
         settings = ent.kmp3d_settings(type.type_name)
         g_id = settings.shift.to_i
-        groups[g_id] ||= \
-          ["$GROUP G#{g_id}, next: G#{type.table[g_id + 1] * ' '}"]
+        next_groups = type.table[g_id + 1][0].delete(" ").split(",").join(" G")
+        groups[g_id] ||= ["$GROUP G#{g_id}, next: G#{next_groups}"]
         groups[g_id] << settings_for(type.type_name, id, ent, settings)
         id += 1
       end

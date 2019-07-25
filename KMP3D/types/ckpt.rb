@@ -2,7 +2,7 @@ module KMP3D
   class CKPT < Type
     def initialize
       @name = "Checkpoints"
-      @external_settings = [Settings.new(:int, "Next Group(s)", "0")]
+      @external_settings = [Settings.new(:ints, "Next Group(s)", "0")]
       @settings = [
         Settings.new(:int, "Respawn ID", "0"),
         Settings.new(:int, "Checkpoint Type", "-1")

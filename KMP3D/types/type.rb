@@ -56,7 +56,7 @@ module KMP3D
     end
 
     def component_settings
-      "#{type_name}(#{@group},#{inputs.last * ','}) "
+      "#{type_name}(#{@group},#{inputs[-1][1..-1] * ','}) "
     end
 
     def inputs

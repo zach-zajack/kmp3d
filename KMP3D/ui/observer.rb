@@ -22,7 +22,7 @@ module KMP3D
       ph = view.pick_helper
       ph.do_pick(x, y)
       ent = ph.best_picked
-      if ent && ent.kmp3d_object?
+      if ent && ent.kmp3d_object? && type.disable_combine.nil?
         type.add_to_component(ent)
       else
         type.add_to_model(@ip.position)

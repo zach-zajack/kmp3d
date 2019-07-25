@@ -3,13 +3,9 @@ module KMP3D
     def initialize
       @name = "Cannons"
       @settings = [Settings.new(:int, "Shoot Effect", "0")]
+      @disable_combine = true
       @step = 0
       super("vector")
-    end
-
-    def add_to_component(component)
-      component.definition = @model
-      super(component)
     end
 
     def add_to_model(pos)

@@ -2,7 +2,7 @@ module KMP3D
   class Type
     include HTMLHelpers
 
-    attr_reader :name, :external_settings, :settings, :model
+    attr_reader :name, :external_settings, :settings, :model, :disable_combine
     attr_accessor :group, :table
 
     Settings = Struct.new(:type, :prompt, :default)
@@ -23,7 +23,6 @@ module KMP3D
     end
 
     def add_to_component(comp)
-      return if comp.type?("CKPT") || comp.type?("GOBJ")
       Data.model.start_operation("Add Settings to KMP3D Point", true)
       comp.name += component_settings
       comp.definition = Data.load_def(comp.model_path)

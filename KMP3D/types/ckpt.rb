@@ -8,11 +8,9 @@ module KMP3D
         Settings.new(:int, "Checkpoint Type", "-1")
       ]
       @groups = []
+      @disable_combine = true
       @step = 0
       super("checkpoint")
-    end
-
-    def add_to_component(component)
     end
 
     def add_to_model(pos)

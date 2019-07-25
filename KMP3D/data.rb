@@ -15,16 +15,11 @@ module KMP3D
     end
 
     def kmp3d_entities(type_name)
-      entities.select { |ent| ent.kmp3d_object? && ent.type?(type_name) }
+      entities.select { |ent| ent.type?(type_name) }
     end
 
     def get_entity(type_name, id)
-      entities.each { |ent| return ent if ent.kmp3d_id(type_name) == id.to_s }
-      return
-    end
-
-    def any_kmp3d_entity?(type_name, id)
-      selection.any? { |ent| ent.kmp3d_id(type_name) == id.to_s }
+      return kmp3d_entities(type_name)[id.to_i]
     end
 
     def types

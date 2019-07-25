@@ -67,11 +67,8 @@ module KMP3D
 
     def select_point(id)
       ent = Data.get_entity(type.type_name, id)
-      if Data.selection.include?(ent)
-        Data.selection.remove(ent)
-      else
-        Data.selection.add(ent)
-      end
+      Data.selection.include?(ent) ? \
+        Data.selection.remove(ent) : Data.selection.add(ent)
       refresh_html
     end
 

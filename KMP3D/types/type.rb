@@ -64,9 +64,9 @@ module KMP3D
       inputs = [@settings.map { |s| s.default }]
       Data.kmp3d_entities(type_name).each do |ent|
         settings = ent.kmp3d_settings(type_name)
-        add_group if settings[0].to_i >= groups #&& @external_settings
+        add_group if settings[0].to_i >= groups
         next unless settings[0] == @group.to_s # spot 1 is for the group number
-        inputs << settings[1..-1]
+        inputs << [Data.selection.include?(ent)] + settings[1..-1]
       end
       return inputs
     end
@@ -96,7 +96,8 @@ module KMP3D
       offset = (on_external_settings? ? 0 : entities_before_group)
       id = offset - 1
       inputs.map do |row|
-        tag(:tr, row_attribs(id)) do
+        selected = row.shift unless id == -1 || on_external_settings?
+        tag(:tr, row_attribs(id, selected)) do
           if id < offset
             cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
           else
@@ -128,9 +129,9 @@ module KMP3D
       end
     end
 
-    def row_attribs(id)
+    def row_attribs(id, selected)
       attribs = {}
-      attribs[:class] = "selected" if Data.any_kmp3d_entity?(type_name, id)
+      attribs[:class] = "selected" if selected
       return attribs
     end
 

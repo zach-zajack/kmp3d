@@ -20,6 +20,10 @@ class Sketchup::Entity
   def kmp3d_id(type_name)
     nil
   end
+
+  def model_path
+    nil
+  end
 end
 
 class Sketchup::ComponentInstance
@@ -45,7 +49,8 @@ class Sketchup::ComponentInstance
     KMP3D::Data.model.start_operation("Remove KMP3D Settings From Point", true)
     # 5 char to include name and parens
     self.name = name.sub(name[index_start - 5..index_end + 1], "")
-    erase! if name == "KMP3D" # update model eventually
+    name == "KMP3D" ? \
+      erase! : self.definition = KMP3D::Data.load_def(model_path)
     KMP3D::Data.model.commit_operation
   end
 
@@ -72,5 +77,13 @@ class Sketchup::ComponentInstance
       index_start = name.index("(", index) + 1,
       index_end   = name.index(")", index) - 1
     ]
+  end
+
+  def model_path
+    case name
+    when /CKPT/ then "checkpoint"
+    when /KTPT/, /JGPT/, /MSPT/ then "vector"
+    when /ENPT/, /ITPT/, /POTI/ then "point"
+    end
   end
 end

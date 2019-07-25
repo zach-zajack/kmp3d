@@ -23,10 +23,10 @@ module KMP3D
     end
 
     def add_to_component(comp)
-      return if comp.type?("KMP3D::CKPT") || comp.type?("KMP3D::GOBJ")
+      return if comp.type?("CKPT") || comp.type?("GOBJ")
       Data.model.start_operation("Add Settings to KMP3D Point", true)
-      comp.definition = @model if comp.definition == Data.load_def("point")
       comp.name += component_settings
+      comp.definition = Data.load_def(comp.model_path)
       Data.model.commit_operation
     end
 

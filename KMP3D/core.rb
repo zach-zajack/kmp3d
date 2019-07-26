@@ -2,17 +2,13 @@ module KMP3D
   require "#{DIR}/ui/html_helpers"
   require "#{DIR}/ui/observer"
   require "#{DIR}/ui/tool"
+  require "#{DIR}/ui/type_html"
   require "#{DIR}/types/type"
-  require "#{DIR}/types/ktpt"
-  require "#{DIR}/types/enpt"
-  require "#{DIR}/types/itpt"
-  require "#{DIR}/types/ckpt"
-  require "#{DIR}/types/gobj"
-  require "#{DIR}/types/poti"
-  require "#{DIR}/types/jgpt"
-  require "#{DIR}/types/cnpt"
-  require "#{DIR}/types/mspt"
-  require "#{DIR}/types/stgi"
+  require "#{DIR}/types/point"
+  require "#{DIR}/types/vector"
+  require "#{DIR}/types/checkpoint"
+  require "#{DIR}/types/stage_info"
+  require "#{DIR}/types/type_classes"
   require "#{DIR}/util/wkmpt_exporter"
   require "#{DIR}/entity"
   require "#{DIR}/data"
@@ -21,8 +17,8 @@ module KMP3D
   tool_cmd = UI::Command.new("KMP3D Tool") { Data.model.select_tool(tool) }
   tool_cmd.small_icon = tool_cmd.large_icon = "#{DIR}/images/tool.png"
 
-  exporter_cmd = \
-    UI::Command.new("Export...") { Data.model.select_tool(WKMPTExporter.export) }
+  exporter_cmd = UI::Command.new("Export WKMPT...") \
+    { Data.model.select_tool(WKMPTExporter.export) }
 
   Sketchup.add_observer(tool)
   Data.reload(tool)

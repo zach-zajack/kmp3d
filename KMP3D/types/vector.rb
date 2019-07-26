@@ -1,8 +1,6 @@
 module KMP3D
-  class CNPT < Type
+  class Vector < Type
     def initialize
-      @name = "Cannons"
-      @settings = [Settings.new(:int, "Shoot Effect", "0")]
       @disable_combine = true
       @step = 0
       super("vector")
@@ -21,8 +19,8 @@ module KMP3D
 
     def helper_text
       case @step
-      when 0 then "(Step 1/2) Click to place the start position of cannon."
-      when 1 then "(Step 2/2) Click to place the end position of cannon."
+      when 0 then "(Step 1/2) Click to place the point's position."
+      when 1 then "(Step 2/2) Click to place the point's direction."
       end
     end
 

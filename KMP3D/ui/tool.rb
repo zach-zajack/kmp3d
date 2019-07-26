@@ -66,8 +66,7 @@ module KMP3D
 
     def select_point(id)
       ent = Data.get_entity(type.type_name, id)
-      Data.selection.include?(ent) ? \
-        Data.selection.remove(ent) : Data.selection.add(ent)
+      Data.selection.toggle(ent)
     end
 
     def edit_value(table_id)

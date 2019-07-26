@@ -18,7 +18,12 @@ module KMP3D
     end
 
     def callback(name, args = "")
-      "window.location='skp:#{name}@#{args}'"
+      "window.location='skp:#{name}@#{args}';" \
+      "window.location='skp:refresh';"
+    end
+
+    def on_scroll
+      "window.location='skp:scroll@'+document.getElementById('table').scrollTop"
     end
 
     private

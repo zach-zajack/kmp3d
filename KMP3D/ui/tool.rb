@@ -7,6 +7,7 @@ module KMP3D
       @dlg = UI::WebDialog.new("KMP3D", false, "KMP3D")
       @ip = Sketchup::InputPoint.new
       @css = File.open("#{DIR}/css/default.css").read
+      @scroll = 0
       add_callbacks
     end
 
@@ -25,6 +26,7 @@ module KMP3D
     private
 
     def add_callbacks
+      @dlg.add_action_callback("scroll") { |_, px| @scroll = px }
       @dlg.add_action_callback("refresh") { refresh_html }
       @dlg.add_action_callback("setGroup") { set_group }
       @dlg.add_action_callback("addGroup") { add_group }
@@ -35,17 +37,14 @@ module KMP3D
 
     def set_group
       type.group = @dlg.get_element_value("currentGroup").to_i
-      refresh_html
     end
 
     def add_group
       type.add_group
-      refresh_html
     end
 
     def delete_row(id)
       type.on_external_settings? ? delete_group(id) : delete_point(id)
-      refresh_html
     end
 
     def delete_group(id)
@@ -69,7 +68,6 @@ module KMP3D
       ent = Data.get_entity(type.type_name, id)
       Data.selection.include?(ent) ? \
         Data.selection.remove(ent) : Data.selection.add(ent)
-      refresh_html
     end
 
     def edit_value(table_id)
@@ -81,18 +79,14 @@ module KMP3D
     end
 
     def edit_group_value(value, id, row)
-      if Data::PATTERNS[type.external_settings[row.to_i].type].match(value).nil?
-        refresh_html
-        return
-      end
+      return if \
+        Data::PATTERNS[type.external_settings[row.to_i].type].match(value).nil?
       type.table[id.to_i + 1][row.to_i] = value
     end
 
     def edit_point_value(value, id, row)
-      if Data::PATTERNS[type.settings[row.to_i].type].match(value).nil?
-        refresh_html
-        return
-      end
+      return if \
+        Data::PATTERNS[type.settings[row.to_i].type].match(value).nil?
       ent = Data.get_entity(type.type_name, id)
       ent.kmp3d_settings_insert(type.type_name, row.to_i, value)
     end
@@ -134,8 +128,10 @@ module KMP3D
     end
 
     def generate_body
-      tag(:body) do
-        tag(:div, {:class => "table"}) { type.to_html } + \
+      tag(:body, \
+        :onload => "document.getElementById('table').scrollTop=#{@scroll}") do
+        tag(:div, {:id => "table", :onscroll => on_scroll,
+          :class => "table"}) { type.to_html } + \
         tag(:div, {:class => "types"}) { types + type_groups + group_button }
       end
     end

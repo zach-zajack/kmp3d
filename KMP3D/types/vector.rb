@@ -6,15 +6,20 @@ module KMP3D
       super("vector")
     end
 
-    def add_to_model(pos)
-      if @step == 0
-        @step = 1
-        @prev = pos
-      elsif @step == 1
-        @step = 0
-        angle = Math::PI - Math.atan2(pos.x - @prev.x, pos.y - @prev.y)
-        add_point(@prev, angle)
+    def transform(comp, pos)
+      case @step
+      when 0 then comp.transform!(Geom::Transformation.translation(pos))
+      when 1
+        comp.transform!(Geom::Transformation.rotation(@prev, [0, 0, 1], \
+          angle(pos)))
       end
+    end
+
+    def advance_steps(pos)
+      @prev = pos
+      @step += 1
+      @step %= 2
+      return @step
     end
 
     def helper_text
@@ -26,13 +31,8 @@ module KMP3D
 
     private
 
-    def add_point(pos, angle)
-      Data.model.start_operation("Add KMP3D Point", true)
-      point = Geom::Point3d.new(pos)
-      comp = Data.entities.add_instance(@model, point)
-      comp.transform!(Geom::Transformation.rotation(point, [0, 0, 1], angle))
-      comp.name = "KMP3D " + component_settings
-      Data.model.commit_operation
+    def angle(pos)
+      Math::PI - Math.atan2(pos.x - @prev.x, pos.y - @prev.y)
     end
   end
 end

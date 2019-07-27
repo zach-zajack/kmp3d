@@ -104,7 +104,7 @@ module KMP3D
     end
 
     def type_groups
-      return "" unless type.external_settings
+      return "" unless type.show_group?
       len = type.groups
       size = [len + 1, 10].min
       select(type.group,
@@ -116,7 +116,7 @@ module KMP3D
     end
 
     def group_button
-      return "" unless type.external_settings
+      return "" unless type.show_group?
       tag(:button, :onclick => callback("addGroup")) { "Add Group" }
     end
 

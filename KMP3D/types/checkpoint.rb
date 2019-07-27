@@ -6,17 +6,30 @@ module KMP3D
       super("checkpoint")
     end
 
-    def add_to_model(pos)
-      if @step == 0
-        @step = 1
-        @points = [pos]
-      elsif @step == 1
-        @step = 2
-        @points << pos
-      elsif @step == 2
-        @step = 0
-        calc_transformation(pos)
+    def transform(comp, pos)
+      case @step
+      when 0 then comp.transform!(Geom::Transformation.translation(pos - \
+        [0, 1500.m, 0]))
+      when 1
+        comp.transform!(Geom::Transformation.scaling(@prev, \
+          1.0, scale(pos), 1.0))
+        comp.transform!(Geom::Transformation.rotation(@prev, [0,0,1], \
+          angle(pos)))
+      when 2
+        return comp unless change_direction?(pos)
+        comp.transform!(Geom::Transformation.rotation(@avg, [0,0,1], Math::PI))
       end
+    end
+
+    def advance_steps(pos)
+      if @step == 1
+        @slope = (@prev.y - pos.y)/(@prev.x - pos.x)
+        @avg = [(pos.x + @prev.x)/2, (pos.y + @prev.y)/2, (pos.z + @prev.z)/2]
+      end
+      @prev = pos
+      @step += 1
+      @step %= 3
+      return @step
     end
 
     def helper_text
@@ -29,25 +42,16 @@ module KMP3D
 
     private
 
-    def calc_transformation(pos)
-      pos1, pos2 = @points
-      avg = [(pos1.x + pos2.x)/2, (pos1.y + pos2.y)/2, (pos1.z + pos2.z)/2]
-      slope = (pos1.y - pos2.y)/(pos1.x - pos2.x)
-      angle = Math.atan(slope)
-      angle += slope * (pos.x - pos1.x) + pos1.y < pos.y ? \
-        Math::PI/2 : -Math::PI/2
-      scale = pos1.distance(pos2).to_m / 3000 # 3000m is the length of the model
-      add_point(avg, angle, scale)
+    def angle(pos)
+      -Math.atan2(@prev.x - pos.x, @prev.y - pos.y)
     end
 
-    def add_point(pos, angle, scale)
-      Data.model.start_operation("Add KMP3D Point", true)
-      point = Geom::Point3d.new(pos)
-      comp = Data.entities.add_instance(@model, point)
-      comp.transform!(Geom::Transformation.scaling(point, 1.0, scale, 1.0))
-      comp.transform!(Geom::Transformation.rotation(point, [0, 0, 1], angle))
-      comp.name = "KMP3D " + component_settings
-      Data.model.commit_operation
+    def scale(pos)
+      pos.distance(@prev).to_m / 3000 # 3000m is the length of the model
+    end
+
+    def change_direction?(pos)
+      @slope * (pos.x - @prev.x) + @prev.y > pos.y
     end
   end
 end

@@ -10,6 +10,10 @@ module KMP3D
       end
     end
 
+    def show_group?
+      external_settings && use_points?
+    end
+
     protected
 
     def table_rows(inputs, settings)

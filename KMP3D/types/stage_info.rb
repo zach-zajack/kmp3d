@@ -1,17 +1,16 @@
 module KMP3D
   class StageInfo < Type
-    def add_to_model(_)
-    end
-
-    def add_to_component(_)
-    end
-
-    def external_settings
-      nil
+    def transform(comp, _)
+      comp.visible = false
+      comp
     end
 
     def on_external_settings?
       true
+    end
+
+    def use_points?
+      false
     end
 
     def helper_text

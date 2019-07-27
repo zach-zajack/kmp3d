@@ -7,7 +7,7 @@ module KMP3D
 
     Settings = Struct.new(:type, :prompt, :default)
 
-    def initialize(model_type = "point")
+    def initialize(model_type="point")
       @model = Data.load_def(model_type)
       @group = 0
       if @external_settings # external settings deal with groups, mostly
@@ -52,6 +52,10 @@ module KMP3D
 
     def on_external_settings?
       @group == groups
+    end
+
+    def use_points?
+      true
     end
 
     protected

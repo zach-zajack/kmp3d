@@ -35,7 +35,7 @@ module KMP3D
 
     def delete_point(id)
       Data.model.abort_operation
-      KMP3D::Data.model.start_operation("Remove KMP3D Settings From Point", true)
+      KMP3D::Data.model.start_operation("Remove KMP3D Point Settings", true)
       ent = Data.get_entity(type.type_name, id)
       ent.remove_kmp3d_settings(type.type_name) if ent
       KMP3D::Data.model.commit_operation

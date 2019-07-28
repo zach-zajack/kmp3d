@@ -23,23 +23,37 @@ module KMP3D
     def onMouseMove(flags, x, y, view)
       @comp.visible = false
       @ip.pick(view, x, y)
-      view.tooltip = @ip.tooltip if @ip.valid?
+      ent = get_ent(x, y, view)
+      if combine_settings?(ent)
+        view.tooltip = "Add settings to point"
+      else
+        @comp = type.transform(@prev_comp.copy, @ip.position)
+        @comp.definition = type.model
+        view.tooltip = @ip.tooltip if @ip.valid?
+      end
       Sketchup.status_text = type.helper_text
-      @comp = type.transform(@prev_comp.copy, @ip.position)
-      @comp.definition = type.model
       view.invalidate
     end
 
     def onLButtonDown(flags, x, y, view)
       @ip.pick(view, x, y)
-      return unless @ip.valid? && !type.on_external_settings?
-      if type.advance_steps(@ip.position) == 0
+      ent = get_ent(x, y, view)
+      return if !@ip.valid? || type.on_external_settings?
+      if combine_settings?(ent)
+        ent.name += type.component_settings unless ent.type?(type.type_name)
+        Data.model.commit_operation
+        update_comp
+      elsif type.advance_steps(@ip.position) == 0
         @comp.name = "KMP3D " + type.component_settings
         Data.model.commit_operation
         update_comp
       end
       @prev_comp = @comp
       refresh_html
+    end
+
+    def draw(view)
+      @ip.draw(view)
     end
 
     def onSelectionBulkChange(_)
@@ -72,8 +86,17 @@ module KMP3D
       refresh_html
     end
 
-    def draw(view)
-      @ip.draw(view)
+    private
+
+    def combine_settings?(ent)
+      ent && ent.kmp3d_object? && type.enable_combine? && !ent.type?("CKPT")
+    end
+
+    def get_ent(x, y, view)
+      ph = view.pick_helper
+      ph.do_pick(x, y)
+      ent = ph.best_picked
+      return ent
     end
   end
 end

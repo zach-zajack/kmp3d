@@ -1,7 +1,6 @@
 module KMP3D
   class Checkpoint < Type
     def initialize
-      @disable_combine = true
       @step = 0
       super("checkpoint")
     end
@@ -38,6 +37,10 @@ module KMP3D
       when 1 then "(Step 2/3) Click to place the other end of the checkpoint."
       when 2 then "(Step 3/3) Click in direction of the checkpoint."
       end
+    end
+
+    def enable_combine?
+      false
     end
 
     private

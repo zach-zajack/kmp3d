@@ -2,7 +2,7 @@ module KMP3D
   class Type
     include HTMLHelpers, TypeHTML
 
-    attr_reader :name, :external_settings, :settings, :model, :disable_combine
+    attr_reader :name, :external_settings, :settings, :model
     attr_accessor :group, :table
 
     Settings = Struct.new(:type, :prompt, :default)
@@ -55,6 +55,10 @@ module KMP3D
     end
 
     def use_points?
+      true
+    end
+
+    def enable_combine?
       true
     end
 

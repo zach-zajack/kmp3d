@@ -1,7 +1,6 @@
 module KMP3D
   class Vector < Type
     def initialize
-      @disable_combine = true
       @step = 0
       super("vector")
     end

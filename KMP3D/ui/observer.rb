@@ -10,6 +10,7 @@ module KMP3D
     def update_comp
       Data.model.start_operation("Add KMP3D Point")
       @comp = Data.model.active_entities.add_instance(type.model, IDENTITY)
+      @comp.visible = false
       @prev_comp = @comp
       @undone = true
     end

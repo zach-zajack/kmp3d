@@ -49,6 +49,7 @@ module KMP3D
 
     def delete_group(id)
       type.table.delete_at(id.to_i)
+      Data.model.abort_operation
       Data.model.start_operation("Remove Group and Settings", true)
       Data.kmp3d_entities(type.type_name).each do |ent|
         ent.remove_kmp3d_settings(type.type_name) if \
@@ -58,9 +59,10 @@ module KMP3D
     end
 
     def delete_point(id)
+      Data.model.abort_operation
       KMP3D::Data.model.start_operation("Remove KMP3D Settings From Point", true)
       ent = Data.get_entity(type.type_name, id)
-      ent.remove_kmp3d_settings(type.type_name)
+      ent.remove_kmp3d_settings(type.type_name) if ent
       KMP3D::Data.model.commit_operation
     end
 

@@ -1,7 +1,6 @@
 module KMP3D
   class Vector < Type
     def initialize
-      @step = 0
       super("vector")
     end
 

@@ -1,7 +1,6 @@
 module KMP3D
   class Checkpoint < Type
     def initialize
-      @step = 0
       super("checkpoint")
     end
 

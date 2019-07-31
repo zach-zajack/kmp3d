@@ -3,7 +3,7 @@ module KMP3D
     include HTMLHelpers, TypeHTML
 
     attr_reader :name, :external_settings, :settings, :model
-    attr_accessor :group, :table
+    attr_accessor :group, :table, :step
 
     Settings = Struct.new(:type, :prompt, :default)
 

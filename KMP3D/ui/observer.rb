@@ -9,6 +9,7 @@ module KMP3D
 
     def update_comp
       Data.model.start_operation("Add KMP3D Point")
+      type.step = 0
       @comp = Data.model.active_entities.add_instance(type.model, IDENTITY)
       @comp.visible = false
       @prev_comp = @comp
@@ -36,7 +37,6 @@ module KMP3D
     end
 
     def onLButtonDown(flags, x, y, view)
-      @ip.pick(view, x, y)
       ent = get_ent(x, y, view)
       return if !@ip.valid? || type.on_external_settings?
       if combine_settings?(ent)

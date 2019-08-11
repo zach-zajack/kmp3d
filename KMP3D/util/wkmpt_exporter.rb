@@ -6,8 +6,10 @@ module KMP3D
       path = UI.savepanel("Select a file to export to.")
       output = file_head + Data.types.map do |type|
         "[#{type.type_name}]\n" + \
-        if type.type_name == "POTI" then export_route(type)
-        elsif type.type_name == "STGI" then export_stage_info
+        case type.type_name
+        when "POTI" then export_route(type)
+        when "GOBJ" then export_object(type)
+        when "STGI" then export_stage_info
         else type.external_settings ? export_group(type) : export_points(type)
         end
       end
@@ -60,10 +62,10 @@ module KMP3D
       groups = []
       Data.kmp3d_entities(type.type_name).each do |ent|
         settings = ent.kmp3d_settings(type.type_name)
-        g_id = settings.shift.to_i
-        next_groups = type.table[g_id + 1][0].delete(" ").split(",").join(" G")
-        groups[g_id] ||= ["$GROUP G#{g_id}, next: G#{next_groups}"]
-        groups[g_id] << settings_for(type.type_name, id, ent, settings)
+        index = settings.shift.to_i
+        next_groups = type.table[index + 1][0].delete(" ").split(",").join(" G")
+        groups[index] ||= ["$GROUP G#{index}, next: G#{next_groups}"]
+        groups[index] << settings_for(type.type_name, id, ent, settings)
         id += 1
       end
       return groups.map { |group| group * "\n" } * "\n\n"
@@ -74,13 +76,36 @@ module KMP3D
       routes = []
       Data.kmp3d_entities(type.type_name).each do |ent|
         settings = ent.kmp3d_settings(type.type_name)
-        r_id = settings.shift.to_i
-        routes[r_id] ||= \
-          ["$ROUTE r#{r_id}, settings: G#{type.table[r_id + 1] * ' '}"]
-        routes[r_id] << settings_for(type.type_name, id, ent, settings)
+        index = settings.shift.to_i
+        routes[index] ||= \
+          ["$ROUTE r#{index}, settings: G#{type.table[index + 1] * ' '}"]
+        routes[index] << settings_for(type.type_name, id, ent, settings)
         id += 1
       end
       return routes.map { |route| route * "\n" } * "\n\n"
+    end
+
+    def export_object(type)
+      id = 0
+      objects = []
+      Data.kmp3d_entities(type.type_name).each do |ent|
+        settings = ent.kmp3d_settings(type.type_name)
+        index = settings.shift.to_i
+        transform = convert_4x4_matrix(ent.transformation)
+        position  = transform[0..2]
+        rotation  = transform[3..5]
+        scale     = transform[6..8]
+        route     = settings[0]
+        settings1 = settings[1..4]
+        settings2 = settings[5..8]
+        flag      = settings[9]
+        objects << " o#{id} #{type.table[index + 1][0]}" \
+                   " #{position * ' '} #{settings1 * ' '} #{route}" \
+                   " 0 #{rotation * ' '} #{settings2 * ' '} #{flag}" \
+                   " #{scale * ' '}"
+        id += 1
+      end
+      return objects * "\n"
     end
 
     def export_stage_info
@@ -96,12 +121,12 @@ module KMP3D
     end
 
     def point_settings(id, ent, settings)
-      " #{id} #{convert_transform(ent.transformation).first(3) * ' '}" \
+      " #{id} #{convert_4x4_matrix(ent.transformation).first(3) * ' '}" \
       " #{settings * ' '}"
     end
 
     def vector_settings(id, ent, settings)
-      " #{id} #{convert_transform(ent.transformation).first(6) * ' '}" \
+      " #{id} #{convert_4x4_matrix(ent.transformation).first(6) * ' '}" \
       " #{settings * ' '}"
     end
 

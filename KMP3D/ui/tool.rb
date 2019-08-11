@@ -47,13 +47,15 @@ module KMP3D
         :id => "currentGroup",
         :size => size,
         :onchange => callback("setGroup"),
-        *(0..len).map { |i| i == len ? "Group Settings" : "Group #{i}" }
+        *(0..len).map { |i| i == len ? \
+          "#{type.settings_name} Settings" : "#{type.settings_names(i)}" }
       )
     end
 
-    def group_button
+    def settings_button
       return "" unless type.show_group?
-      tag(:button, :onclick => callback("addGroup")) { "Add Group" }
+      tag(:button, :onclick => callback("addGroup")) \
+        { "Add #{type.settings_name}" }
     end
 
     def generate_head
@@ -67,7 +69,7 @@ module KMP3D
         :onload => "document.getElementById('table').scrollTop=#{@scroll}") do
         tag(:div, {:id => "table", :onscroll => on_scroll,
           :class => "table"}) { type.to_html } + \
-        tag(:div, {:class => "types"}) { types + type_groups + group_button }
+        tag(:div, {:class => "types"}) { types + type_groups + settings_button }
       end
     end
   end

@@ -32,7 +32,7 @@ module KMP3D
 
     def inputs
       # settings added due to next point using previous settings
-      inputs = [@settings.map { |s| s.default }]
+      inputs = [[false] + @settings.map { |s| s.default }]
       Data.kmp3d_entities(type_name).each do |ent|
         settings = ent.kmp3d_settings(type_name)
         add_group if settings[0].to_i >= groups
@@ -60,6 +60,14 @@ module KMP3D
 
     def enable_combine?
       true
+    end
+
+    def settings_name
+      "Group"
+    end
+
+    def settings_names(i)
+      "#{settings_name} #{i}"
     end
 
     protected

@@ -7,6 +7,7 @@ module KMP3D
   require "#{DIR}/types/type"
   require "#{DIR}/types/point"
   require "#{DIR}/types/vector"
+  require "#{DIR}/types/object"
   require "#{DIR}/types/checkpoint"
   require "#{DIR}/types/stage_info"
   require "#{DIR}/types/type_classes"

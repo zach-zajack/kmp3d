@@ -20,7 +20,7 @@ module KMP3D
       offset = (on_external_settings? ? 0 : entities_before_group)
       id = offset - 1
       inputs.map do |row|
-        selected = row.shift unless id == -1 || on_external_settings?
+        selected = row.shift unless on_external_settings?
         tag(:tr, row_attribs(id, selected)) do
           if id < offset
             cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""

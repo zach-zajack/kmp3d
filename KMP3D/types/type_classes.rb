@@ -49,11 +49,27 @@ module KMP3D
     end
   end
 
-  class GOBJ < Point
+  class GOBJ < Object
     def initialize
       @name = "Objects"
-      @settings = [Settings.new(:float, "Size", "25.0")] # soon tm
+      @external_settings = [Settings.new(:int, "Object ID", "101")]
+      @settings = [
+        Settings.new(:int, "Route", "-1"),
+        Settings.new(:int, "S1", "0"),
+        Settings.new(:int, "S2", "0"),
+        Settings.new(:int, "S3", "0"),
+        Settings.new(:int, "S4", "0"),
+        Settings.new(:int, "S5", "0"),
+        Settings.new(:int, "S6", "0"),
+        Settings.new(:int, "S7", "0"),
+        Settings.new(:int, "S8", "0"),
+        Settings.new(:int, "Flag", "0x3F")
+      ]
       super
+    end
+
+    def settings_name
+      "Objects"
     end
   end
 
@@ -69,6 +85,10 @@ module KMP3D
         Settings.new(:int, "Setting 2", "0")
       ]
       super
+    end
+
+    def settings_name
+      "Route"
     end
   end
 

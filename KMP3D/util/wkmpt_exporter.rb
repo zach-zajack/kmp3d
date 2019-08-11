@@ -106,7 +106,7 @@ module KMP3D
     end
 
     def checkpoint_settings(id, ent, settings)
-      transform = convert_transform(ent.transformation)
+      transform = convert_4x4_matrix(ent.transformation)
       x, y  = transform[0], transform[2] # y is used because 2d
       angle = (transform[4] - 90).degrees
       scale = 1500 * transform[8]
@@ -117,7 +117,7 @@ module KMP3D
       " #{id} #{x1} #{y1} #{x2} #{y2} #{settings * ' '} #{id - 1} #{id + 1}"
     end
 
-    def convert_transform(trsfm)
+    def convert_4x4_matrix(trsfm)
       px =  trsfm.origin.x.to_m
       py =  trsfm.origin.z.to_m # sketchup switches y for z
       pz = -trsfm.origin.y.to_m # also flips the y coordinate

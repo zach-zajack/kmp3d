@@ -1,7 +1,7 @@
 module KMP3D
   class Checkpoint < Type
-    def initialize
-      super("checkpoint")
+    def model
+      Data.load_def("checkpoint")
     end
 
     def transform(comp, pos)
@@ -22,6 +22,7 @@ module KMP3D
     def advance_steps(pos)
       if @step == 1
         @slope = (@prev.y - pos.y)/(@prev.x - pos.x)
+        @prev_angle = angle(pos)
         @avg = [(pos.x + @prev.x)/2, (pos.y + @prev.y)/2, (pos.z + @prev.z)/2]
       end
       @prev = pos
@@ -53,7 +54,7 @@ module KMP3D
     end
 
     def change_direction?(pos)
-      @slope * (pos.x - @prev.x) + @prev.y > pos.y
+      (@slope * (pos.x - @prev.x) + @prev.y > pos.y) ^ (@prev_angle < 0)
     end
   end
 end

@@ -2,19 +2,23 @@ module KMP3D
   class Type
     include HTMLHelpers, TypeHTML
 
-    attr_reader :name, :external_settings, :settings, :model
+    attr_reader :name, :external_settings, :settings
     attr_accessor :group, :table, :step
 
     Settings = Struct.new(:type, :prompt, :default)
 
-    def initialize(model_type="point")
-      @model = Data.load_def(model_type)
+    def initialize
       @group = 0
+      @step = 0
       if @external_settings # external settings deal with groups, mostly
         @table = Data.model.get_attribute("KMP3D", \
           type_name, [Array.new(@external_settings.length)])
         add_group if @table.length == 1
       end
+    end
+
+    def model
+      Data.load_def("point")
     end
 
     def save_settings

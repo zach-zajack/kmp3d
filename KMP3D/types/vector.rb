@@ -1,7 +1,7 @@
 module KMP3D
   class Vector < Type
-    def initialize
-      super("vector")
+    def model
+      Data.load_def("vector")
     end
 
     def transform(comp, pos)

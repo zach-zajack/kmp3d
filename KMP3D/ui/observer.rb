@@ -23,6 +23,7 @@ module KMP3D
 
     def onMouseMove(flags, x, y, view)
       @comp.visible = false
+      return if !@dlg.visible? || type.on_external_settings?
       @ip.pick(view, x, y)
       ent = get_ent(x, y, view)
       if combine_settings?(ent)
@@ -73,7 +74,7 @@ module KMP3D
       Data.types.each { |type| type.save_settings }
     end
 
-    def onTransactionUndo(_)
+    def onTransactionUndo(_) # replace with onCancel at some point
       return unless @id == Data.model.tools.active_tool_id && @undone
       @undone = false # prevent recursion
       Sketchup.undo # call a second undo since new operation has already started

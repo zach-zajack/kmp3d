@@ -5,16 +5,26 @@
   text-overflow: ellipsis;
 }
 
-.types, .types * {
+body {
+  margin: 0;
+}
+
+.types {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 120px;
-  float: left;
+}
+
+.types * {
+  display: block;
 }
 
 .table {
-  width: calc(100% - 120px);
+  margin: 0;
+  padding-left: 120px;
   height: 100%;
-  float: right;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .table th {

@@ -21,6 +21,7 @@ module KMP3D
     end
 
     def refresh_html
+      p @dlg.get_element_value("currentType")
       @dlg.set_html(generate_head + generate_body)
     end
 
@@ -31,11 +32,12 @@ module KMP3D
     end
 
     def types
-      select(type_index,
-        :id => "currentType",
-        :size => 10,
-        :onchange => callback("refresh"),
-        *Data.types.map { |type| type.name }
+      select(type_index, {
+          :id => "currentType",
+          :size => 10,
+          :onchange => callback("refresh"),
+        },
+        Data.types.map { |type| type.name }
       )
     end
 
@@ -43,18 +45,19 @@ module KMP3D
       return "" unless type.show_group?
       len = type.groups
       size = [len + 1, 10].min
-      select(type.group,
-        :id => "currentGroup",
-        :size => size,
-        :onchange => callback("setGroup"),
-        *(0..len).map { |i| i == len ? \
+      select(type.group, {
+          :id => "currentGroup",
+          :size => size,
+          :onchange => callback("setGroup"),
+        },
+        (0..len).map { |i| i == len ? \
           "#{type.settings_name} Settings" : "#{type.settings_names(i)}" }
       )
     end
 
     def settings_button
       return "" unless type.show_group?
-      tag(:button, :onclick => callback("addGroup")) \
+      tag(:button, {:onclick => callback("addGroup")}) \
         { "Add #{type.settings_name}" }
     end
 
@@ -66,7 +69,7 @@ module KMP3D
 
     def generate_body
       tag(:body, \
-        :onload => "document.getElementById('table').scrollTop=#{@scroll}") do
+        {:onload => "document.getElementById('table').scrollTop=#{@scroll}"}) do
         tag(:div, {:id => "table", :onscroll => on_scroll,
           :class => "table"}) { type.to_html } + \
         tag(:div, {:class => "types"}) { types + type_groups + settings_button }

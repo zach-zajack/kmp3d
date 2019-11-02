@@ -5,12 +5,12 @@ module KMP3D
       return "<#{name}#{attributes_to_html(attributes)}>#{content}"
     end
 
-    def select(selected_id, attributes = {}, *options)
+    def select(selected_id, attributes = {}, options = [])
       tag(:select, attributes) do
         i = -1
         options.map do |option|
           i += 1
-          opts = {:value => i.to_s}
+          opts = {:value => i}
           opts[:selected] = "selected" if i == selected_id
           tag(:option, opts) { option }
         end

@@ -1,3 +1,4 @@
+DIR = File.dirname(__FILE__) ###
 module KMP3D
   require "#{DIR}/ui/html_helpers"
   require "#{DIR}/ui/callbacks"

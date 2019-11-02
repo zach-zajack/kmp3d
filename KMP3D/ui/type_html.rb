@@ -60,12 +60,12 @@ module KMP3D
     end
 
     def table_input(id, value, setting)
-      tag(:input,
+      tag(:input, {
         :id => id,
         :type => "text",
         :onchange => callback("inputChange", id),
         :value => value
-      )
+      })
     end
   end
 end

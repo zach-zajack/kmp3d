@@ -1,5 +1,5 @@
 # KMP3D
-KMP3D is a [Google SketchUp]() plugin that functions as a 3D interface for [Mario Kart Wii]()'s [KMP]() files, which deal with coordinate information, such as checkpoints, item routes, or respawn positions. Points are represented using spheres and vectors, depending on the point type.
+KMP3D is a [Google SketchUp](https://www.sketchup.com/) plugin that functions as a 3D interface for [Mario Kart Wii](https://en.wikipedia.org/wiki/Mario_Kart_Wii)'s [KMP](http://wiki.tockdom.com/wiki/KMP) files, which deal with coordinate information, such as checkpoints, item routes, or respawn positions. Points are represented using spheres and vectors, depending on the point type.
 
 ## Installation
 update later
@@ -17,7 +17,7 @@ Points can similarly be combined, if points are different types. This can be don
 Points can be translated, rotated, and scaled using any SketchUp tool or plugin. When exporting, KMP3D will automatically adjust for these changes.
 
 ### Editing settings
-Settings can be edited through the use of input tables. Settings mostly follow [KMP Cloud]()'s naming and organization.
+Settings can be edited through the use of input tables. Settings mostly follow [KMP Cloud](http://wiki.tockdom.com/wiki/KMP_Cloud)'s naming and organization.
 
 ### Selecting points
 Points can be selected and deselected either by clicking on the points in SketchUp, or in the input table's ID section. From here, any normal SketchUp operation can be done on them.
@@ -32,7 +32,7 @@ Editing groups can be done under the `Group settings` tab.
 One common use for groups is for split paths. For example, split paths for item routes would result in 3 routes: one for the main road, `G0`, and two for each different path in the split, `G1` and `G2`. These can then be joined with `G0`'s `Next Group` parameter as `G1, G2`, and `G1` and `G2`'s parameters as `G0`.
 
 ### Exporting KMP3D points
-WKMPT files are essentially an intermediary file type used by [Wiimm's SZS Tools](). Exporting KMP3D points can be done under `Plugins` -> `KMP3D` -> `Export WKMPT...`. Files can be converted through downloading and installing [Wiimm's SZS Tools](), and using the `wkmpt encode <filename>` command.
+WKMPT files are essentially an intermediary file type used by [Wiimm's SZS Tools](http://wiki.tockdom.com/wiki/Wiimms_SZS_Tools). Exporting KMP3D points can be done under `Plugins` -> `KMP3D` -> `Export WKMPT...`. Files can be converted through downloading and installing [Wiimm's SZS Tools](http://wiki.tockdom.com/wiki/Wiimms_SZS_Tools), and using the `wkmpt encode <filename>` command.
 
 ## Reference
 

@@ -18,7 +18,7 @@ KMP3D is a [Google SketchUp](https://www.sketchup.com/) plugin that functions as
 ## Usage and Features
 
 ### Adding points
-Points can be added to the model by pointing and clicking in the desired area. If a given type of point is a vector, the second click determines what direction the point is facing in the horizontal (x-z) plane.
+Points can be added to the model by pointing and clicking in the desired area. If a given type of point is a vector, the second click determines what direction the point is facing in the horizontal (x-z) plane. Points will automatically take the settings from the previous point.
 
 ### Combining points
 Points can similarly be combined, if points are different types. This can be done by hovering over a point of a different type and clicking on it.

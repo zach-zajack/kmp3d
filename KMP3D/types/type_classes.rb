@@ -126,7 +126,7 @@ module KMP3D
         Settings.new(:int, "Lap count", "3"),
         Settings.new(:int, "Pole position", "0"),
         Settings.new(:int, "Driver distance", "0"),
-        Settings.new(:float, "Speed", "0")
+        Settings.new(:float, "Speed Modifier", "1.0")
       ]
       super
     end

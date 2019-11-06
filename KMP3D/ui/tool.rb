@@ -21,7 +21,7 @@ module KMP3D
     end
 
     def refresh_html
-      p @dlg.get_element_value("currentType")
+      @dlg.get_element_value("currentType")
       @dlg.set_html(generate_head + generate_body)
     end
 

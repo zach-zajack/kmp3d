@@ -109,7 +109,10 @@ module KMP3D
     end
 
     def export_stage_info
-      " s0 " + Data.types.last.table.last * " "
+      settings = Data.types.last.table[-1]
+      info = settings[0..2] * " "
+      speed = [settings[3].to_f].pack("g").unpack("CC") * " "
+      " s0 #{info} 0 0xFFFFFF 0x4B 0 #{speed}"
     end
 
     def settings_for(type_name, id, ent, settings)

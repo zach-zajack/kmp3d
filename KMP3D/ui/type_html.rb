@@ -66,9 +66,9 @@ module KMP3D
         :value => value
       }
       case setting.type
-      when :checkbox then checkbox("", attributes, value)
-      when :dropdown then select(value, attributes, setting.input)
       when :text then tag(:input, attributes.merge({:type => "text"}))
+      when :dropdown then select(value.to_i, attributes, setting.input)
+      when :checkbox then checkbox("", attributes, value == "true")
       end
     end
   end

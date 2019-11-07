@@ -50,21 +50,40 @@ module KMP3D
       id = table_id.split(",").first
       row = table_id.split(",").last
       value = @dlg.get_element_value(table_id)
+      if value == "true" then value = "false"
+      elsif value == "false" then value = "true"
+      end
       type.on_external_settings? ? \
         edit_group_value(value, id, row) : edit_point_value(value, id, row)
     end
 
     def edit_group_value(value, id, row)
-      return if \
-        Data::PATTERNS[type.external_settings[row.to_i].type].match(value).nil?
+      return unless valid?(type.external_settings[row.to_i].input, value)
       type.table[id.to_i + 1][row.to_i] = value
     end
 
     def edit_point_value(value, id, row)
-      return if \
-        Data::PATTERNS[type.settings[row.to_i].type].match(value).nil?
+      return unless valid?(type.settings[row.to_i].input, value)
       ent = Data.get_entity(type.type_name, id)
       ent.kmp3d_settings_insert(type.type_name, row.to_i, value)
+    end
+
+    private
+
+    def valid_int_within(value, min, max)
+      /^(0x(\d|[A-f])+|-?\d+)$/.match(value) \
+      && min <= value.to_i && value.to_i <= max
+    end
+
+    def valid?(type, value)
+      case type
+      when :byte then valid_int_within(value, 0, 255)
+      when :bytes then value.split(",").all? { valid_int_within(value, 0, 255) }
+      when :float then /^[-]?\d*\.?\d+$/.match(value)
+      when :int16 then valid_int_within(value, -32767, 32767)
+      when :uint16 then valid_int_within(value, 0, 65535)
+      else true
+      end
     end
   end
 end

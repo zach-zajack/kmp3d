@@ -48,14 +48,5 @@ module KMP3D
         POTI.new, JGPT.new, CNPT.new, MSPT.new, STGI.new
       ]
     end
-
-    INT = /(0x(\d|[A-f])+|-?\d+)/
-
-    PATTERNS = {
-      :int => /^#{INT}$/,
-      :ints => /^#{INT}(,\s*#{INT})*$/,
-      :bool => /^(0|1)$/,
-      :float => /^[-]?\d*\.?\d+$/
-    }
   end
 end

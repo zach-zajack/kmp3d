@@ -77,8 +77,10 @@ module KMP3D
       Data.kmp3d_entities(type.type_name).each do |ent|
         settings = ent.kmp3d_settings(type.type_name)
         index = settings.shift.to_i
+        group_settings = \
+          (type.table[index + 1] * ' ').gsub("false", "0").gsub("true", "1")
         routes[index] ||= \
-          ["$ROUTE r#{index}, settings: G#{type.table[index + 1] * ' '}"]
+          ["$ROUTE r#{index}, settings: #{group_settings}"]
         routes[index] << settings_for(type.type_name, id, ent, settings)
         id += 1
       end

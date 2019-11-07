@@ -26,6 +26,16 @@ module KMP3D
       @types
     end
 
+    def css
+      css = Sketchup.read_default("KMP3D", "CSS", "default")
+      css = "default" unless File.exist?("#{DIR}/css/#{css}.css")
+      File.open("#{DIR}/css/#{css}.css").read
+    end
+
+    def css_themes
+      Dir["#{DIR}/css/*.css"].map { |f| f[f.rindex(/[\\\/]/)+1..-5] }
+    end
+
     def load_def(name)
       model.definitions.load("#{DIR}/models/#{name}.skp")
     end

@@ -1,4 +1,3 @@
-DIR = File.dirname(__FILE__) ###
 module KMP3D
   require "#{DIR}/ui/html_helpers"
   require "#{DIR}/ui/callbacks"
@@ -20,8 +19,7 @@ module KMP3D
   tool_cmd = UI::Command.new("KMP3D Tool") { Data.model.select_tool(tool) }
   tool_cmd.small_icon = tool_cmd.large_icon = "#{DIR}/images/tool.png"
 
-  exporter_cmd = UI::Command.new("Export WKMPT...") \
-    { Data.model.select_tool(WKMPTExporter.export) }
+  exporter_cmd = UI::Command.new("Export WKMPT...") { WKMPTExporter.export }
 
   Sketchup.add_observer(tool)
   Data.reload(tool)

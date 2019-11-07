@@ -17,7 +17,13 @@ module KMP3D
       end
     end
 
-    def callback(name, args = "")
+    def checkbox(label, attributes = {}, checked = false)
+      attributes[:type] = "checkbox"
+      attributes[:checked] = "true" if checked
+      tag(:label) { tag(:input, attributes) + label }
+    end
+
+    def callback(name = "", args = "")
       "window.location='skp:#{name}@#{args}';" \
       "window.location='skp:refresh';"
     end

@@ -60,12 +60,16 @@ module KMP3D
     end
 
     def table_input(id, value, setting)
-      tag(:input, {
+      attributes = {
         :id => id,
-        :type => "text",
         :onchange => callback("inputChange", id),
         :value => value
-      })
+      }
+      case setting.type
+      when :checkbox then checkbox("", attributes, value)
+      when :dropdown then select(value, attributes, setting.input)
+      when :text then tag(:input, attributes.merge({:type => "text"}))
+      end
     end
   end
 end

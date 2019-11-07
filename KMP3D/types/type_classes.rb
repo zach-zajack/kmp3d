@@ -3,8 +3,8 @@ module KMP3D
     def initialize
       @name = "Start Positions"
       @settings = [
-        Settings.new(:int, "Player Index", "-1"),
-        Settings.new(:int, "Padding", "0")
+        Settings.new(:text, :int16, "Player Index", "-1"),
+        Settings.new(:text, :uint16, "Padding", "0")
       ]
       super
     end
@@ -15,9 +15,12 @@ module KMP3D
       @name = "Enemy Routes"
       @external_settings = [Settings.new(:ints, "Next Group(s)", "0")]
       @settings = [
-        Settings.new(:float, "Size", "25.0"),
-        Settings.new(:int, "Setting 1", "0"),
-        Settings.new(:int, "Setting 2", "0")
+        Settings.new(:text, :float, "Size", "25.0"),
+        Settings.new(:dropdown,
+          ["Default", "Item Start", "Item", "Wheelie", "End Wheelie"],
+          "Setting 1", 0),
+        Settings.new(:dropdown,
+          ["Default", "End Drift", "No Drift", "Force Drift"], "Setting 2", 0),
       ]
       super
     end
@@ -28,9 +31,11 @@ module KMP3D
       @name = "Item Routes"
       @external_settings = [Settings.new(:ints, "Next Group(s)", "0")]
       @settings = [
-        Settings.new(:float, "Size", "25.0"),
-        Settings.new(:int, "Setting 1", "0"),
-        Settings.new(:int, "Setting 2", "0")
+        Settings.new(:text, :float, "Size", "25.0"),
+        Settings.new(:dropdown, ["Abyss", "Ground", "Verbatim", "Mushroom"],
+          "Setting 1", 0),
+        Settings.new(:dropdown, ["Default", "No stop", "Shortcut", "Both"],
+          "Setting 2", 0),
       ]
       super
     end
@@ -41,8 +46,8 @@ module KMP3D
       @name = "Checkpoints"
       @external_settings = [Settings.new(:ints, "Next Group(s)", "0")]
       @settings = [
-        Settings.new(:int, "Respawn ID", "0"),
-        Settings.new(:int, "Checkpoint Type", "-1")
+        Settings.new(:text, :byte, "Respawn ID", "0"),
+        Settings.new(:checkbox, :bool, "Key?", false)
       ]
       @groups = []
       super
@@ -54,16 +59,16 @@ module KMP3D
       @name = "Objects"
       @external_settings = [Settings.new(:int, "Object ID", "101")]
       @settings = [
-        Settings.new(:int, "Route", "-1"),
-        Settings.new(:int, "S1", "0"),
-        Settings.new(:int, "S2", "0"),
-        Settings.new(:int, "S3", "0"),
-        Settings.new(:int, "S4", "0"),
-        Settings.new(:int, "S5", "0"),
-        Settings.new(:int, "S6", "0"),
-        Settings.new(:int, "S7", "0"),
-        Settings.new(:int, "S8", "0"),
-        Settings.new(:int, "Flag", "0x3F")
+        Settings.new(:text, :uint16, "Route", "-1"),
+        Settings.new(:text, :uint16, "S1", "0"),
+        Settings.new(:text, :uint16, "S2", "0"),
+        Settings.new(:text, :uint16, "S3", "0"),
+        Settings.new(:text, :uint16, "S4", "0"),
+        Settings.new(:text, :uint16, "S5", "0"),
+        Settings.new(:text, :uint16, "S6", "0"),
+        Settings.new(:text, :uint16, "S7", "0"),
+        Settings.new(:text, :uint16, "S8", "0"),
+        Settings.new(:text, :uint16, "Flag", "0x3F")
       ]
       super
     end
@@ -77,12 +82,12 @@ module KMP3D
     def initialize
       @name = "Routes"
       @external_settings = [
-        Settings.new(:bool, "Toggle Smooth Motion", "0"),
-        Settings.new(:bool, "Toggle Cyclic Motion", "0")
+        Settings.new(:checkbox, :bool, "Smooth?", false),
+        Settings.new(:checkbox, :bool, "Cyclic?", false)
       ]
       @settings = [
-        Settings.new(:int, "Setting 1", "60"),
-        Settings.new(:int, "Setting 2", "0")
+        Settings.new(:text, :uint16, "Setting 1", "60"),
+        Settings.new(:text, :uint16, "Setting 2", "0")
       ]
       super
     end
@@ -96,8 +101,8 @@ module KMP3D
     def initialize
       @name = "Respawns"
       @settings = [
-        Settings.new(:int, "Index", "0"),
-        Settings.new(:int, "Range", "0")
+        Settings.new(:text, :uint16, "Index", "0"),
+        Settings.new(:text, :int16, "Range", "0")
       ]
       super
     end
@@ -106,7 +111,8 @@ module KMP3D
   class CNPT < Vector
     def initialize
       @name = "Cannons"
-      @settings = [Settings.new(:int, "Shoot Effect", "0")]
+      @settings = [Settings.new(:dropdown,
+        ["Straight", "Curved", "Slow & Curved"], "Shoot Effect", 0)]
       super
     end
   end
@@ -114,7 +120,7 @@ module KMP3D
   class MSPT < Vector
     def initialize
       @name = "End Positions"
-      @settings = [Settings.new(:float, "Size", "25.0")]
+      @settings = [Settings.new(:text, :float, "Size", "25.0")]
       super
     end
   end
@@ -123,10 +129,10 @@ module KMP3D
     def initialize
       @name = "Stage Info"
       @external_settings = [
-        Settings.new(:int, "Lap count", "3"),
-        Settings.new(:int, "Pole position", "0"),
-        Settings.new(:int, "Driver distance", "0"),
-        Settings.new(:float, "Speed Modifier", "1.0")
+        Settings.new(:text, :byte, "Lap count", "3"),
+        Settings.new(:text, :byte, "Pole position", "0"),
+        Settings.new(:text, :byte, "Driver distance", "0"),
+        Settings.new(:text, :float, "Speed Modifier", "1.0")
       ]
       super
     end

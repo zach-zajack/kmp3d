@@ -5,7 +5,7 @@ module KMP3D
     attr_reader :name, :external_settings, :settings
     attr_accessor :group, :table, :step
 
-    Settings = Struct.new(:type, :prompt, :default)
+    Settings = Struct.new(:type, :input, :prompt, :default)
 
     def initialize
       @group = 0

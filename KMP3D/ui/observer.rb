@@ -9,8 +9,8 @@ module KMP3D
 
     def update_comp
       Data.model.start_operation("Add KMP3D Point")
-      type.step = 0
-      @comp = Data.model.active_entities.add_instance(type.model, IDENTITY)
+      @type.step = 0
+      @comp = Data.model.active_entities.add_instance(@type.model, IDENTITY)
       @comp.visible = false
       @prev_comp = @comp
       @undone = true
@@ -23,29 +23,29 @@ module KMP3D
 
     def onMouseMove(flags, x, y, view)
       @comp.visible = false
-      return if !@dlg.visible? || type.on_external_settings?
+      return if !@dlg.visible? || @type.on_external_settings?
       @ip.pick(view, x, y)
       ent = get_ent(x, y, view)
       if combine_settings?(ent)
         view.tooltip = "Add settings to point"
       else
-        @comp = type.transform(@prev_comp.copy, @ip.position)
-        @comp.definition = type.model
+        @comp = @type.transform(@prev_comp.copy, @ip.position)
+        @comp.definition = @type.model
         view.tooltip = @ip.tooltip if @ip.valid?
       end
-      Sketchup.status_text = type.helper_text
+      Sketchup.status_text = @type.helper_text
       view.invalidate
     end
 
     def onLButtonDown(flags, x, y, view)
       ent = get_ent(x, y, view)
-      return if !@ip.valid? || type.on_external_settings?
+      return if !@ip.valid? || @type.on_external_settings?
       if combine_settings?(ent)
-        ent.name += type.component_settings unless ent.type?(type.type_name)
+        ent.name += @type.component_settings unless ent.type?(@type.type_name)
         Data.model.commit_operation
         update_comp
-      elsif type.advance_steps(@ip.position) == 0
-        @comp.name = "KMP3D " + type.component_settings
+      elsif @type.advance_steps(@ip.position) == 0
+        @comp.name = "KMP3D " + @type.component_settings
         Data.model.commit_operation
         update_comp
       end
@@ -71,7 +71,7 @@ module KMP3D
     end
 
     def onPreSaveModel(_)
-      Data.types.each { |type| type.save_settings }
+      Data.types.each { |type| @type.save_settings }
     end
 
     def onTransactionUndo(_) # replace with onCancel at some point
@@ -90,7 +90,7 @@ module KMP3D
     private
 
     def combine_settings?(ent)
-      ent && ent.kmp3d_object? && type.enable_combine? && !ent.type?("CKPT")
+      ent && ent.kmp3d_object? && @type.enable_combine? && !ent.type?("CKPT")
     end
 
     def get_ent(x, y, view)

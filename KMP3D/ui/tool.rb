@@ -12,53 +12,42 @@ module KMP3D
       add_callbacks
     end
 
-    def type
-      Data.types[type_index]
-    end
-
-    def type_index
-      @dlg.get_element_value("currentType").to_i
-    end
-
     def refresh_html
-      @dlg.get_element_value("currentType")
+      @type = Data.types[type_index]
       @dlg.set_html(generate_head + generate_body)
     end
 
     private
+
+    def type_index
+      index = @dlg.get_element_value("currentType")
+      index = @dlg.get_element_value("currentTypeOld") if index == ""
+      return index.to_i
+    end
 
     def group_index
       @dlg.get_element_value("currentGroup").to_i
     end
 
     def types
-      select(type_index, {
-          :id => "currentType",
-          :size => 10,
-          :onchange => callback("refresh"),
-        },
-        Data.types.map { |type| type.name }
-      )
+      sidenav("currentType", type_index, callback,
+        Data.types.map { |type| type.name })
     end
 
     def type_groups
-      return "" unless type.show_group?
-      len = type.groups
+      return "" unless @type.show_group?
+      len = @type.groups
       size = [len + 1, 10].min
-      select(type.group, {
-          :id => "currentGroup",
-          :size => size,
-          :onchange => callback("setGroup"),
-        },
+      sidenav("currentGroup", @type.group, callback("setGroup"), 
         (0..len).map { |i| i == len ? \
-          "#{type.settings_name} Settings" : "#{type.settings_names(i)}" }
+        "#{@type.settings_name} Settings" : "#{@type.settings_names(i)}" }
       )
     end
 
     def settings_button
-      return "" unless type.show_group?
+      return "" unless @type.show_group?
       tag(:button, :onclick => callback("addGroup")) \
-        { "Add #{type.settings_name}" }
+        { "Add #{@type.settings_name}" }
     end
 
     def generate_head
@@ -71,7 +60,7 @@ module KMP3D
       tag(:body, \
         {:onload => "document.getElementById('table').scrollTop=#{@scroll}"}) do
         tag(:div, :id => "table", :onscroll => on_scroll, :class => "table") \
-        { type.to_html } + \
+        { @type.to_html } + \
         tag(:div, {:class => "types"}) { types + type_groups + settings_button }
       end
     end

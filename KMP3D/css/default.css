@@ -3,6 +3,8 @@
   white-space: nowrap;
   word-break: break-all;
   text-overflow: ellipsis;
+  font-family: sans-serif;
+  font-size: 13px;
 }
 
 body {
@@ -15,8 +17,8 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  outline: 0;
-  border: 0;
+  outline: none;
+  border: none;
 }
 
 option:checked {
@@ -24,11 +26,13 @@ option:checked {
 }
 
 .types {
-  border: 1px solid #888;
+  border-top: 1px solid #888;
+  border-right: 1px solid #888;
   background-color: #ddd;
   position: absolute;
   top: 0;
   left: 0;
+  bottom: 0;
   width: 120px;
 }
 
@@ -36,9 +40,23 @@ option:checked {
   display: block;
 }
 
-.types select {
-  width: 150px;
-  border-bottom: 1px solid #888
+.sidenav {
+  width: 100%;
+  border-bottom: 1px solid #888;
+}
+
+.sidenav button {
+  background-color: inherit;
+  text-align: left;
+  outline: none;
+  border: none;
+  padding: 1px;
+  width: 100%;
+}
+
+.sidenav button.selected, .table tr.selected {
+  color: #fff;
+  background-color: #45d;
 }
 
 .table {
@@ -64,21 +82,15 @@ option:checked {
 
 .table td {
   text-align: right;
-  font-size: 13px;
   padding: 1px;
-}
-
-.table tr.selected {
-  color: #fff;
-  background-color: #45d;
 }
 
 .table input, .table select, .table button {
   background-color: #eee;
   box-sizing: border-box;
   border-width: 0;
+  outline: none;
   border: none;
-  font-size: 13px;
   width: 100%;
 }
 

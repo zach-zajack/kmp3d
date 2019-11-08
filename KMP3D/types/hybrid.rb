@@ -27,7 +27,7 @@ module KMP3D
     end
 
     def component_settings
-      selected_types.map { |t| Data.type_by_name(t).component_settings } * ""
+      selected_types.map { |type_name| component_settings_from(type_name) } * ""
     end
 
     def on_external_settings?
@@ -44,6 +44,12 @@ module KMP3D
     end
 
     private
+
+    def component_settings_from(type_name)
+      type = Data.type_by_name(type_name)
+      (@group.to_i - type.groups).times { type.add_group }
+      "#{type_name}(#{@group},#{type.inputs[-1][1..-1] * ','}) "
+    end
 
     def any_vectors?
       (selected_types & ["KTPT", "JGPT", "CNPT", "MSPT"]).length > 0

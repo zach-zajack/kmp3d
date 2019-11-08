@@ -57,7 +57,7 @@ module KMP3D
   class GOBJ < Object
     def initialize
       @name = "Objects"
-      @external_settings = [Settings.new(:uint16, "Object ID", "101")]
+      @external_settings = [Settings.new(:text, :uint16, "Object ID", "101")]
       @settings = [
         Settings.new(:text, :uint16, "Route", "-1"),
         Settings.new(:text, :uint16, "S1", "0"),

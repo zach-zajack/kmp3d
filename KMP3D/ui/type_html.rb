@@ -25,7 +25,7 @@ module KMP3D
           if id < offset
             cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
           else
-            cols = tag(:td, {:onclick => callback("selectRow", id)}) { id } + \
+            cols = tag(:td, :onclick => callback("selectRow", id)) { id } + \
             table_columns(id, row, settings) * ""
           end
           id += 1
@@ -40,17 +40,16 @@ module KMP3D
         table_id += 1
         tag(:td) { table_input("#{id},#{table_id}", col, setting) }
       end
-      table << tag(:td) { delete_button(id) }
-    end
-
-    def delete_button(id)
-      tag(:button, :onclick => callback("deleteRow", id)) { "x" }
+      table << tag(:td) do
+        tag(:button, :onclick => callback("deleteRow", id)) { "&#x2715;" }
+      end
     end
 
     def prompt_columns(row, settings)
-      row.zip(settings).map do |col, setting|
+      table = row.zip(settings).map do |col, setting|
         tag(:th) { tag(:span) { setting.prompt } }
       end
+      table << tag(:th) { "" }
     end
 
     def row_attribs(id, selected)
@@ -66,7 +65,7 @@ module KMP3D
         :value => value
       }
       case setting.type
-      when :text then tag(:input, attributes.merge({:type => "text"}))
+      when :text then tag(:input, attributes.merge(:type => "text"))
       when :dropdown then select(value.to_i, attributes, setting.input)
       when :checkbox then checkbox("", attributes, value == "true")
       end

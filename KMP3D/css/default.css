@@ -7,9 +7,25 @@
 
 body {
   margin: 0;
+  background-color: #eee;
+}
+
+select {
+  background-color: inherit;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  border: 0;
+}
+
+option:checked {
+  background: #45d linear-gradient(0deg, #45d 0%, #45d 100%);
 }
 
 .types {
+  border: 1px solid #888;
+  background-color: #ddd;
   position: absolute;
   top: 0;
   left: 0;
@@ -20,30 +36,67 @@ body {
   display: block;
 }
 
+.types select {
+  width: 150px;
+  border-bottom: 1px solid #888
+}
+
 .table {
-  margin: 0;
   padding-left: 120px;
   height: 100%;
   overflow: auto;
 }
 
-.table th {
-  width: 0;
+.table table {
+  border-collapse: collapse;
   background-color: #ddd;
+  width: 100%;
+}
+
+.table th, .table td {
+  border: 1px solid #888;
+}
+
+.table th {
+  font-size: 14px;
+  background-color: #ccc;
+}
+
+.table td {
+  text-align: right;
+  font-size: 13px;
+  padding: 1px;
 }
 
 .table tr.selected {
-  background-color: #9ad;
+  color: #fff;
+  background-color: #45d;
 }
 
-.table span {
-  min-width: 2em;
+.table input, .table select, .table button {
+  background-color: #eee;
+  box-sizing: border-box;
+  border-width: 0;
+  border: none;
+  font-size: 13px;
   width: 100%;
-  display: inline-block;
-  resize: horizontal;
 }
 
 .table input {
-  box-sizing: border-box;
-  width: 100%;
+  text-align: right;
+}
+
+.table button {
+  font-weight: bold;
+  background-color: inherit;
+  color: inherit;
+}
+
+.table button:hover {
+  color: #000;
+  background-color: #bbb;
+}
+
+.table button:active {
+  background-color: #999;
 }

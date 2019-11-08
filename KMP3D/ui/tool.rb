@@ -57,7 +57,7 @@ module KMP3D
 
     def settings_button
       return "" unless type.show_group?
-      tag(:button, {:onclick => callback("addGroup")}) \
+      tag(:button, :onclick => callback("addGroup")) \
         { "Add #{type.settings_name}" }
     end
 
@@ -70,8 +70,8 @@ module KMP3D
     def generate_body
       tag(:body, \
         {:onload => "document.getElementById('table').scrollTop=#{@scroll}"}) do
-        tag(:div, {:id => "table", :onscroll => on_scroll,
-          :class => "table"}) { type.to_html } + \
+        tag(:div, :id => "table", :onscroll => on_scroll, :class => "table") \
+        { type.to_html } + \
         tag(:div, {:class => "types"}) { types + type_groups + settings_button }
       end
     end

@@ -13,7 +13,7 @@ module KMP3D
   class ENPT < Point
     def initialize
       @name = "Enemy Routes"
-      @external_settings = [Settings.new(:bytes, "Next Group(s)", "0")]
+      @external_settings = [Settings.new(:text, :bytes, "Next Group(s)", "0")]
       @settings = [
         Settings.new(:text, :float, "Size", "25.0"),
         Settings.new(:dropdown,
@@ -29,7 +29,7 @@ module KMP3D
   class ITPT < Point
     def initialize
       @name = "Item Routes"
-      @external_settings = [Settings.new(:bytes, "Next Group(s)", "0")]
+      @external_settings = [Settings.new(:text, :bytes, "Next Group(s)", "0")]
       @settings = [
         Settings.new(:text, :float, "Size", "25.0"),
         Settings.new(:dropdown, ["Abyss", "Ground", "Verbatim", "Mushroom"],
@@ -44,7 +44,7 @@ module KMP3D
   class CKPT < Checkpoint
     def initialize
       @name = "Checkpoints"
-      @external_settings = [Settings.new(:bytes, "Next Group(s)", "0")]
+      @external_settings = [Settings.new(:text, :bytes, "Next Group(s)", "0")]
       @settings = [
         Settings.new(:text, :byte, "Respawn ID", "0"),
         Settings.new(:text, :byte, "Type", "0xFF")

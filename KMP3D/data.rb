@@ -26,6 +26,14 @@ module KMP3D
       @types
     end
 
+    def type_by_name(name)
+      @types.select { |type| type.type_name == name }.first
+    end
+
+    def hybrid_types
+      @hybrid_types
+    end
+
     def css
       css = Sketchup.read_default("KMP3D", "CSS", "default")
       css = "default" unless File.exist?("#{DIR}/css/#{css}.css")
@@ -45,7 +53,11 @@ module KMP3D
       selection.add_observer(observer)
       @types = [
         KTPT.new, ENPT.new, ITPT.new, CKPT.new, GOBJ.new,
-        POTI.new, JGPT.new, CNPT.new, MSPT.new, STGI.new
+        POTI.new, JGPT.new, CNPT.new, MSPT.new, STGI.new, Hybrid.new
+      ]
+      @hybrid_types = [
+        KTPT.new, ENPT.new, ITPT.new,
+        POTI.new, JGPT.new, CNPT.new, MSPT.new
       ]
     end
   end

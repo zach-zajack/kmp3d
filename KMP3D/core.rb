@@ -11,6 +11,7 @@ module KMP3D
   require "#{DIR}/types/checkpoint"
   require "#{DIR}/types/stage_info"
   require "#{DIR}/types/type_classes"
+  require "#{DIR}/types/hybrid"
   require "#{DIR}/util/wkmpt_exporter"
   require "#{DIR}/entity"
   require "#{DIR}/data"

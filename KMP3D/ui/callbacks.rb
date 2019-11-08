@@ -9,10 +9,13 @@ module KMP3D
       @dlg.add_action_callback("deleteRow") { |_, id| delete_row(id) }
       @dlg.add_action_callback("selectRow") { |_, id| select_point(id) }
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
+      @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
+      @dlg.add_action_callback("setHybridType") { |_, id| set_hybrid_type(id) }
+      @dlg.add_action_callback("setHybridGroup") { set_hybrid_group }
     end
 
     def set_group
-      p @type.group = @dlg.get_element_value("currentGroup").to_i
+      @type.group = @dlg.get_element_value("currentGroup").to_i
     end
 
     def add_group
@@ -69,6 +72,18 @@ module KMP3D
       ent.kmp3d_settings_insert(@type.type_name, row.to_i, value)
     end
 
+    def set_hybrid_type(id)
+      # includes nil
+      @type.hybrid_types[id] = @dlg.get_element_value("hybrid#{id}") != "true"
+    end
+
+    def set_hybrid_group
+      value = @dlg.get_element_value("hybridGroup")
+      valid?(:byte, value)
+      return unless valid?(:byte, value)
+      @type.group = value
+    end
+
     private
 
     def valid_int_within(value, min, max)
@@ -77,7 +92,7 @@ module KMP3D
     end
 
     def valid?(type, value)
-      case @type
+      case type
       when :byte then valid_int_within(value, 0, 255)
       when :bytes then value.split(",").all? { valid_int_within(value, 0, 255) }
       when :float then /^[-]?\d*\.?\d+$/.match(value)

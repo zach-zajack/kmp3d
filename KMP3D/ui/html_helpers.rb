@@ -35,6 +35,10 @@ module KMP3D
       tag(:label) { tag(:input, attributes) + label }
     end
 
+    def br
+      "<br/>"
+    end
+
     def callback(name = "", args = "")
       "window.location='skp:#{name}@#{args}';" \
       "window.location='skp:refresh';"

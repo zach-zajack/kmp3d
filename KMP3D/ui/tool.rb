@@ -38,7 +38,7 @@ module KMP3D
       return "" unless @type.show_group?
       len = @type.groups
       size = [len + 1, 10].min
-      sidenav("currentGroup", @type.group, callback("setGroup"), 
+      sidenav("currentGroup", @type.group, callback("setGroup"),
         (0..len).map { |i| i == len ? \
         "#{@type.settings_name} Settings" : "#{@type.settings_names(i)}" }
       )

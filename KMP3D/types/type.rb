@@ -58,10 +58,6 @@ module KMP3D
       @group == groups
     end
 
-    def use_points?
-      true
-    end
-
     def enable_combine?
       true
     end

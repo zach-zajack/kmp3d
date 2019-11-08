@@ -11,6 +11,8 @@ module KMP3D
   require "#{DIR}/types/checkpoint"
   require "#{DIR}/types/stage_info"
   require "#{DIR}/types/type_classes"
+  require "#{DIR}/util/binary_parser"
+  require "#{DIR}/util/kmp_importer"
   require "#{DIR}/util/wkmpt_exporter"
   require "#{DIR}/entity"
   require "#{DIR}/data"
@@ -20,6 +22,7 @@ module KMP3D
   tool_cmd.small_icon = tool_cmd.large_icon = "#{DIR}/images/tool.png"
 
   exporter_cmd = UI::Command.new("Export WKMPT...") { WKMPTExporter.export }
+  importer_cmd = UI::Command.new("Import KMP...") { KMPImporter.import }
 
   Sketchup.add_observer(tool)
   Data.reload(tool)
@@ -27,6 +30,7 @@ module KMP3D
   menu = UI.menu.add_submenu("KMP3D")
   menu.add_item(tool_cmd)
   menu.add_item(exporter_cmd)
+  menu.add_item(importer_cmd)
 
   toolbar = UI::Toolbar.new("KMP3D")
   toolbar.add_item(tool_cmd)

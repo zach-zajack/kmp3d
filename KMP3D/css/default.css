@@ -102,6 +102,8 @@ option:checked {
   font-weight: bold;
   background-color: inherit;
   color: inherit;
+  width: 20px;
+  border-radius: 20px;
 }
 
 .table button:hover {

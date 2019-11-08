@@ -40,7 +40,7 @@ module KMP3D
         table_id += 1
         tag(:td) { table_input("#{id},#{table_id}", col, setting) }
       end
-      table << tag(:td) do
+      table << tag(:td, :style => "width:20px") do
         tag(:button, :onclick => callback("deleteRow", id)) { "&#x2715;" }
       end
     end
@@ -49,7 +49,7 @@ module KMP3D
       table = row.zip(settings).map do |col, setting|
         tag(:th) { tag(:span) { setting.prompt } }
       end
-      table << tag(:th) { "" }
+      table << tag(:th, :style => "width:20px") { "" }
     end
 
     def row_attribs(id, selected)

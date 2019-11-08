@@ -24,6 +24,10 @@ class Sketchup::Entity
   def model_path
     nil
   end
+
+  def enable_combine?
+    false
+  end
 end
 
 class Sketchup::ComponentInstance
@@ -80,8 +84,16 @@ class Sketchup::ComponentInstance
   def model_path
     case name
     when /CKPT/ then "checkpoint"
-    when /KTPT/, /JGPT/, /MSPT/ then "vector"
+    when /KTPT/, /JGPT/, /CNPT/, /MSPT/ then "vector"
     when /ENPT/, /ITPT/, /POTI/ then "point"
+    end
+  end
+
+  def enable_combine?
+    return false unless kmp3d_object?
+    case name
+    when /CKPT/, /GOBJ/ then false
+    else true
     end
   end
 end

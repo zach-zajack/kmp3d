@@ -42,6 +42,7 @@ module KMP3D
       return if !@ip.valid? || @type.on_external_settings?
       if combine_settings?(ent)
         ent.name += @type.component_settings unless ent.type?(@type.type_name)
+        ent.definition = Data.load_def(ent.model_path)
         Data.model.commit_operation
         update_comp
       elsif @type.advance_steps(@ip.position) == 0
@@ -90,7 +91,7 @@ module KMP3D
     private
 
     def combine_settings?(ent)
-      ent && ent.kmp3d_object? && @type.enable_combine? && !ent.type?("CKPT")
+      ent && ent.enable_combine? && @type.enable_combine?
     end
 
     def get_ent(x, y, view)

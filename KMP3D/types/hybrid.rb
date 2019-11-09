@@ -47,7 +47,7 @@ module KMP3D
 
     def component_settings_from(type_name)
       type = Data.type_by_name(type_name)
-      (@group.to_i - type.groups).times { type.add_group }
+      (@group.to_i - type.groups + 1).times { type.add_group }
       "#{type_name}(#{@group},#{type.inputs[-1][1..-1] * ','}) "
     end
 

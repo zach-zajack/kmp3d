@@ -27,6 +27,7 @@ module KMP3D
     end
 
     def add_group
+      return unless @external_settings
       @table << @external_settings.map { |s| s.default }
     end
 
@@ -39,7 +40,6 @@ module KMP3D
       inputs = [[false] + @settings.map { |s| s.default }]
       Data.kmp3d_entities(type_name).each do |ent|
         settings = ent.kmp3d_settings(type_name)
-        add_group if settings[0].to_i >= groups
         next unless settings[0] == @group.to_s # spot 1 is for the group number
         inputs << [Data.selection.include?(ent)] + settings[1..-1]
       end

@@ -4,15 +4,14 @@ module KMP3D
       @dlg.add_action_callback("puts") { |_, str| puts str }
       @dlg.add_action_callback("scroll") { |_, px| @scroll = px }
       @dlg.add_action_callback("refresh") { refresh_html }
-      @dlg.add_action_callback("setGroup") { set_group }
       @dlg.add_action_callback("addGroup") { add_group }
       @dlg.add_action_callback("deleteRow") { |_, id| delete_row(id) }
       @dlg.add_action_callback("selectRow") { |_, id| select_point(id) }
+      @dlg.add_action_callback("switchType") { |_, id| switch_type(id) }
+      @dlg.add_action_callback("switchGroup") { |_, id| switch_group(id) }
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
-    end
-
-    def set_group
-      p @type.group = @dlg.get_element_value("currentGroup").to_i
+      @dlg.add_action_callback("setHybridType") { |_, id| set_hybrid_type(id) }
+      @dlg.add_action_callback("setHybridGroup") { set_hybrid_group }
     end
 
     def add_group
@@ -69,6 +68,26 @@ module KMP3D
       ent.kmp3d_settings_insert(@type.type_name, row.to_i, value)
     end
 
+    def set_hybrid_type(id)
+      # includes nil
+      @type.hybrid_types[id] = @dlg.get_element_value("hybrid#{id}") != "true"
+    end
+
+    def set_hybrid_group
+      value = @dlg.get_element_value("hybridGroup")
+      valid?(:byte, value)
+      return unless valid?(:byte, value)
+      @type.group = value
+    end
+
+    def switch_type(id)
+      @type_index = id.to_i
+    end
+
+    def switch_group(id)
+      @type.group = id.to_i
+    end
+
     private
 
     def valid_int_within(value, min, max)
@@ -77,9 +96,9 @@ module KMP3D
     end
 
     def valid?(type, value)
-      case @type
+      case type
       when :byte then valid_int_within(value, 0, 255)
-      when :bytes then value.split(",").all? { valid_int_within(value, 0, 255) }
+      when :bytes then value.split(",").all? { |v| valid_int_within(v, 0, 255) }
       when :float then /^[-]?\d*\.?\d+$/.match(value)
       when :int16 then valid_int_within(value, -32767, 32767)
       when :uint16 then valid_int_within(value, 0, 65535)

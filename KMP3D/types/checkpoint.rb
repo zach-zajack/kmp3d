@@ -54,7 +54,7 @@ module KMP3D
     end
 
     def change_direction?(pos)
-      (@slope * (pos.x - @prev.x) + @prev.y > pos.y) ^ (@prev_angle < 0)
+      (@slope * (pos.x - @prev.x) + @prev.y > pos.y) ^ (@prev_angle <= 0)
     end
   end
 end

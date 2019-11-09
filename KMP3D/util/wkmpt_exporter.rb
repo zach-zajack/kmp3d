@@ -60,11 +60,13 @@ module KMP3D
     def export_group(type)
       id = 0
       groups = []
+      type.groups.times do |index|
+        next_groups = type.table[index + 1][0].delete(" ").split(",").join(" G")
+        groups[index] ||= ["$GROUP G#{index}, next: G#{next_groups}"]
+      end
       Data.kmp3d_entities(type.type_name).each do |ent|
         settings = ent.kmp3d_settings(type.type_name)
         index = settings.shift.to_i
-        next_groups = type.table[index + 1][0].delete(" ").split(",").join(" G")
-        groups[index] ||= ["$GROUP G#{index}, next: G#{next_groups}"]
         groups[index] << settings_for(type.type_name, id, ent, settings)
         id += 1
       end
@@ -74,13 +76,14 @@ module KMP3D
     def export_route(type)
       id = 0
       routes = []
+      type.groups.times do |index|
+        group_settings = \
+          (type.table[index + 1] * ' ').gsub("false", "0").gsub("true", "1")
+        routes[index] ||= ["$ROUTE r#{index}, settings: #{group_settings}"]
+      end
       Data.kmp3d_entities(type.type_name).each do |ent|
         settings = ent.kmp3d_settings(type.type_name)
         index = settings.shift.to_i
-        group_settings = \
-          (type.table[index + 1] * ' ').gsub("false", "0").gsub("true", "1")
-        routes[index] ||= \
-          ["$ROUTE r#{index}, settings: #{group_settings}"]
         routes[index] << settings_for(type.type_name, id, ent, settings)
         id += 1
       end
@@ -111,7 +114,7 @@ module KMP3D
     end
 
     def export_stage_info
-      settings = Data.types.last.table[-1]
+      settings = Data.types[-2].table[-1]
       info = settings[0..2] * " "
       speed = [settings[3].to_f].pack("g").unpack("CC") * " "
       " s0 #{info} 0 0xFFFFFF 0x4B 0 #{speed}"
@@ -120,7 +123,8 @@ module KMP3D
     def settings_for(type_name, id, ent, settings)
       case type_name
       when "CKPT" then checkpoint_settings(id, ent, settings)
-      when "KTPT", "JGPT", "MSPT" then vector_settings(id, ent, settings)
+      when "KTPT" then vector_settings(id, ent, settings)
+      when "CNPT", "JGPT", "MSPT" then vector_id_settings(id, ent, settings)
       when "ENPT", "ITPT", "POTI" then point_settings(id, ent, settings)
       end
     end
@@ -133,6 +137,11 @@ module KMP3D
     def vector_settings(id, ent, settings)
       " #{id} #{convert_4x4_matrix(ent.transformation).first(6) * ' '}" \
       " #{settings * ' '}"
+    end
+
+    def vector_id_settings(id, ent, settings)
+      " #{id} #{convert_4x4_matrix(ent.transformation).first(6) * ' '}" \
+      " #{id} #{settings * ' '}"
     end
 
     def checkpoint_settings(id, ent, settings)

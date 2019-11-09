@@ -11,7 +11,7 @@ module KMP3D
     end
 
     def show_group?
-      external_settings && use_points?
+      external_settings
     end
 
     protected

@@ -13,12 +13,12 @@ body {
 }
 
 select {
-  background-color: inherit;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
   border: none;
+  outline: none;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: inherit;
 }
 
 option:checked {
@@ -26,91 +26,104 @@ option:checked {
 }
 
 .types {
-  border-top: 1px solid #888;
-  border-right: 1px solid #888;
-  background-color: #ddd;
-  position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   width: 120px;
+  position: absolute;
+  border-right: 1px solid #888;
+  background-color: #ddd;
 }
 
 .types * {
   display: block;
 }
 
-.sidenav {
+.types button {
   width: 100%;
+  padding: 1px;
+  border: none;
+  outline: none;
+  margin-top: -20px;
+  background-color: #ccc;
+  border-top: 1px solid #888;
   border-bottom: 1px solid #888;
 }
 
-.sidenav button {
-  background-color: inherit;
-  text-align: left;
-  outline: none;
-  border: none;
-  padding: 1px;
+.sidenav {
   width: 100%;
+  padding-bottom: 20px;
+  border-top: 1px solid #888;
 }
 
-.sidenav button.selected, .table tr.selected {
+.sidenav button {
+  margin: 0;
+  border: none;
+  text-align: left;
+  background-color: inherit;
+}
+
+.types button:hover, table button:hover {
+  color: #000;
+  background-color: #bbb;
+}
+
+.types button:active, table button:active {
+  background-color: #999;
+}
+
+.sidenav button:hover {
+  background-color: #ccc;
+}
+
+button.selected, button.selected:hover, tr.selected {
   color: #fff;
   background-color: #45d;
 }
 
 .table {
-  padding-left: 120px;
   height: 100%;
   overflow: auto;
+  padding-left: 120px;
 }
 
-.table table {
-  border-collapse: collapse;
-  background-color: #ddd;
+table {
   width: 100%;
+  background-color: #ddd;
+  border-collapse: collapse;
 }
 
-.table th, .table td {
+th, td {
   border: 1px solid #888;
 }
 
-.table th {
+th {
   font-size: 14px;
   background-color: #ccc;
 }
 
-.table td {
+td {
   text-align: right;
   padding: 1px;
 }
 
-.table input, .table select, .table button {
-  background-color: #eee;
-  box-sizing: border-box;
-  border-width: 0;
-  outline: none;
-  border: none;
+table input, table select, table button {
   width: 100%;
+  border: none;
+  outline: none;
+  border-width: 0;
+  box-sizing: border-box;
+  background-color: #eee;
 }
 
-.table input {
+table input {
   text-align: right;
 }
 
-.table button {
-  font-weight: bold;
-  background-color: inherit;
-  color: inherit;
+table button {
   width: 20px;
+  color: inherit;
+  font-weight: bold;
   border-radius: 20px;
-}
-
-.table button:hover {
-  color: #000;
-  background-color: #bbb;
-}
-
-.table button:active {
-  background-color: #999;
+  background-color: inherit;
 }

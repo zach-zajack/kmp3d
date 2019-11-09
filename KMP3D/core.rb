@@ -13,6 +13,7 @@ module KMP3D
   require "#{DIR}/types/type_classes"
   require "#{DIR}/util/binary_parser"
   require "#{DIR}/util/kmp_importer"
+  require "#{DIR}/types/hybrid"
   require "#{DIR}/util/wkmpt_exporter"
   require "#{DIR}/entity"
   require "#{DIR}/data"

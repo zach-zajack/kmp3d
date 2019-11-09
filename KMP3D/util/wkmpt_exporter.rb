@@ -123,7 +123,8 @@ module KMP3D
     def settings_for(type_name, id, ent, settings)
       case type_name
       when "CKPT" then checkpoint_settings(id, ent, settings)
-      when "KTPT", "JGPT", "MSPT" then vector_settings(id, ent, settings)
+      when "KTPT" then vector_settings(id, ent, settings)
+      when "CNPT", "JGPT", "MSPT" then vector_id_settings(id, ent, settings)
       when "ENPT", "ITPT", "POTI" then point_settings(id, ent, settings)
       end
     end
@@ -136,6 +137,11 @@ module KMP3D
     def vector_settings(id, ent, settings)
       " #{id} #{convert_4x4_matrix(ent.transformation).first(6) * ' '}" \
       " #{settings * ' '}"
+    end
+
+    def vector_id_settings(id, ent, settings)
+      " #{id} #{convert_4x4_matrix(ent.transformation).first(6) * ' '}" \
+      " #{id} #{settings * ' '}"
     end
 
     def checkpoint_settings(id, ent, settings)

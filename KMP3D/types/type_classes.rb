@@ -3,7 +3,7 @@ module KMP3D
     def initialize
       @name = "Start Positions"
       @settings = [
-        Settings.new(:text, :int16, "Player Index", "-1"),
+        Settings.new(:text, :int16, "Player Index", "0xFFFF"),
         Settings.new(:text, :uint16, "Padding", "0")
       ]
       super
@@ -59,7 +59,7 @@ module KMP3D
       @name = "Objects"
       @external_settings = [Settings.new(:text, :uint16, "Object ID", "101")]
       @settings = [
-        Settings.new(:text, :uint16, "Route", "-1"),
+        Settings.new(:text, :uint16, "Route", "0xFFFF"),
         Settings.new(:text, :uint16, "S1", "0"),
         Settings.new(:text, :uint16, "S2", "0"),
         Settings.new(:text, :uint16, "S3", "0"),
@@ -86,8 +86,8 @@ module KMP3D
         Settings.new(:checkbox, :bool, "Cyclic?", false)
       ]
       @settings = [
-        Settings.new(:text, :uint16, "Setting 1", "60"),
-        Settings.new(:text, :uint16, "Setting 2", "0")
+        Settings.new(:text, :uint16, "Time (1/60s)", "60"),
+        Settings.new(:text, :uint16, "Unknown", "0")
       ]
       super
     end
@@ -100,10 +100,7 @@ module KMP3D
   class JGPT < Vector
     def initialize
       @name = "Respawns"
-      @settings = [
-        Settings.new(:text, :uint16, "Index", "0"),
-        Settings.new(:text, :int16, "Range", "0")
-      ]
+      @settings = [Settings.new(:text, :int16, "Range", "0")]
       super
     end
   end
@@ -120,7 +117,9 @@ module KMP3D
   class MSPT < Vector
     def initialize
       @name = "End Positions"
-      @settings = [Settings.new(:text, :float, "Size", "25.0")]
+      @settings = [
+        Settings.new(:text, :uint16, "Unknown", "0")
+      ]
       super
     end
   end

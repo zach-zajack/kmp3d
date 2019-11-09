@@ -4,18 +4,14 @@ module KMP3D
       @dlg.add_action_callback("puts") { |_, str| puts str }
       @dlg.add_action_callback("scroll") { |_, px| @scroll = px }
       @dlg.add_action_callback("refresh") { refresh_html }
-      @dlg.add_action_callback("setGroup") { set_group }
       @dlg.add_action_callback("addGroup") { add_group }
       @dlg.add_action_callback("deleteRow") { |_, id| delete_row(id) }
       @dlg.add_action_callback("selectRow") { |_, id| select_point(id) }
-      @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
+      @dlg.add_action_callback("switchType") { |_, id| switch_type(id) }
+      @dlg.add_action_callback("switchGroup") { |_, id| switch_group(id) }
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
       @dlg.add_action_callback("setHybridType") { |_, id| set_hybrid_type(id) }
       @dlg.add_action_callback("setHybridGroup") { set_hybrid_group }
-    end
-
-    def set_group
-      @type.group = @dlg.get_element_value("currentGroup").to_i
     end
 
     def add_group
@@ -82,6 +78,14 @@ module KMP3D
       valid?(:byte, value)
       return unless valid?(:byte, value)
       @type.group = value
+    end
+
+    def switch_type(id)
+      @type_index = id.to_i
+    end
+
+    def switch_group(id)
+      @type.group = id.to_i
     end
 
     private

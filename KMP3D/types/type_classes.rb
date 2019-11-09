@@ -117,9 +117,7 @@ module KMP3D
   class MSPT < Vector
     def initialize
       @name = "End Positions"
-      @settings = [
-        Settings.new(:text, :uint16, "Unknown", "0")
-      ]
+      @settings = [Settings.new(:text, :uint16, "Unknown", "0")]
       super
     end
   end

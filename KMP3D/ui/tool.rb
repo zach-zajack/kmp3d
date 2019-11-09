@@ -9,39 +9,31 @@ module KMP3D
       @ip = Sketchup::InputPoint.new
       @css = File.open("#{DIR}/css/default.css").read
       @scroll = 0
+      @type_index = 0
       add_callbacks
     end
 
     def refresh_html
-      @type = Data.types[type_index]
+      @type = Data.types[@type_index]
       @dlg.set_html(generate_head + generate_body)
     end
 
     private
-
-    def type_index
-      index = @dlg.get_element_value("currentType")
-      index = @dlg.get_element_value("currentTypeOld") if index == ""
-      return index.to_i
-    end
 
     def group_index
       @dlg.get_element_value("currentGroup").to_i
     end
 
     def types
-      sidenav("currentType", type_index, callback,
-        Data.types.map { |type| type.name })
+      sidenav(@type_index, "switchType", Data.types.map { |type| type.name })
     end
 
     def type_groups
       return "" unless @type.show_group?
       len = @type.groups
       size = [len + 1, 10].min
-      sidenav("currentGroup", @type.group, callback("setGroup"),
-        (0..len).map { |i| i == len ? \
-        "#{@type.settings_name} Settings" : "#{@type.settings_names(i)}" }
-      )
+      sidenav(@type.group, "switchGroup", (0..len).map { |i| i == len ? \
+        "#{@type.settings_name} Settings" : "#{@type.settings_names(i)}" })
     end
 
     def settings_button

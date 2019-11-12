@@ -41,7 +41,7 @@ module KMP3D
     end
 
     def css_themes
-      Dir["#{DIR}/css/*.css"].map { |f| f[f.rindex(/[\\\/]/)+1..-5] }
+      Dir["#{DIR}/css/*.css"].map { |f| f[f.rindex(/[\\\/]/)+1...-4] }
     end
 
     def load_def(name)
@@ -59,6 +59,9 @@ module KMP3D
         KTPT.new, ENPT.new, ITPT.new,
         POTI.new, JGPT.new, CNPT.new, MSPT.new
       ]
+      Dir["#{DIR}/models/*.skp"].each do |f|
+        load_def(f[f.rindex(/[\\\/]/)+1...-4])
+      end
     end
   end
 end

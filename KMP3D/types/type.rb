@@ -70,6 +70,10 @@ module KMP3D
       "#{settings_name} #{i}"
     end
 
+    def add_comp(comp)
+      comp.name = "KMP3D " + component_settings
+    end
+
     protected
 
     def entities_before_group

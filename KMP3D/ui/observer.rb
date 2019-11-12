@@ -10,7 +10,7 @@ module KMP3D
     def update_comp
       Data.model.start_operation("Add KMP3D Point")
       @type.step = 0
-      @comp = Data.model.active_entities.add_instance(@type.model, IDENTITY)
+      @comp = Data.entities.add_instance(@type.model, IDENTITY)
       @comp.visible = false
       @prev_comp = @comp
       @undone = true
@@ -25,28 +25,18 @@ module KMP3D
       @comp.visible = false
       return if !@dlg.visible? || @type.on_external_settings?
       @ip.pick(view, x, y)
-      ent = get_ent(x, y, view)
-      if combine_settings?(ent)
-        view.tooltip = "Add settings to point"
-      else
-        @comp = @type.transform(@prev_comp.copy, @ip.position)
-        @comp.definition = @type.model
-        view.tooltip = @ip.tooltip if @ip.valid?
-      end
+      @comp = @type.transform(@prev_comp.copy, @ip.position)
+      @comp.layer = @type.name
+      @comp.definition = @type.model
+      view.tooltip = @ip.tooltip if @ip.valid?
       Sketchup.status_text = @type.helper_text
       view.invalidate
     end
 
     def onLButtonDown(flags, x, y, view)
-      ent = get_ent(x, y, view)
       return if !@ip.valid? || @type.on_external_settings?
-      if combine_settings?(ent)
-        ent.name += @type.component_settings unless ent.type?(@type.type_name)
-        ent.definition = Data.load_def(ent.model_path)
-        Data.model.commit_operation
-        update_comp
-      elsif @type.advance_steps(@ip.position) == 0
-        @comp.name = "KMP3D " + @type.component_settings
+      if @type.advance_steps(@ip.position) == 0
+        @type.add_comp(@comp)
         Data.model.commit_operation
         update_comp
       end

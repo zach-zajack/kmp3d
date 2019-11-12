@@ -81,6 +81,7 @@ module KMP3D
     end
 
     def switch_type(id)
+      Data.layers[@type.name].visible = false
       @type_index = id.to_i
     end
 

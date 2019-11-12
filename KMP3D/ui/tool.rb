@@ -16,6 +16,7 @@ module KMP3D
     def refresh_html
       @type = Data.types[@type_index]
       @dlg.set_html(generate_head + generate_body)
+      Data.layers[@type.name].visible = true
     end
 
     private

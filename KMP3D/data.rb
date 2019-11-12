@@ -14,6 +14,10 @@ module KMP3D
       model.selection
     end
 
+    def layers
+      model.layers
+    end
+
     def kmp3d_entities(type_name)
       entities.select { |ent| ent.type?(type_name) }
     end
@@ -41,7 +45,7 @@ module KMP3D
     end
 
     def css_themes
-      Dir["#{DIR}/css/*.css"].map { |f| f[f.rindex(/[\\\/]/)+1..-5] }
+      Dir["#{DIR}/css/*.css"].map { |f| f[f.rindex(/[\\\/]/)+1...-4] }
     end
 
     def load_def(name)
@@ -59,6 +63,10 @@ module KMP3D
         KTPT.new, ENPT.new, ITPT.new,
         POTI.new, JGPT.new, CNPT.new, MSPT.new
       ]
+      Dir["#{DIR}/models/*.skp"].each do |f|
+        load_def(f[f.rindex(/[\\\/]/)+1...-4])
+      end
+      @types.each { |t| layers.add(t.name).visible = false }
     end
   end
 end

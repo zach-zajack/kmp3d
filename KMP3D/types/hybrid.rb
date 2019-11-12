@@ -26,12 +26,16 @@ module KMP3D
       any_vectors? ? @vector.helper_text : @point.helper_text
     end
 
-    def component_settings
-      selected_types.map { |type_name| component_settings_from(type_name) } * ""
+    def on_external_settings?
+      selected_type_names.length == 0
     end
 
-    def on_external_settings?
-      selected_types.length == 0
+    def add_comp(template)
+      selected_types.each do |type|
+        comp = Data.entities.add_instance(type.model, template.transformation)
+        type.add_comp(comp)
+        comp.layer = type.name
+      end
     end
 
     def to_html
@@ -45,18 +49,16 @@ module KMP3D
 
     private
 
-    def component_settings_from(type_name)
-      type = Data.type_by_name(type_name)
-      (@group.to_i - type.groups + 1).times { type.add_group }
-      "#{type_name}(#{@group},#{type.inputs[-1][1..-1] * ','}) "
-    end
-
-    def any_vectors?
-      (selected_types & ["KTPT", "JGPT", "CNPT", "MSPT"]).length > 0
+    def selected_type_names
+      @hybrid_types.map { |id, selected| id if selected }.compact
     end
 
     def selected_types
-      @hybrid_types.map { |id, selected| id if selected }.compact
+      selected_type_names.map { |type_name| Data.type_by_name(type_name) }
+    end
+
+    def any_vectors?
+      (selected_type_names & ["KTPT", "JGPT", "CNPT", "MSPT"]).length > 0
     end
 
     def checkboxes

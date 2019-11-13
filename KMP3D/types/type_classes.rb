@@ -43,7 +43,7 @@ module KMP3D
         Settings.new(
           :dropdown, :uint16, "Setting 2", 0,
           ["None", "Bill doesn't stop", "Low-priority", "Both"]
-        ),
+        )
       ]
       super
     end

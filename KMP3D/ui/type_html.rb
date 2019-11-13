@@ -17,8 +17,6 @@ module KMP3D
     protected
 
     def table_rows(inputs, settings)
-      settings = settings.select { |setting| setting.type != :hidden }
-      settings.compact!
       offset = (on_external_settings? ? 0 : entities_before_group)
       id = offset - 1
       inputs.map do |row|
@@ -39,6 +37,7 @@ module KMP3D
     def table_columns(id, row, settings)
       table_id = -1
       table = row.zip(settings).map do |col, setting|
+        next if setting.type == :hidden
         table_id += 1
         tag(:td) { table_input("#{id},#{table_id}", col, setting) }
       end
@@ -49,6 +48,7 @@ module KMP3D
 
     def prompt_columns(row, settings)
       table = row.zip(settings).map do |col, setting|
+        next if setting.type == :hidden
         tag(:th) { tag(:span) { setting.prompt } }
       end
       table << tag(:th, :style => "width:20px") { "" }

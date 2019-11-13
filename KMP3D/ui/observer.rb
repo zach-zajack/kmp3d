@@ -13,7 +13,7 @@ module KMP3D
       @comp = Data.entities.add_instance(@type.model, IDENTITY)
       @comp.visible = false
       @prev_comp = @comp
-      @undone = true
+      @undone = false
     end
 
     def deactivate(view)
@@ -66,8 +66,8 @@ module KMP3D
     end
 
     def onTransactionUndo(_) # replace with onCancel at some point
-      return unless @id == Data.model.tools.active_tool_id && @undone
-      @undone = false # prevent recursion
+      return if @id != Data.model.tools.active_tool_id || @undone
+      @undone = true # prevent recursion
       Sketchup.undo # call a second undo since new operation has already started
       update_comp
       refresh_html

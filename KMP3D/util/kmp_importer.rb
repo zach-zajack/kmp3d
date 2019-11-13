@@ -65,10 +65,11 @@ module KMP3D
       length = @parser.read_byte
       @parser.head += 6 # prev groups
       next_groups = Array.new(6) { @parser.read_byte }
+      next_groups.delete(255)
       @parser.read_uint16 # padding
       type = Data.type_by_name(type_name)
-      type.table[index] = [next_groups * ", "]
-      return Group.new((first_index...length))
+      type.table[index+1] = [next_groups * ", "]
+      return Group.new((first_index...first_index+length))
     end
 
     def get_group_index(groups, index)

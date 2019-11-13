@@ -14,6 +14,7 @@ module KMP3D
       section_offsets.each { |section_offset| read_group(section_offset) }
       section_offsets.each { |section_offset| read_section(section_offset) }
       Data.model.commit_operation
+      UI.beep
     end
 
     def read_header

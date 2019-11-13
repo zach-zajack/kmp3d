@@ -32,8 +32,14 @@ module KMP3D
       "window.location='skp:refresh';"
     end
 
-    def on_scroll
-      "window.location='skp:scroll@'+document.getElementById('table').scrollTop"
+    def on_scroll(id)
+      "window.location='skp:#{id}Scroll@'" \
+      "+document.getElementById('#{id}').scrollTop;"
+    end
+
+    def scroll_onload
+      "document.getElementById('types').scrollTop=#{@scroll_types};" \
+      "document.getElementById('table').scrollTop=#{@scroll_table};"
     end
 
     private

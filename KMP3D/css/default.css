@@ -33,6 +33,7 @@ option:checked {
   position: absolute;
   border-right: 1px solid #888;
   background-color: #ddd;
+  overflow: auto;
 }
 
 .types * {

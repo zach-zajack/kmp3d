@@ -2,7 +2,6 @@ module KMP3D
   module Callbacks
     def add_callbacks
       @dlg.add_action_callback("puts") { |_, str| puts str }
-      @dlg.add_action_callback("scroll") { |_, px| @scroll = px }
       @dlg.add_action_callback("refresh") { refresh_html }
       @dlg.add_action_callback("addGroup") { add_group }
       @dlg.add_action_callback("deleteRow") { |_, id| delete_row(id) }
@@ -12,6 +11,8 @@ module KMP3D
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
       @dlg.add_action_callback("setHybridType") { |_, id| set_hybrid_type(id) }
       @dlg.add_action_callback("setHybridGroup") { set_hybrid_group }
+      @dlg.add_action_callback("typesScroll") { |_, px| @scroll_types = px }
+      @dlg.add_action_callback("tableScroll") { |_, px| @scroll_table = px }
     end
 
     def add_group

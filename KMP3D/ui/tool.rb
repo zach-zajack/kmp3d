@@ -8,7 +8,8 @@ module KMP3D
       @dlg = UI::WebDialog.new("KMP3D", false, "KMP3D")
       @ip = Sketchup::InputPoint.new
       @css = File.open("#{DIR}/css/default.css").read
-      @scroll = 0
+      @scroll_types = 0
+      @scroll_table = 0
       @type_index = 0
       add_callbacks
     end
@@ -50,11 +51,11 @@ module KMP3D
     end
 
     def generate_body
-      tag(:body, \
-        {:onload => "document.getElementById('table').scrollTop=#{@scroll}"}) do
-        tag(:div, :id => "table", :onscroll => on_scroll, :class => "table") \
-        { @type.to_html } + \
-        tag(:div, {:class => "types"}) { types + type_groups + settings_button }
+      tag(:body, {:onload => scroll_onload}) do
+        tag(:div, :id => "types", :onscroll => on_scroll("types"),
+          :class => "types") { types + type_groups + settings_button } + \
+        tag(:div, :id => "table", :onscroll => on_scroll("table"),
+          :class => "table") { @type.to_html }
       end
     end
   end

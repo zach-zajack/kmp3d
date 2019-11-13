@@ -15,6 +15,8 @@ body {
 select {
   border: none;
   outline: none;
+  margin-top: -2px;
+  padding-top: 2px;
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -30,6 +32,7 @@ option:checked {
   left: 0;
   bottom: 0;
   width: 120px;
+  height: 100%;
   position: absolute;
   border-right: 1px solid #888;
   background-color: #ddd;
@@ -100,6 +103,7 @@ th, td {
 
 th {
   font-size: 14px;
+  font-weight: normal;
   background-color: #ccc;
 }
 

@@ -99,11 +99,11 @@ module KMP3D
 
     def valid?(type, value)
       case type
-      when :byte then valid_int_within(value, 0, 255)
-      when :bytes then value.split(",").all? { |v| valid_int_within(v, 0, 255) }
+      when :byte then valid_int_within(value, 0, 0xFF)
+      when :bytes then value.split(",").all? { |v| valid_int_within(v,0,0xFF) }
       when :float then /^[-]?\d*\.?\d+$/.match(value)
-      when :int16 then valid_int_within(value, -32767, 32767)
-      when :uint16 then valid_int_within(value, 0, 65535)
+      when :int16 then valid_int_within(value, -0x7FFF, 0x7FFF)
+      when :uint16 then valid_int_within(value, 0, 0xFFFF)
       else true
       end
     end

@@ -79,13 +79,19 @@ module KMP3D
 
     def import_settings(type)
       type.settings.map do |setting|
+        hexify = setting.default.to_s[0, 2] == "0x"
         case setting.input
-        when :byte then @parser.read_byte
-        when :float then @parser.read_float
-        when :int16 then @parser.read_int16
-        when :uint16 then @parser.read_uint16
+        when :byte then format(@parser.read_byte, hexify)
+        when :float then format(@parser.read_float, hexify)
+        when :int16 then format(@parser.read_int16, hexify)
+        when :uint16 then format(@parser.read_uint16, hexify)
         end
       end
+    end
+
+    def format(num, hexify)
+      num += 0x10000 if num < 0
+      hexify && num != 0 ? "0x" + ("%x" % num).upcase : num
     end
 
     def import_vector(type)
@@ -108,6 +114,7 @@ module KMP3D
       position2 = @parser.read_vector2d
       respawn = @parser.read_byte
       checkpoint_type = @parser.read_byte
+      checkpoint_type = format(checkpoint_type, checkpoint_type == 0xFF)
       @parser.read_byte # prev ID
       @parser.read_byte # next ID
       type.import(position1, position2, group, [respawn, checkpoint_type])

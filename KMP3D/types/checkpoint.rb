@@ -39,11 +39,30 @@ module KMP3D
       end
     end
 
-    def enable_combine?
-      false
+    def import(pos1, pos2, group, settings)
+      @prev = pos1
+      avg = [(pos2.x + pos1.x)/2, (pos2.y + pos1.y)/2]
+      avg.z = closest_kmp3d_entity_height(avg)
+      comp = Data.entities.add_instance(model, avg)
+      comp.transform!(Geom::Transformation.scaling(avg, 1.0, scale(pos2), 1.0))
+      comp.transform!(Geom::Transformation.rotation(avg, [0,0,1], angle(pos2)))
+      comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
+      comp.layer = name
+    end
+
+    def set_kmp3d_points
+      @kmp3d_points = Data.entities.select { |ent| ent.kmp3d_object? }
+      @kmp3d_points.map! { |ent| ent.transformation.origin }
     end
 
     private
+
+    def closest_kmp3d_entity_height(pos)
+      sorted = @kmp3d_points.sort do |ent1, ent2|
+        pos.distance([ent1.x, ent1.y]) <=> pos.distance([ent2.x, ent2.y])
+      end
+      sorted.first.z
+    end
 
     def angle(pos)
       -Math.atan2(@prev.x - pos.x, @prev.y - pos.y)

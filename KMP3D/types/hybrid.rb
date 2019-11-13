@@ -58,7 +58,7 @@ module KMP3D
     end
 
     def any_vectors?
-      (selected_type_names & ["KTPT", "JGPT", "CNPT", "MSPT"]).length > 0
+      selected_types.select { |type| type.vector? }.length > 0
     end
 
     def checkboxes

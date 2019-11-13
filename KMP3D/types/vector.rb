@@ -4,6 +4,10 @@ module KMP3D
       Data.load_def("vector")
     end
 
+    def vector?
+      true
+    end
+
     def transform(comp, pos)
       case @step
       when 0 then comp.transform!(Geom::Transformation.translation(pos))
@@ -25,6 +29,15 @@ module KMP3D
       when 0 then "(Step 1/2) Click to place the point's position."
       when 1 then "(Step 2/2) Click to place the point's direction."
       end
+    end
+
+    def import(pos, rot, group, settings)
+      comp = Data.entities.add_instance(model, pos)
+      comp.transform!(Geom::Transformation.rotation(pos, [1, 0, 0], rot[0]))
+      comp.transform!(Geom::Transformation.rotation(pos, [0, 1, 0], rot[1]))
+      comp.transform!(Geom::Transformation.rotation(pos, [0, 0, 1], rot[2]))
+      comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
+      comp.layer = name
     end
 
     private

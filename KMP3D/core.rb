@@ -9,7 +9,6 @@ module KMP3D
   require "#{DIR}/types/vector"
   require "#{DIR}/types/object"
   require "#{DIR}/types/checkpoint"
-  require "#{DIR}/types/stage_info"
   require "#{DIR}/types/type_classes"
   require "#{DIR}/util/binary_parser"
   require "#{DIR}/util/kmp_importer"

@@ -44,5 +44,25 @@ module KMP3D
     def read_float
       next_bytes(4).unpack("F").first
     end
+
+    def read_vector3d
+      x = read_float.m
+      z = read_float.m
+      y = -read_float.m
+      [x, y, z]
+    end
+
+    def read_rotation
+      x = read_float.degrees
+      z = read_float.degrees
+      y = -read_float.degrees
+      [x, y, z]
+    end
+
+    def read_vector2d
+      x = read_float.m
+      y = -read_float.m
+      [x, y]
+    end
   end
 end

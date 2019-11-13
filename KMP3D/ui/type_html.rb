@@ -17,6 +17,8 @@ module KMP3D
     protected
 
     def table_rows(inputs, settings)
+      settings = settings.select { |setting| setting.type != :hidden }
+      settings.compact!
       offset = (on_external_settings? ? 0 : entities_before_group)
       id = offset - 1
       inputs.map do |row|
@@ -66,7 +68,7 @@ module KMP3D
       }
       case setting.type
       when :text then tag(:input, attributes.merge(:type => "text"))
-      when :dropdown then select(value.to_i, attributes, setting.input)
+      when :dropdown then select(value.to_i, attributes, setting.opts)
       when :checkbox then checkbox("", attributes, value == "true")
       end
     end

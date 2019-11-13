@@ -5,7 +5,7 @@ module KMP3D
     attr_reader :name, :external_settings, :settings
     attr_accessor :group, :table, :step
 
-    Settings = Struct.new(:type, :input, :prompt, :default)
+    Settings = Struct.new(:type, :input, :prompt, :default, :opts)
 
     def initialize
       @group = 0
@@ -19,6 +19,10 @@ module KMP3D
 
     def model
       Data.load_def("point")
+    end
+
+    def vector?
+      false
     end
 
     def save_settings
@@ -56,10 +60,6 @@ module KMP3D
 
     def on_external_settings?
       @group == groups
-    end
-
-    def enable_combine?
-      true
     end
 
     def settings_name

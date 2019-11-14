@@ -21,10 +21,6 @@ module KMP3D
       next_bytes(1).unpack("C").first
     end
 
-    def read_sbyte
-      next_bytes(1).unpack("c").first
-    end
-
     def read_uint16
       next_bytes(2).unpack("S").first
     end
@@ -35,10 +31,6 @@ module KMP3D
 
     def read_uint32
       next_bytes(4).unpack("L").first
-    end
-
-    def read_int32
-      next_bytes(4).unpack("l").first
     end
 
     def read_float

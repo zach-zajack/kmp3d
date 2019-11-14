@@ -21,7 +21,7 @@ module KMP3D
       # settings added due to next point using previous settings
       inputs = [[false] + @settings.map { |s| s.default }]
       Data.kmp3d_entities(type_name).each do |ent|
-        settings = ent.kmp3d_settings(type_name)
+        settings = ent.kmp3d_settings
         next unless settings[0] == @table[@group + 1][0].to_s
         inputs << [Data.selection.include?(ent)] + settings[1..-1]
       end

@@ -43,7 +43,7 @@ module KMP3D
       # settings added due to next point using previous settings
       inputs = [[false] + @settings.map { |s| s.default }]
       Data.kmp3d_entities(type_name).each do |ent|
-        settings = ent.kmp3d_settings(type_name)
+        settings = ent.kmp3d_settings
         next unless settings[0] == @group.to_s # spot 1 is for the group number
         inputs << [Data.selection.include?(ent)] + settings[1..-1]
       end
@@ -78,7 +78,7 @@ module KMP3D
 
     def entities_before_group
       ents_before_group = Data.kmp3d_entities(type_name).select do |ent|
-        ent.kmp3d_settings(type_name)[0].to_i < @group
+        ent.kmp3d_settings[0].to_i < @group
       end
       return ents_before_group.length
     end

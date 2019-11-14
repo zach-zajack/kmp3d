@@ -7,21 +7,14 @@ class Sketchup::Entity
     false
   end
 
-  def kmp3d_settings(type_name)
+  def kmp3d_settings
     nil
   end
 
-  def remove_kmp3d_settings(type_name)
-  end
-
-  def kmp3d_settings_insert(type_name, index, value)
+  def kmp3d_settings_insert(index, value)
   end
 
   def kmp3d_id(type_name)
-    nil
-  end
-
-  def model_path
     nil
   end
 end
@@ -35,28 +28,18 @@ class Sketchup::ComponentInstance
     name.include?(type_name)
   end
 
-  def kmp3d_settings(type_name)
-    start_end = kmp3d_settings_start_end(type_name)
+  def kmp3d_settings
+    start_end = kmp3d_settings_start_end
     return if start_end.nil?
     index_start, index_end = start_end
     return name[index_start..index_end].split(",")
   end
 
-  def remove_kmp3d_settings(type_name)
-    start_end = kmp3d_settings_start_end(type_name)
+  def kmp3d_settings_insert(index, value)
+    start_end = kmp3d_settings_start_end
     return if start_end.nil?
     index_start, index_end = start_end
-    # 5 char to include name and parens
-    self.name = name.sub(name[index_start - 5..index_end + 1], "")
-    name == "KMP3D" ? \
-      erase! : self.definition = KMP3D::Data.load_def(model_path)
-  end
-
-  def kmp3d_settings_insert(type_name, index, value)
-    start_end = kmp3d_settings_start_end(type_name)
-    return if start_end.nil?
-    index_start, index_end = start_end
-    settings = kmp3d_settings(type_name)
+    settings = kmp3d_settings
     settings[index + 1] = value # spot 1 is for the group number
     name_clone = name
     name_clone[index_start..index_end] = settings.join(",")
@@ -67,21 +50,11 @@ class Sketchup::ComponentInstance
     KMP3D::Data.kmp3d_entities(type_name).index(self).to_s
   end
 
-  def kmp3d_settings_start_end(type_name)
+  def kmp3d_settings_start_end
     return unless kmp3d_object?
-    index = name.index(type_name)
-    return if index.nil?
     return [
-      index_start = name.index("(", index) + 1,
-      index_end   = name.index(")", index) - 1
+      index_start = name.index("(") + 1,
+      index_end   = name.index(")") - 1
     ]
-  end
-
-  def model_path
-    case name
-    when /CKPT/ then "checkpoint"
-    when /KTPT/, /JGPT/, /CNPT/, /MSPT/ then "vector"
-    when /ENPT/, /ITPT/, /POTI/ then "point"
-    end
   end
 end

@@ -25,20 +25,14 @@ module KMP3D
 
     def delete_group(id)
       @type.table.delete_at(id.to_i)
-      Data.model.abort_operation
       Data.model.start_operation("Remove Group and Settings", true)
-      Data.kmp3d_entities(@type.type_name).each do |ent|
-        ent.remove_kmp3d_settings(@type.type_name) if \
-          ent.kmp3d_settings(@type.type_name)[0] == id
-      end
+      Data.kmp3d_entities(@type.type_name).each { |ent| ent.erase! }
       KMP3D::Data.model.commit_operation
     end
 
     def delete_point(id)
-      Data.model.abort_operation
       KMP3D::Data.model.start_operation("Remove KMP3D Point Settings", true)
-      ent = Data.get_entity(@type.type_name, id)
-      ent.remove_kmp3d_settings(@type.type_name) if ent
+      Data.get_entity(@type.type_name, id).erase!
       KMP3D::Data.model.commit_operation
     end
 
@@ -66,7 +60,7 @@ module KMP3D
     def edit_point_value(value, id, row)
       return unless valid?(@type.settings[row.to_i].input, value)
       ent = Data.get_entity(@type.type_name, id)
-      ent.kmp3d_settings_insert(@type.type_name, row.to_i, value)
+      ent.kmp3d_settings_insert(row.to_i, value)
     end
 
     def set_hybrid_type(id)

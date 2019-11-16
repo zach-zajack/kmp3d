@@ -46,8 +46,8 @@ module KMP3D
       case section_id
       when "KTPT", "JGPT", "CNPT", "MSPT"
         entries.times { import_vector(type) }
-      when "ENPT" then entries.times { |i| import_grouped(type, @enph, i) }
-      when "ITPT" then entries.times { |i| import_grouped(type, @itph, i) }
+      when "ENPT" then entries.times { |i| import_point(type, @enph, i) }
+      when "ITPT" then entries.times { |i| import_point(type, @itph, i) }
       when "CKPT"
         type.set_kmp3d_points # prevents lookup every time a point is added
         entries.times { |i| import_ckpt(type, i) }
@@ -55,6 +55,7 @@ module KMP3D
         entries.times { import_gobj(type) }
         existing_ids = type.table[1..-1].map { |t| t[0].to_i }
         (@gobj_ids.uniq - existing_ids).each { |id| type.table << [id.to_s] }
+        type.save_settings
       when "POTI" then entries.times { |i| import_poti(type, i) }
       when "STGI" then import_stgi(type)
       end
@@ -69,6 +70,7 @@ module KMP3D
       @parser.read_uint16 # padding
       type = Data.type_by_name(type_name)
       type.table[index+1] = [next_groups * ", "]
+      type.save_settings
       return Group.new((first_index...first_index+length))
     end
 
@@ -101,7 +103,7 @@ module KMP3D
       type.import(position, rotation, 0, settings)
     end
 
-    def import_grouped(type, group_type, index)
+    def import_point(type, group_type, index)
       group = get_group_index(group_type, index)
       position = @parser.read_vector3d
       settings = import_settings(type)
@@ -135,7 +137,8 @@ module KMP3D
       points = @parser.read_uint16
       smooth = @parser.read_byte
       cyclic = @parser.read_byte
-      type.table[index] = [smooth == 1, cyclic == 1]
+      type.table[index+1] = [smooth == 1, cyclic == 1]
+      type.save_settings
       points.times do
         position = @parser.read_vector3d
         settings = import_settings(type)
@@ -148,8 +151,10 @@ module KMP3D
       pole_pos = @parser.read_byte
       distance = @parser.read_byte
       @parser.head += 6 # lens flare settings
-      speed_mod = (@parser.next_bytes(2) + "\0\0").unpack("g")
-      type.table[0] = [lap_count, pole_pos, distance, speed_mod]
+      speed_mod = (@parser.next_bytes(2) + "\0\0").unpack("g").first
+      speed_mod = 1.0 if speed_mod == 0.0 # backwards compatibility
+      type.table[1] = [lap_count, pole_pos, distance, speed_mod]
+      type.save_settings
     end
 
     def error(message)

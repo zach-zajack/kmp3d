@@ -21,10 +21,6 @@ module KMP3D
       Data.load_def("point")
     end
 
-    def vector?
-      false
-    end
-
     def save_settings
       return unless @external_settings
       Data.model.set_attribute("KMP3D", type_name, @table)
@@ -42,10 +38,8 @@ module KMP3D
     def inputs
       # settings added due to next point using previous settings
       inputs = [[false] + @settings.map { |s| s.default }]
-      Data.kmp3d_entities(type_name).each do |ent|
-        settings = ent.kmp3d_settings
-        next unless settings[0] == @group.to_s # spot 1 is for the group number
-        inputs << [Data.selection.include?(ent)] + settings[1..-1]
+      Data.entities_in_group(type_name, @group).each do |ent|
+        inputs << [Data.selection.include?(ent)] + ent.kmp3d_settings[1..-1]
       end
       return inputs
     end
@@ -74,13 +68,21 @@ module KMP3D
       comp.name = "KMP3D " + component_settings
     end
 
-    protected
+    def next_groups
+      @table[1..-1].map { |row| row[0].split(",").map { |i| i.to_i } }
+    end
 
-    def entities_before_group
-      ents_before_group = Data.kmp3d_entities(type_name).select do |ent|
-        ent.kmp3d_settings[0].to_i < @group
+    def prev_groups
+      Array.new(groups) do |i|
+        ng = next_groups.clone
+        indices = ng.map do |group|
+          next unless group.include?(i)
+          index = ng.index(group)
+          ng[index] = nil
+          next index
+        end
+        indices.compact
       end
-      return ents_before_group.length
     end
   end
 end

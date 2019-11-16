@@ -17,7 +17,8 @@ module KMP3D
     protected
 
     def table_rows(inputs, settings)
-      offset = (on_external_settings? ? 0 : entities_before_group)
+      offset = on_external_settings? ? \
+        0 : Data.entities_before_group(type_name, @group).length
       id = offset - 1
       inputs.map do |row|
         selected = row.shift unless on_external_settings?

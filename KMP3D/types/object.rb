@@ -17,13 +17,14 @@ module KMP3D
       "Place on an existing point to combine settings."
     end
 
+    def component_settings
+      "#{type_name}(#{object_id},#{inputs[-1][1..-1] * ','}) "
+    end
+
     def inputs
-      # settings added due to next point using previous settings
       inputs = [[false] + @settings.map { |s| s.default }]
-      Data.kmp3d_entities(type_name).each do |ent|
-        settings = ent.kmp3d_settings
-        next unless settings[0] == @table[@group + 1][0].to_s
-        inputs << [Data.selection.include?(ent)] + settings[1..-1]
+      Data.entities_in_group(type_name, object_id).each do |ent|
+        inputs << [Data.selection.include?(ent)] + ent.kmp3d_settings[1..-1]
       end
       return inputs
     end
@@ -42,6 +43,10 @@ module KMP3D
     end
 
     private
+
+    def object_id
+      @table[@group + 1][0].to_i
+    end
 
     def model_for(i)
       case i.to_s

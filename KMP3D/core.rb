@@ -10,10 +10,11 @@ module KMP3D
   require "#{DIR}/types/object"
   require "#{DIR}/types/checkpoint"
   require "#{DIR}/types/type_classes"
-  require "#{DIR}/util/binary_parser"
-  require "#{DIR}/util/kmp_importer"
   require "#{DIR}/types/hybrid"
-  require "#{DIR}/util/wkmpt_exporter"
+  require "#{DIR}/util/binary_parser"
+  require "#{DIR}/util/binary_writer"
+  require "#{DIR}/util/kmp_importer"
+  require "#{DIR}/util/kmp_exporter"
   require "#{DIR}/entity"
   require "#{DIR}/data"
 
@@ -21,7 +22,7 @@ module KMP3D
   tool_cmd = UI::Command.new("KMP3D Tool") { Data.model.select_tool(tool) }
   tool_cmd.small_icon = tool_cmd.large_icon = "#{DIR}/images/tool.png"
 
-  exporter_cmd = UI::Command.new("Export WKMPT...") { WKMPTExporter.export }
+  exporter_cmd = UI::Command.new("Export KMP...") { KMPExporter.export }
   importer_cmd = UI::Command.new("Import KMP...") { KMPImporter.import }
 
   Sketchup.add_observer(tool)

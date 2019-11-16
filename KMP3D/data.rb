@@ -18,6 +18,10 @@ module KMP3D
       model.layers
     end
 
+    def set_layer_visible(type_name)
+      @types.each { |type| layers[type.name].visible = type.name == type_name }
+    end
+
     def kmp3d_entities(type_name)
       entities.select { |ent| ent.type?(type_name) }
     end

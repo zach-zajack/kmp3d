@@ -4,6 +4,10 @@ module KMP3D
       Data.load_def("vector")
     end
 
+    def vector?
+      true
+    end
+
     def transform(comp, pos)
       case @step
       when 0 then comp.transform!(Geom::Transformation.translation(pos))

@@ -33,6 +33,8 @@ module KMP3D
     def add_comp(template)
       selected_types.each do |type|
         comp = Data.entities.add_instance(type.model, template.transformation)
+        (@group - type.groups + 1).times { type.add_group }
+        type.group = @group
         type.add_comp(comp)
         comp.layer = type.name
       end

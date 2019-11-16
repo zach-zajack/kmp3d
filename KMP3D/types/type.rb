@@ -21,6 +21,10 @@ module KMP3D
       Data.load_def("point")
     end
 
+    def vector?
+      false
+    end
+
     def save_settings
       return unless @external_settings
       Data.model.set_attribute("KMP3D", type_name, @table)

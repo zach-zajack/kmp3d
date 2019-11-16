@@ -59,10 +59,10 @@ class Sketchup::ComponentInstance
   def kmp_transform
     transform = transformation
     array = transformation.to_a
-    px = transform.origin.x.to_m
-    py = transform.origin.y.to_m
-    pz = transform.origin.z.to_m
-    return [px, pz, -py] if model_type == "point" && !type?("GOBJ")
+    px =  transform.origin.x.to_m
+    py = -transform.origin.y.to_m
+    pz =  transform.origin.z.to_m
+    return [px, pz, py] if model_type == "point" && !type?("GOBJ")
     sx = array[0...3].distance([0,0,0])
     sy = array[4...7].distance([0,0,0])
     sz = array[9...12].distance([0,0,0])
@@ -76,21 +76,21 @@ class Sketchup::ComponentInstance
       ry = Math.asin(transform.zaxis.x).radians.round
       rx = Math.atan2((transform.zaxis.y)/Math.cos(ry), \
                       (transform.zaxis.z)/Math.cos(ry)).radians.round
-      rz = Math.atan2((transform.yaxis.x)/Math.cos(ry), \
-                      (transform.xaxis.x)/Math.cos(ry)).radians.round
+      rz = -Math.atan2((transform.yaxis.x)/Math.cos(ry), \
+                       (transform.xaxis.x)/Math.cos(ry)).radians.round
     end
-    return [px, pz, -py, rx, rz, -ry] if model_type == "vector"
-    return checkpoint_transform(px, -py, rz, sy) if model_type == "checkpoint"
-    return [px, pz, -py, rx, rz, -ry, sx, sz, sy]
+    return [px, pz, py, rx, rz, ry] if model_type == "vector"
+    return checkpoint_transform(px, py, rz, sy) if model_type == "checkpoint"
+    return [px, pz, py, rx, rz, ry, sx, sz, sy]
   end
 
   def checkpoint_transform(x, y, angle, scale)
-    angle = (angle - 90).degrees
+    angle = (90 - angle).degrees
     scale *= 1500
-    x1 = x + scale * Math.cos(angle)
-    y1 = y + scale * Math.sin(angle)
-    x2 = x - scale * Math.cos(angle)
-    y2 = y - scale * Math.sin(angle)
+    x1 = x - scale * Math.cos(angle)
+    y1 = y - scale * Math.sin(angle)
+    x2 = x + scale * Math.cos(angle)
+    y2 = y + scale * Math.sin(angle)
     return [x1, y1, x2, y2]
   end
 end

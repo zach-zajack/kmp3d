@@ -38,7 +38,6 @@ module KMP3D
       comp.transform!(Geom::Transformation.rotation(pos, [0, 1, 0], -rot[2]))
       comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
       comp.layer = name
-      array = comp.transformation.to_a
     end
 
     private

@@ -65,6 +65,11 @@ module KMP3D
       refresh_html
     end
 
+    def onNewModel(_)
+      Data.reload(self)
+      refresh_html
+    end
+
     def onPreSaveModel(_)
       Data.types.each { |type| @type.save_settings }
     end

@@ -46,8 +46,8 @@ module KMP3D
 
     def read_rotation
       x = read_float.degrees
+      y = read_float.degrees
       z = read_float.degrees
-      y = -read_float.degrees
       [x, y, z]
     end
 

@@ -17,7 +17,7 @@ module KMP3D
     def refresh_html
       @type = Data.types[@type_index]
       @dlg.set_html(generate_head + generate_body)
-      Data.set_layer_visible(@type.name)
+      Data.set_layer_visible(@type.name) if tool_active?
     end
 
     private

@@ -7,6 +7,10 @@ module KMP3D
       update_comp
     end
 
+    def tool_active?
+      @id == Data.model.tools.active_tool_id
+    end
+
     def update_comp
       Data.model.start_operation("Add KMP3D Point")
       @type.step = 0
@@ -66,7 +70,7 @@ module KMP3D
     end
 
     def onTransactionUndo(_) # replace with onCancel at some point
-      return if @id != Data.model.tools.active_tool_id || @undone
+      return if !tool_active? || @undone
       @undone = true # prevent recursion
       Sketchup.undo # call a second undo since new operation has already started
       update_comp
@@ -74,7 +78,7 @@ module KMP3D
     end
 
     def onTransactionRedo(_)
-      return unless @id == Data.model.tools.active_tool_id
+      return unless tool_active?
       refresh_html
     end
 

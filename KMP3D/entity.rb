@@ -57,31 +57,27 @@ class Sketchup::ComponentInstance
   end
 
   def kmp_transform
-    transform = transformation
     array = transformation.to_a
-    px =  transform.origin.x.to_m
-    py = -transform.origin.y.to_m
-    pz =  transform.origin.z.to_m
-    return [px, pz, py] if model_type == "point" && !type?("GOBJ")
-    sx = array[0...3].distance([0,0,0])
-    sy = array[4...7].distance([0,0,0])
-    sz = array[9...12].distance([0,0,0])
-    if transform.zaxis.x == 1.0
-      ry = 90
-      rx = Math.atan2(-transform.xaxis.y, -transform.xaxis.z).radians
-    elsif transform.zaxis.x == -1.0
-      ry = -90
-      rx = Math.atan2(transform.xaxis.y, transform.xaxis.z).radians
+    px =  transformation.origin.x.to_m
+    py =  transformation.origin.z.to_m
+    pz = -transformation.origin.y.to_m
+    return [px, py, pz] if model_type == "point" && !type?("GOBJ")
+    # solution from https://www.learnopencv.com/rotation-matrix-to-euler-angles/
+    sy = Math.sqrt(array[0]**2 + array[2]**2)
+    ry = Math.atan2(array[1], sy).radians
+    if sy > 1e-6
+      rx = Math.atan2(-array[9], array[5]).radians
+      rz = Math.atan2(array[2], array[0]).radians
     else
-      ry = Math.asin(transform.zaxis.x).radians.round
-      rx = Math.atan2((transform.zaxis.y)/Math.cos(ry), \
-                      (transform.zaxis.z)/Math.cos(ry)).radians.round
-      rz = -Math.atan2((transform.yaxis.x)/Math.cos(ry), \
-                       (transform.xaxis.x)/Math.cos(ry)).radians.round
+      rx = Math.atan2(array[6], array[10]).radians
+      rz = 0
     end
-    return [px, pz, py, rx, rz, ry] if model_type == "vector"
-    return checkpoint_transform(px, py, rz, sy) if model_type == "checkpoint"
-    return [px, pz, py, rx, rz, ry, sx, sz, sy]
+    return [px, py, pz, rx, ry, rz] if model_type == "vector"
+    sx = array[0...3].distance([0,0,0])
+    sy = array[8...11].distance([0,0,0])
+    sz = array[4...7].distance([0,0,0])
+    return checkpoint_transform(px, pz, ry, sz) if model_type == "checkpoint"
+    return [px, py, pz, rx, ry, rz, sx, sy, sz]
   end
 
   def checkpoint_transform(x, y, angle, scale)

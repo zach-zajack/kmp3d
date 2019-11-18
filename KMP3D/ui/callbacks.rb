@@ -17,10 +17,12 @@ module KMP3D
 
     def add_group
       @type.add_group
+      refresh_html
     end
 
     def delete_row(id)
       @type.on_external_settings? ? delete_group(id) : delete_point(id)
+      refresh_html
     end
 
     def delete_group(id)
@@ -28,17 +30,20 @@ module KMP3D
       Data.model.start_operation("Remove Group and Settings")
       Data.kmp3d_entities(@type.type_name).each { |ent| ent.erase! }
       KMP3D::Data.model.commit_operation
+      refresh_html
     end
 
     def delete_point(id)
       KMP3D::Data.model.start_operation("Remove KMP3D Point Settings")
       Data.get_entity(@type.type_name, id).erase!
       KMP3D::Data.model.commit_operation
+      refresh_html
     end
 
     def select_point(id)
       ent = Data.get_entity(@type.type_name, id)
       Data.selection.toggle(ent)
+      update_row(ent)
     end
 
     def edit_value(table_id)
@@ -52,15 +57,18 @@ module KMP3D
         edit_group_value(value, id, row) : edit_point_value(value, id, row)
     end
 
-    def edit_group_value(value, id, row)
-      return unless valid?(@type.external_settings[row.to_i].input, value)
-      @type.table[id.to_i + 1][row.to_i] = value
+    def edit_group_value(value, id, col)
+      return unless valid?(@type.external_settings[col.to_i].input, value)
+      @type.table[id.to_i + 1][col.to_i] = value
+      refresh_html
     end
 
-    def edit_point_value(value, id, row)
-      return unless valid?(@type.settings[row.to_i].input, value)
+    def edit_point_value(value, id, col)
       ent = Data.get_entity(@type.type_name, id)
-      ent.kmp3d_settings_insert(row.to_i, value)
+      if valid?(@type.settings[col.to_i].input, value)
+        ent.kmp3d_settings_insert(col.to_i, value)
+      end
+      update_row(ent)
     end
 
     def set_hybrid_type(id)
@@ -73,14 +81,17 @@ module KMP3D
       valid?(:byte, value)
       return unless valid?(:byte, value)
       @type.group = value.to_i
+      refresh_html
     end
 
     def switch_type(id)
       @type_index = id.to_i
+      refresh_html
     end
 
     def switch_group(id)
       @type.group = id.to_i
+      refresh_html
     end
 
     private

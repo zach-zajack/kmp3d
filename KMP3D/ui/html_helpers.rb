@@ -28,8 +28,7 @@ module KMP3D
     end
 
     def callback(name = "", args = "")
-      "window.location='skp:#{name}@#{args}';" \
-      "window.location='skp:refresh';"
+      "window.location='skp:#{name}@#{args}';"
     end
 
     def on_scroll(id)
@@ -40,6 +39,12 @@ module KMP3D
     def scroll_onload
       "document.getElementById('types').scrollTop=#{@scroll_types};" \
       "document.getElementById('table').scrollTop=#{@scroll_table};"
+    end
+
+    def toggle_select(row_id, selected)
+      "var element = document.getElementById('row#{row_id}');" \
+      "if(#{selected}) { element.className = 'selected'; }" \
+      "else { element.className = ''; }"
     end
 
     private

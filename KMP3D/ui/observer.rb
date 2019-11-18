@@ -53,11 +53,16 @@ module KMP3D
     end
 
     def onSelectionBulkChange(_)
-      refresh_html
+      update_selection
+      Data.selection.each do |ent|
+        @prev_selection << ent
+        update_row(ent)
+      end
     end
 
     def onSelectionCleared(_)
-      refresh_html
+      update_selection
+      @prev_selection = []
     end
 
     def onOpenModel(_)
@@ -89,6 +94,10 @@ module KMP3D
     end
 
     private
+
+    def update_selection
+      @prev_selection.each { |ent| update_row(ent) }
+    end
 
     def combine_settings?(ent)
       ent && ent.enable_combine? && @type.enable_combine?

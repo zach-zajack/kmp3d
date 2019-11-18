@@ -27,7 +27,7 @@ module KMP3D
             cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
           else
             cols = tag(:td, :onclick => callback("selectRow", id)) { id } + \
-            table_columns(id, row, settings) * ""
+              table_columns(id, row, settings) * ""
           end
           id += 1
           next cols
@@ -56,7 +56,7 @@ module KMP3D
     end
 
     def row_attribs(id, selected)
-      attribs = {}
+      attribs = {:id => "row#{id}"}
       attribs[:class] = "selected" if selected
       return attribs
     end

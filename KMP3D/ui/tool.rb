@@ -11,13 +11,27 @@ module KMP3D
       @scroll_types = 0
       @scroll_table = 0
       @type_index = 0
+      @prev_selection = []
       add_callbacks
     end
 
     def refresh_html
       @type = Data.types[@type_index]
-      @dlg.set_html(generate_head + generate_body)
-      Data.set_layer_visible(@type.name) if tool_active?
+      @dlg.set_html(generate_head + generate_body(@type.to_html))
+      Data.set_layer_visible(@type.name)
+    end
+
+    def update_row(ent)
+      row_id = ent.kmp3d_id(@type.type_name)
+      return if row_id.nil?
+      selected = Data.selection.include?(ent)
+      js = toggle_select(row_id, selected)
+      id = 0
+      ent.kmp3d_settings[1..-1].each do |setting|
+        js << "document.getElementById('#{row_id},#{id}').value='#{setting}';"
+        id += 1
+      end
+      @dlg.execute_script(js)
     end
 
     private
@@ -50,12 +64,12 @@ module KMP3D
       end
     end
 
-    def generate_body
+    def generate_body(table_html)
       tag(:body, {:onload => scroll_onload}) do
         tag(:div, :id => "types", :onscroll => on_scroll("types"),
           :class => "types") { types + type_groups + settings_button } + \
         tag(:div, :id => "table", :onscroll => on_scroll("table"),
-          :class => "table") { @type.to_html }
+          :class => "table") { table_html }
       end
     end
   end

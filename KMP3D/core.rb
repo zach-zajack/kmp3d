@@ -23,7 +23,10 @@ module KMP3D
   tool_cmd.small_icon = tool_cmd.large_icon = "#{DIR}/images/tool.png"
 
   exporter_cmd = UI::Command.new("Export KMP...") { KMPExporter.export }
-  importer_cmd = UI::Command.new("Import KMP...") { KMPImporter.import }
+  importer_cmd = UI::Command.new("Import KMP...") do
+    KMPImporter.import
+    tool.refresh_html
+  end
 
   Sketchup.add_observer(tool)
   Data.reload(tool)

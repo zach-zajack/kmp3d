@@ -6,6 +6,7 @@ module KMP3D
 
     def import
       path = UI.openpanel("Select a file to import from.")
+      return if path.nil?
       Data.model.start_operation("Import KMP")
       @parser = BinaryParser.new(path)
       @gobj_ids = []
@@ -14,6 +15,7 @@ module KMP3D
       section_offsets.each { |section_offset| read_group(section_offset) }
       section_offsets.each { |section_offset| read_section(section_offset) }
       Data.model.commit_operation
+      Sketchup.status_text = "KMP3D: Finished importing!"
       UI.beep
     end
 
@@ -43,6 +45,7 @@ module KMP3D
       entries = @parser.read_uint16
       @parser.read_uint16 # extra data
       type = Data.type_by_name(section_id)
+      Sketchup.status_text = "KMP3D: Importing #{section_id}..."
       case section_id
       when "KTPT", "JGPT", "CNPT", "MSPT"
         entries.times { import_vector(type) }

@@ -62,12 +62,12 @@ module KMP3D
 
     def onOpenModel(_)
       Data.reload(self)
-      @dlg.close
+      @dlg.close if @dlg.visible?
     end
 
     def onNewModel(_)
       Data.reload(self)
-      @dlg.close
+      @dlg.close if @dlg.visible?
     end
 
     def onPreSaveModel(_)

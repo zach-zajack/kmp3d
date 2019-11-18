@@ -4,6 +4,7 @@ module KMP3D
 
     def export
       path = UI.savepanel("Select a file to export to.")
+      return if path.nil?
       @writer = BinaryWriter.new(path)
       write_header
       write_sections
@@ -37,6 +38,8 @@ module KMP3D
       write_section("CNPT") { |ent| export_ent(ent) }
       write_section("MSPT") { |ent| export_ent(ent) }
       write_section_stgi
+      Sketchup.status_text = "KMP3D: Finished exporting!"
+      UI.beep
     end
 
     def write_section_offset
@@ -51,6 +54,7 @@ module KMP3D
     end
 
     def write_section(type_name)
+      Sketchup.status_text = "KMP3D: Exporting #{type_name}..."
       @index = 0
       @type = Data.type_by_name(type_name)
       ents = Data.kmp3d_entities(type_name)
@@ -63,6 +67,7 @@ module KMP3D
     end
 
     def write_group(sect_name, type_name)
+      Sketchup.status_text = "KMP3D: Exporting #{type_name}..."
       @type = Data.type_by_name(type_name)
       write_section_offset
       write_section_header(sect_name, @type.groups, 0)
@@ -80,11 +85,13 @@ module KMP3D
     end
 
     def write_unhandled(type_name)
+      Sketchup.status_text = "KMP3D: Exporting #{type_name}..."
       write_section_offset
       write_section_header(type_name, 0, 0)
     end
 
     def write_section_poti
+      Sketchup.status_text = "KMP3D: Exporting POTI..."
       @type = Data.type_by_name("POTI")
       total_ents = Data.kmp3d_entities("POTI").length
       write_section_offset
@@ -99,6 +106,7 @@ module KMP3D
     end
 
     def write_section_stgi
+      Sketchup.status_text = "KMP3D: Exporting STGI..."
       write_section_offset
       write_section_header("STGI", 1, 0)
       settings = Data.type_by_name("STGI").table[1]

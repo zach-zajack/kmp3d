@@ -4,8 +4,7 @@ module KMP3D
       tag(:table) do
         if on_external_settings?
           table_rows(@table, @external_settings) * ""
-        else
-          table_rows(inputs, @settings) * ""
+        else table_rows(inputs, @settings) * ""
         end
       end
     end
@@ -17,17 +16,20 @@ module KMP3D
     protected
 
     def table_rows(inputs, settings)
-      offset = on_external_settings? ? \
-        0 : Data.entities_before_group(type_name, @group).length
-      id = offset - 1
+      id = -1
       inputs.map do |row|
-        selected = row.shift unless on_external_settings?
-        tag(:tr, row_attribs(id, selected)) do
-          if id < offset
+        if on_external_settings?
+          kmp3d_id = id
+        else
+          kmp3d_id = row.shift
+          selected = row.shift
+        end
+        tag(:tr, row_attribs(kmp3d_id, selected)) do
+          if id < 0
             cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
           else
-            cols = tag(:td, :onclick => callback("selectRow", id)) { id } + \
-              table_columns(id, row, settings) * ""
+            cols = tag(:td, :onclick => callback("selectRow", kmp3d_id)) { id }
+            cols += table_columns(kmp3d_id, row, settings) * ""
           end
           id += 1
           next cols

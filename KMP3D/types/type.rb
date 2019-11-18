@@ -36,16 +36,22 @@ module KMP3D
     end
 
     def component_settings
-      "#{type_name}(#{@group},#{inputs[-1][1..-1] * ','}) "
+      "#{type_name}(#{@group},#{inputs[-1][2..-1] * ','}) "
     end
 
     def inputs
       # settings added due to next point using previous settings
-      inputs = [[false] + @settings.map { |s| s.default }]
-      Data.entities_in_group(type_name, @group).each do |ent|
-        inputs << [Data.selection.include?(ent)] + ent.kmp3d_settings[1..-1]
+      inputs = [[-1, false] + @settings.map { |s| s.default }]
+      Data.entities_in_group(type_name, group_id(@group)).each do |ent|
+        id = ent.kmp3d_id(type_name)
+        selected = Data.selection.include?(ent)
+        inputs << [id, selected] + ent.kmp3d_settings[1..-1]
       end
       return inputs
+    end
+
+    def group_id(i)
+      i
     end
 
     def type_name
@@ -62,10 +68,6 @@ module KMP3D
 
     def settings_name
       "Group"
-    end
-
-    def settings_names(i)
-      "#{settings_name} #{i}"
     end
 
     def add_comp(comp)

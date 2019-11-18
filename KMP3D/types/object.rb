@@ -21,18 +21,6 @@ module KMP3D
       "#{type_name}(#{object_id},#{inputs[-1][1..-1] * ','}) "
     end
 
-    def inputs
-      inputs = [[false] + @settings.map { |s| s.default }]
-      Data.entities_in_group(type_name, object_id).each do |ent|
-        inputs << [Data.selection.include?(ent)] + ent.kmp3d_settings[1..-1]
-      end
-      return inputs
-    end
-
-    def settings_names(i)
-      "Object ID #{@table[i + 1][0]}"
-    end
-
     def import(pos, rot, scale, group, settings)
       comp = Data.entities.add_instance(model_for(group), pos)
       comp.transform!(Geom::Transformation.rotation(pos, [1, 0, 0],  rot[0]))
@@ -42,11 +30,11 @@ module KMP3D
       comp.layer = name
     end
 
-    private
-
-    def object_id
-      @table[@group + 1][0].to_i
+    def group_id(i)
+      @table[i + 1][0].to_i
     end
+
+    private
 
     def model_for(i)
       case i.to_s

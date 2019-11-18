@@ -47,9 +47,12 @@ module KMP3D
     def type_groups
       return "" unless @type.show_group?
       len = @type.groups
-      size = [len + 1, 10].min
-      sidenav(@type.group, "switchGroup", (0..len).map { |i| i == len ? \
-        "#{@type.settings_name} Settings" : "#{@type.settings_names(i)}" })
+      settings = (0..len).map do |i|
+        if i == len then "#{@type.settings_name} Settings"
+        else "#{@type.settings_name} #{@type.group_id(i)}"
+        end
+      end
+      sidenav(@type.group, "switchGroup", settings)
     end
 
     def settings_button

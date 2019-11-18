@@ -27,14 +27,14 @@ module KMP3D
 
     def delete_group(id)
       @type.table.delete_at(id.to_i)
-      Data.model.start_operation("Remove Group and Settings")
+      Data.model.start_operation("Remove #{@type.type_name} Group #{id}")
       Data.kmp3d_entities(@type.type_name).each { |ent| ent.erase! }
       KMP3D::Data.model.commit_operation
       refresh_html
     end
 
     def delete_point(id)
-      KMP3D::Data.model.start_operation("Remove KMP3D Point Settings")
+      KMP3D::Data.model.start_operation("Remove KMP3D Point")
       Data.get_entity(@type.type_name, id).erase!
       KMP3D::Data.model.commit_operation
       refresh_html

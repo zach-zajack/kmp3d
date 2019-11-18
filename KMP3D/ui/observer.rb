@@ -62,15 +62,16 @@ module KMP3D
 
     def onOpenModel(_)
       Data.reload(self)
-      refresh_html
+      @dlg.close
     end
 
     def onNewModel(_)
       Data.reload(self)
-      refresh_html
+      @dlg.close
     end
 
     def onPreSaveModel(_)
+      Data.model.abort_operation
       Data.types.each { |type| @type.save_settings }
     end
 

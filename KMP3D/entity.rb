@@ -58,26 +58,47 @@ class Sketchup::ComponentInstance
 
   def kmp_transform
     array = transformation.to_a
-    px =  transformation.origin.x.to_m
-    py =  transformation.origin.z.to_m
-    pz = -transformation.origin.y.to_m
-    return [px, py, pz] if model_type == "point" && !type?("GOBJ")
-    # solution from https://www.learnopencv.com/rotation-matrix-to-euler-angles/
-    sy = Math.sqrt(array[0]**2 + array[2]**2)
-    ry = Math.atan2(array[1], sy).radians
-    if sy > 1e-6
-      rx = Math.atan2(-array[9], array[5]).radians
-      rz = Math.atan2(array[2], array[0]).radians
-    else
-      rx = Math.atan2(array[6], array[10]).radians
-      rz = 0
+    pos = []
+    pos.x =  transformation.origin.x.to_m
+    pos.y =  transformation.origin.z.to_m
+    pos.z = -transformation.origin.y.to_m
+    return pos if model_type == "point" && !type?("GOBJ")
+    rot = matrix_to_euler(array)
+    return pos + rot if model_type == "vector"
+    size = []
+    size.x = array[0...3].distance([0,0,0])
+    size.y = array[8...11].distance([0,0,0])
+    size.z = array[4...7].distance([0,0,0])
+    if model_type == "checkpoint"
+      return checkpoint_transform(pos.x, pos.z, rot.y, size.z)
     end
-    return [px, py, pz, rx, ry, rz] if model_type == "vector"
-    sx = array[0...3].distance([0,0,0])
-    sy = array[8...11].distance([0,0,0])
-    sz = array[4...7].distance([0,0,0])
-    return checkpoint_transform(px, pz, ry, sz) if model_type == "checkpoint"
-    return [px, py, pz, rx, ry, rz, sx, sy, sz]
+    return pos + rot + size
+  end
+
+  def matrix_to_euler(array)
+    # solution based off http://www.gregslabaugh.net/publications/euler.pdf
+    if array[1].abs == 1.0
+      sign = -array[1] <=> 0
+      rot = []
+      rot.y = 90*sign
+      rot.x = Math.atan2(array[8]*sign, array[4]*sign).radians
+      rot.z = 0
+    else
+      r1 = []
+      r2 = []
+      r1.y = Math.asin(array[1]).radians
+      cos = Math.cos(r1.y.degrees)
+      r1.x = Math.atan2(-array[9]/cos, array[5]/cos).radians
+      r1.z = Math.atan2(array[2]/cos, array[0]/cos).radians
+      r2.y = 180 - r1.y
+      r2.x = Math.atan2(array[9]/cos, -array[5]/cos).radians
+      r2.z = Math.atan2(-array[2]/cos, -array[0]/cos).radians
+      if r1.select { |v| v.abs < 1e-6 }.length >= \
+         r2.select { |v| v.abs < 1e-6 }.length then rot = r1
+      else rot = r2
+      end
+    end
+    return rot
   end
 
   def checkpoint_transform(x, y, angle, scale)

@@ -42,7 +42,9 @@ module KMP3D
       table = row.zip(settings).map do |col, setting|
         next if setting.type == :hidden
         table_id += 1
-        tag(:td) { table_input("#{id},#{table_id}", col, setting) }
+        tag(:td, :onclick => callback("focusRow", id)) do
+          table_input("#{id},#{table_id}", col, setting)
+        end
       end
       table << tag(:td, :style => "width:20px") do
         tag(:button, :onclick => callback("deleteRow", id)) { "&#x2715;" }
@@ -58,6 +60,7 @@ module KMP3D
     end
 
     def row_attribs(id, selected)
+      return {} if on_external_settings? || id.to_i < 0
       attribs = {:id => "row#{id}"}
       attribs[:class] = "selected" if selected
       return attribs

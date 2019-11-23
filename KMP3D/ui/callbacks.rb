@@ -4,6 +4,7 @@ module KMP3D
       @dlg.add_action_callback("puts") { |_, str| puts str }
       @dlg.add_action_callback("refresh") { refresh_html }
       @dlg.add_action_callback("addGroup") { add_group }
+      @dlg.add_action_callback("focusRow") { |_, id| focus_row(id) }
       @dlg.add_action_callback("deleteRow") { |_, id| delete_row(id) }
       @dlg.add_action_callback("selectRow") { |_, id| select_point(id) }
       @dlg.add_action_callback("switchType") { |_, id| switch_type(id) }
@@ -25,6 +26,17 @@ module KMP3D
       refresh_html
     end
 
+    def focus_row(id)
+      ent = Data.get_entity(@type.type_name, id)
+      unless @prev_focus.nil?
+        Data.selection.remove(@prev_focus)
+        update_row(@prev_focus)
+      end
+      Data.selection.add(ent)
+      update_row(ent)
+      @prev_focus = ent
+    end
+
     def delete_group(id)
       @type.table.delete_at(id.to_i)
       Data.model.start_operation("Remove #{@type.type_name} Group #{id}")
@@ -41,7 +53,6 @@ module KMP3D
     end
 
     def select_point(id)
-      return if @type.on_external_settings?
       ent = Data.get_entity(@type.type_name, id)
       Data.selection.toggle(ent)
       @prev_selection << ent

@@ -5,6 +5,7 @@ module KMP3D
       @id = Data.model.tools.active_tool_id
       refresh_html
       update_comp
+      @prev_focus = nil
     end
 
     def tool_active?

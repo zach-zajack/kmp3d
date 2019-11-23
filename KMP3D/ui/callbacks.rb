@@ -44,6 +44,7 @@ module KMP3D
       return if @type.on_external_settings?
       ent = Data.get_entity(@type.type_name, id)
       Data.selection.toggle(ent)
+      @prev_selection << ent
       update_row(ent)
     end
 

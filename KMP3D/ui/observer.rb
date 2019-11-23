@@ -62,7 +62,6 @@ module KMP3D
 
     def onSelectionCleared(_)
       update_selection
-      @prev_selection = []
     end
 
     def onOpenModel(_)
@@ -97,6 +96,7 @@ module KMP3D
 
     def update_selection
       @prev_selection.each { |ent| update_row(ent) }
+      @prev_selection = []
     end
   end
 end

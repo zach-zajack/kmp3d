@@ -76,6 +76,7 @@ module KMP3D
     def set_hybrid_type(id)
       # includes nil
       @type.hybrid_types[id] = @dlg.get_element_value("hybrid#{id}") != "true"
+      refresh_html
     end
 
     def set_hybrid_group

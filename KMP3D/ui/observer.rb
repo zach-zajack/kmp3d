@@ -98,16 +98,5 @@ module KMP3D
     def update_selection
       @prev_selection.each { |ent| update_row(ent) }
     end
-
-    def combine_settings?(ent)
-      ent && ent.enable_combine? && @type.enable_combine?
-    end
-
-    def get_ent(x, y, view)
-      ph = view.pick_helper
-      ph.do_pick(x, y)
-      ent = ph.best_picked
-      return ent
-    end
   end
 end

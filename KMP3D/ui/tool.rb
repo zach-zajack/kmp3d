@@ -23,7 +23,7 @@ module KMP3D
 
     def update_row(ent)
       row_id = ent.kmp3d_id(@type.type_name)
-      return if row_id.nil?
+      return if row_id.nil? || @type.on_external_settings?
       selected = Data.selection.include?(ent)
       js = toggle_select(row_id, selected)
       id = 0

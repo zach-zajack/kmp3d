@@ -41,6 +41,7 @@ module KMP3D
     end
 
     def select_point(id)
+      return if @type.on_external_settings?
       ent = Data.get_entity(@type.type_name, id)
       Data.selection.toggle(ent)
       update_row(ent)
@@ -58,8 +59,9 @@ module KMP3D
     end
 
     def edit_group_value(value, id, col)
-      return unless valid?(@type.external_settings[col.to_i].input, value)
-      @type.table[id.to_i + 1][col.to_i] = value
+      if valid?(@type.external_settings[col.to_i].input, value)
+        @type.table[id.to_i + 1][col.to_i] = value
+      end
       refresh_html
     end
 

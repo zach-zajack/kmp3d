@@ -65,7 +65,7 @@ module KMP3D
     end
 
     def load_def(name)
-      model.definitions.load("#{DIR}/models/#{name}.skp")
+      @defs[name]
     end
 
     def reload(observer)
@@ -79,8 +79,10 @@ module KMP3D
         KTPT.new, ENPT.new, ITPT.new,
         POTI.new, JGPT.new, CNPT.new, MSPT.new
       ]
+      @defs = {}
       Dir["#{DIR}/models/*.skp"].each do |f|
-        load_def(f[f.rindex(/[\\\/]/)+1...-4])
+        name = f[f.rindex(/[\\\/]/)+1...-4]
+        @defs[name] = model.definitions.load(f)
       end
       @types.each { |t| layers.add(t.name).visible = false }
     end

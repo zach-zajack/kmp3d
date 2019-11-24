@@ -54,6 +54,7 @@ module KMP3D
     end
 
     def onSelectionBulkChange(_)
+      return if @type.name == "Hybrid"
       update_selection
       Data.selection.each do |ent|
         @prev_selection << ent
@@ -62,6 +63,7 @@ module KMP3D
     end
 
     def onSelectionCleared(_)
+      return if @type.name == "Hybrid"
       update_selection
     end
 

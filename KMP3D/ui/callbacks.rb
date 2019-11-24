@@ -94,8 +94,7 @@ module KMP3D
     def set_hybrid_group
       value = @dlg.get_element_value("hybridGroup")
       valid?(:byte, value)
-      return unless valid?(:byte, value)
-      @type.group = value.to_i
+      @type.group = value.to_i if valid?(:byte, value)
       refresh_html
     end
 

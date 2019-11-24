@@ -80,7 +80,7 @@ class Sketchup::ComponentInstance
     if array[1].abs == 1.0
       sign = -array[1] <=> 0
       rot = []
-      rot.y = 90*sign
+      rot.y = -90*sign
       rot.x = Math.atan2(array[8]*sign, array[4]*sign).radians
       rot.z = 0
     else

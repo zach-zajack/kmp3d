@@ -43,10 +43,10 @@ module KMP3D
       if @type.advance_steps(@ip.position) == 0
         @type.add_comp(@comp)
         Data.model.commit_operation
+        add_row(@comp)
         update_comp
       end
       @prev_comp = @comp
-      refresh_html
     end
 
     def draw(view)

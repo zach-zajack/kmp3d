@@ -34,6 +34,10 @@ module KMP3D
       @dlg.execute_script(js)
     end
 
+    def add_row(ent)
+      @dlg.execute_script(append_row_html(@type.row_html(ent).inspect))
+    end
+
     private
 
     def group_index

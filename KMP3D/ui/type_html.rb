@@ -13,6 +13,13 @@ module KMP3D
       external_settings
     end
 
+    def row_html(ent)
+      id = Data.entities_in_group(type_name, @group).length
+      kmp3d_id = ent.kmp3d_id(type_name)
+      settings = ent.kmp3d_settings[1..-1]
+      col_html(id, kmp3d_id, settings, @settings)
+    end
+
     protected
 
     def table_rows(inputs, settings)
@@ -28,13 +35,17 @@ module KMP3D
           if id < 0
             cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
           else
-            cols = tag(:td, :onclick => callback("selectRow", kmp3d_id)) { id }
-            cols += table_columns(kmp3d_id, row, settings) * ""
+            cols = col_html(id, kmp3d_id, row, settings)
           end
           id += 1
           next cols
         end
       end
+    end
+
+    def col_html(id, kmp3d_id, row, settings)
+      tag(:td, :onclick => callback("selectRow", kmp3d_id)) { id } + \
+        table_columns(kmp3d_id, row, settings) * ""
     end
 
     def table_columns(id, row, settings)

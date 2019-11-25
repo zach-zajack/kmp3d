@@ -27,6 +27,7 @@ module KMP3D
     end
 
     def focus_row(id)
+      return if @type.on_external_settings?
       ent = Data.get_entity(@type.type_name, id)
       unless @prev_focus.nil?
         Data.selection.remove(@prev_focus)
@@ -53,6 +54,7 @@ module KMP3D
     end
 
     def select_point(id)
+      return if @type.on_external_settings?
       ent = Data.get_entity(@type.type_name, id)
       Data.selection.toggle(ent)
       @prev_selection << ent

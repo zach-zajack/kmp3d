@@ -43,7 +43,7 @@ module KMP3D
       if @type.advance_steps(@ip.position) == 0
         @type.add_comp(@comp)
         Data.model.commit_operation
-        add_row(@comp)
+        add_row(@comp) unless @type.name == "Hybrid"
         update_comp
       end
       @prev_comp = @comp

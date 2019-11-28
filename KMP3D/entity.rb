@@ -49,7 +49,7 @@ class Sketchup::ComponentInstance
   end
 
   def kmp3d_id(type_name)
-    KMP3D::Data.kmp3d_entities(type_name).index(self).to_s
+    KMP3D::Data.kmp3d_entities(type_name).index(self)
   end
 
   def kmp3d_group

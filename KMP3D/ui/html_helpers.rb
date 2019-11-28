@@ -47,12 +47,16 @@ module KMP3D
       "else { element.className = ''; }"
     end
 
+    def puts_js(js)
+      "window.location='skp:puts@'+#{js};"
+    end
+
     def append_row_html(row)
       "var table = document.getElementById('table');" \
       "var index = table.innerHTML.lastIndexOf('</tr>') + 5;" \
       "var start = table.innerHTML.slice(0, index);" \
       "var end = table.innerHTML.slice(index);" \
-      "table.innerHTML = start + #{row} + end;"
+      "table.innerHTML = start + #{row.inspect} + end;"
     end
 
     private

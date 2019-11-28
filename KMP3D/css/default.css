@@ -21,10 +21,6 @@ select {
   background-color: inherit;
 }
 
-option:checked {
-  background: #45d linear-gradient(0deg, #45d 0%, #45d 100%);
-}
-
 .types {
   top: 0;
   left: 0;
@@ -62,10 +58,10 @@ option:checked {
   margin: 0;
   border: none;
   text-align: left;
-  background-color: inherit;
+  background-color: #ddd;
 }
 
-.types button:hover, table button:hover {
+.types button:hover, table button:hover, table .selected button:hover {
   color: #000;
   background-color: #bbb;
 }
@@ -78,7 +74,7 @@ option:checked {
   background-color: #ccc;
 }
 
-button.selected, button.selected:hover, tr.selected {
+button.selected, button.selected:hover, tr.selected, table .selected button {
   color: #fff;
   background-color: #45d;
 }
@@ -124,9 +120,10 @@ table input {
 }
 
 table button {
+  padding: 0;
   width: 20px;
-  color: inherit;
+  color: #000;
   font-weight: bold;
   border-radius: 20px;
-  background-color: inherit;
+  background-color: #ddd;
 }

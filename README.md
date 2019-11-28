@@ -4,6 +4,8 @@ KMP3D is a [Google SketchUp](https://www.sketchup.com/) plugin that functions as
 ![Screenshot of KMP3D](https://raw.githubusercontent.com/zach-zajack/kmp3d/master/KMP3D/images/screenshot.png)
 
 ## Installation
+**Note**: If you have a previous version of KMP3D (v3.0 or lower), make sure to disable/uninstall the old extension before installing a newer version. Failure to do so will result in a loading error.
+
 ### For SketchUp 2013-2016
 1. Download the `.rbz` file under [Releases](https://github.com/zach-zajack/kmp3d/releases).
 2. In SketchUp, go to `Window` -> `Preferences` -> `Extensions` -> `Install Extension...`, and select the file.

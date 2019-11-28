@@ -17,10 +17,6 @@ module KMP3D
       "Place on an existing point to combine settings."
     end
 
-    def component_settings
-      "#{type_name}(#{object_id},#{inputs[-1][1..-1] * ','}) "
-    end
-
     def import(pos, rot, scale, group, settings)
       comp = Data.entities.add_instance(model_for(group), pos)
       comp.transform!(Geom::Transformation.rotation(pos, [1, 0, 0],  rot[0]))

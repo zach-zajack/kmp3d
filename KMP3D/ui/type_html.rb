@@ -9,15 +9,13 @@ module KMP3D
       end
     end
 
-    def show_group?
-      external_settings
-    end
-
     def row_html(ent)
-      id = Data.entities_in_group(type_name, @group).length
+      id = Data.entities_in_group(type_name, group_id(@group)).length - 1
       kmp3d_id = ent.kmp3d_id(type_name)
       settings = ent.kmp3d_settings[1..-1]
-      col_html(id, kmp3d_id, settings, @settings)
+      tag(:tr, row_attribs(kmp3d_id, false)) do
+        col_html(id, kmp3d_id, settings, @settings)
+      end
     end
 
     protected

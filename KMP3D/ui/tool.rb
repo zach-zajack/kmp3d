@@ -35,7 +35,7 @@ module KMP3D
     end
 
     def add_row(ent)
-      @dlg.execute_script(append_row_html(@type.row_html(ent).inspect))
+      @dlg.execute_script(append_row_html(@type.row_html(ent)))
     end
 
     private
@@ -49,7 +49,7 @@ module KMP3D
     end
 
     def type_groups
-      return "" unless @type.show_group?
+      return "" unless @type.external_settings
       len = @type.groups
       settings = (0..len).map do |i|
         if i == len then "#{@type.settings_name} Settings"
@@ -60,13 +60,14 @@ module KMP3D
     end
 
     def settings_button
-      return "" unless @type.show_group?
+      return "" unless @type.external_settings
       tag(:button, :onclick => callback("addGroup")) \
         { "Add #{@type.settings_name}" }
     end
 
     def generate_head
       tag(:head) do
+        tag(:meta, :"http-equiv" => "X-UA-Compatible", :content => "IE=edge") +
         tag(:style) { @css }
       end
     end

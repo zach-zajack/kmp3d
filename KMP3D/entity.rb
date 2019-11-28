@@ -42,7 +42,7 @@ class Sketchup::ComponentInstance
 
   def kmp3d_settings_insert(index, value)
     settings = kmp3d_settings
-    settings[index + 1] = value # spot 1 is for the group number
+    settings[index] = value
     name_clone = name
     name_clone[name.index("(") + 1..name.index(")") - 1] = settings.join(",")
     self.name = name_clone

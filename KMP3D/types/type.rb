@@ -25,6 +25,14 @@ module KMP3D
       false
     end
 
+    def object?
+      false
+    end
+
+    def hybrid?
+      false
+    end
+
     def save_settings
       return unless @external_settings
       Data.model.set_attribute("KMP3D", type_name, @table)
@@ -52,6 +60,10 @@ module KMP3D
 
     def group_id(i)
       i
+    end
+
+    def update_group(value, row, col)
+      @table[row.to_i + 1][col.to_i] = value
     end
 
     def type_name

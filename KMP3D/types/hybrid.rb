@@ -14,6 +14,10 @@ module KMP3D
       any_vectors? ? @vector.model : @point.model
     end
 
+    def hybrid?
+      true
+    end
+
     def transform(comp, pos)
       any_vectors? ? @vector.transform(comp, pos) : @point.transform(comp, pos)
     end

@@ -43,7 +43,7 @@ module KMP3D
       if @type.advance_steps(@ip.position) == 0
         @type.add_comp(@comp)
         Data.model.commit_operation
-        add_row(@comp) unless @type.name == "Hybrid"
+        add_row(@comp) unless @type.hybrid?
         update_comp
       end
       @prev_comp = @comp
@@ -54,7 +54,7 @@ module KMP3D
     end
 
     def onSelectionBulkChange(_)
-      return if @type.name == "Hybrid"
+      return if @type.hybrid?
       update_selection
       Data.selection.each do |ent|
         @prev_selection << ent
@@ -63,7 +63,7 @@ module KMP3D
     end
 
     def onSelectionCleared(_)
-      return if @type.name == "Hybrid"
+      return if @type.hybrid?
       update_selection
     end
 

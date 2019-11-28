@@ -72,18 +72,16 @@ module KMP3D
         edit_group_value(value, id, row) : edit_point_value(value, id, row)
     end
 
-    def edit_group_value(value, id, col)
-      if valid?(@type.external_settings[col.to_i].input, value)
-        @type.table[id.to_i + 1][col.to_i] = value
-      end
+    def edit_group_value(value, row, col)
+      settings_valid = valid?(@type.external_settings[col.to_i].input, value)
+      @type.update_group(value, row, col) if settings_valid
       refresh_html
     end
 
     def edit_point_value(value, id, col)
       ent = Data.get_entity(@type.type_name, id)
-      if valid?(@type.settings[col.to_i].input, value)
-        ent.kmp3d_settings_insert(col.to_i, value)
-      end
+      settings_valid =  valid?(@type.settings[col.to_i].input, value)
+      ent.kmp3d_settings_insert(col.to_i + 1, value) if settings_valid
       update_row(ent)
     end
 

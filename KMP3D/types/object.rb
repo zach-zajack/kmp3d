@@ -37,7 +37,7 @@ module KMP3D
     def update_group(value, row, col)
       Data.model.start_operation("Update object group")
       Data.entities_in_group(type_name, group_id(row)).each do |ent|
-        ent.kmp3d_settings_insert(0, value)
+        ent.edit_setting(0, value)
         ent.definition = model_for(value)
       end
       Data.model.commit_operation

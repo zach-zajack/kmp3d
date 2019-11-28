@@ -40,7 +40,7 @@ class Sketchup::ComponentInstance
     name[name.index("(") + 1..name.index(")") - 1].split(",")
   end
 
-  def kmp3d_settings_insert(index, value)
+  def edit_setting(index, value)
     settings = kmp3d_settings
     settings[index] = value
     name_clone = name

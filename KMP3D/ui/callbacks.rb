@@ -73,15 +73,15 @@ module KMP3D
     end
 
     def edit_group_value(value, row, col)
-      settings_valid = valid?(@type.external_settings[col.to_i].input, value)
-      @type.update_group(value, row, col) if settings_valid
+      setting = @type.external_settings[col.to_i]
+      @type.update_group(value, row, col) if setting_valid?(setting, value)
       refresh_html
     end
 
     def edit_point_value(value, id, col)
       ent = Data.get_entity(@type.type_name, id)
-      settings_valid =  valid?(@type.settings[col.to_i].input, value)
-      ent.kmp3d_settings_insert(col.to_i + 1, value) if settings_valid
+      setting = @type.settings[col.to_i]
+      ent.edit_setting(col.to_i+1, value) if setting_valid?(setting, value)
       update_row(ent)
     end
 
@@ -93,7 +93,6 @@ module KMP3D
 
     def set_hybrid_group
       value = @dlg.get_element_value("hybridGroup")
-      valid?(:byte, value)
       @type.group = value.to_i if valid?(:byte, value)
       refresh_html
     end
@@ -110,19 +109,22 @@ module KMP3D
 
     private
 
+    def setting_valid?(setting, value)
+      setting.type != :text || valid?(setting.input, value)
+    end
+
     def valid_int_within(value, min, max)
       /^(0x(\d|[A-f])+|-?\d+)$/.match(value) \
       && min <= value.to_i && value.to_i <= max
     end
 
-    def valid?(type, value)
-      case type
+    def valid?(input, value)
+      case input
       when :byte then valid_int_within(value, 0, 0xFF)
       when :bytes then value.split(",").all? { |v| valid_int_within(v,0,0xFF) }
       when :float then /^[-]?\d*\.?\d+$/.match(value)
       when :int16 then valid_int_within(value, -0x7FFF, 0x7FFF)
       when :uint16 then valid_int_within(value, 0, 0xFFFF)
-      else true
       end
     end
   end

@@ -40,7 +40,6 @@ module KMP3D
     end
 
     def import(pos, rot, scale, group, settings)
-      p scale
       comp = Data.entities.add_instance(model_for(settings[0]), pos)
       comp.transform!(Geom::Transformation.scaling(pos, *scale))
       comp.transform!(Geom::Transformation.rotation(pos, [1, 0, 0],  rot[0]))

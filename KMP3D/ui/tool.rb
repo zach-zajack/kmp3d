@@ -22,6 +22,7 @@ module KMP3D
     end
 
     def update_row(ent)
+      refresh_html if ent.deleted?
       row_id = ent.kmp3d_id(@type.type_name)
       return if row_id.nil? || @type.on_external_settings?
       selected = Data.selection.include?(ent)

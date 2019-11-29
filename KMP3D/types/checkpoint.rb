@@ -1,5 +1,16 @@
 module KMP3D
-  class Checkpoint < Type
+  class CKPT < Type
+    def initialize
+      @name = "Checkpoints"
+      @external_settings = [Settings.new(:text, :bytes, "Next Group(s)", "0")]
+      @settings = [
+        Settings.new(:text, :byte, "Respawn ID", "0"),
+        Settings.new(:text, :byte, "Type", "0xFF")
+      ]
+      @groups = []
+      super
+    end
+
     def model
       Data.load_def("checkpoint")
     end

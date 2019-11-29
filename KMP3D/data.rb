@@ -72,8 +72,8 @@ module KMP3D
       model.add_observer(observer)
       selection.add_observer(observer)
       @types = [
-        KTPT.new, ENPT.new, ITPT.new, CKPT.new, GOBJ.new,
-        POTI.new, JGPT.new, CNPT.new, MSPT.new, STGI.new, Hybrid.new
+        KTPT.new, ENPT.new, ITPT.new, CKPT.new, GOBJ.new, POTI.new,
+        AREA.new, JGPT.new, CNPT.new, MSPT.new, STGI.new, Hybrid.new
       ]
       @hybrid_types = [
         KTPT.new, ENPT.new, ITPT.new,

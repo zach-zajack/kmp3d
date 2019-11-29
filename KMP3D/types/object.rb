@@ -1,5 +1,27 @@
 module KMP3D
-  class Object < Type
+  class GOBJ < Type
+    def initialize
+      @name = "Objects"
+      @external_settings = [Settings.new(:text, :uint16, "Object ID", "101")]
+      @settings = [
+        Settings.new(:text, :uint16, "Route", "0xFFFF"),
+        Settings.new(:text, :uint16, "S1", "0"),
+        Settings.new(:text, :uint16, "S2", "0"),
+        Settings.new(:text, :uint16, "S3", "0"),
+        Settings.new(:text, :uint16, "S4", "0"),
+        Settings.new(:text, :uint16, "S5", "0"),
+        Settings.new(:text, :uint16, "S6", "0"),
+        Settings.new(:text, :uint16, "S7", "0"),
+        Settings.new(:text, :uint16, "S8", "0"),
+        Settings.new(:text, :uint16, "Flag", "0x3F")
+      ]
+      super
+    end
+
+    def settings_name
+      "Objects"
+    end
+
     def model
       model_for(@table[@group + 1][0])
     end
@@ -17,8 +39,7 @@ module KMP3D
     end
 
     def helper_text
-      "Click to add a new point. " \
-      "Place on an existing point to combine settings."
+      "Click to add a new object."
     end
 
     def import(pos, rot, scale, group, settings)

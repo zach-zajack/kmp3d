@@ -32,7 +32,7 @@ module KMP3D
       write_group("CKPH", "CKPT")
       write_section("GOBJ") { |ent| export_gobj(ent) }
       write_section_poti
-      write_unhandled("AREA")
+      write_section("AREA") { |ent| export_area(ent) }
       write_unhandled("CAME")
       write_section("JGPT") { |ent| export_ent(ent) }
       write_section("CNPT") { |ent| export_ent(ent) }
@@ -124,8 +124,10 @@ module KMP3D
       ent.kmp_transform.each { |v| @writer.write_float(v) }
     end
 
-    def export_settings(ent)
-      @type.settings.zip(ent.kmp3d_settings[1..-1]).each do |template, setting|
+    def export_settings(ent, lower_range = 0, upper_range = -1)
+      ent_settings = ent.kmp3d_settings[lower_range + 1..upper_range]
+      type_settings = @type.settings[lower_range, ent_settings.length]
+      type_settings.zip(ent_settings).each do |template, setting|
         setting = setting.hex if setting[0,2] == "0x"
         case template.input
         when :byte then @writer.write_byte(setting)
@@ -156,6 +158,12 @@ module KMP3D
       @writer.write_uint16(0) # padding
       write_kmp_transform(ent)
       export_settings(ent)
+    end
+
+    def export_area(ent)
+      export_settings(ent, 0, 4)
+      write_kmp_transform(ent)
+      export_settings(ent, 4)
     end
   end
 end

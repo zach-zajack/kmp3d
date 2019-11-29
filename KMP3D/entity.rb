@@ -59,20 +59,32 @@ class Sketchup::ComponentInstance
   def kmp_transform
     array = transformation.to_a
     pos = []
-    pos.x =  transformation.origin.x.to_m
-    pos.y =  transformation.origin.z.to_m
-    pos.z = -transformation.origin.y.to_m
+    pos.x =  array[12].to_m
+    pos.y =  array[14].to_m
+    pos.z = -array[13].to_m
     return pos if model_type == "point" && !type?("GOBJ")
+    scale = []
+    scale.x = scale_direction(array[0...3])  * array[0...3].distance([0,0,0])
+    scale.y = scale_direction(array[8...11]) * array[8...11].distance([0,0,0])
+    scale.z = scale_direction(array[4...7])  * array[4...7].distance([0,0,0])
+    array = \
+      array[0...3].map  { |a| a/scale.x } + [array[3]] + \
+      array[4...7].map  { |a| a/scale.z } + [array[7]] + \
+      array[8...11].map { |a| a/scale.y } + array[11..-1]
     rot = matrix_to_euler(array)
     return pos + rot if model_type == "vector"
-    size = []
-    size.x = array[0...3].distance([0,0,0])
-    size.y = array[8...11].distance([0,0,0])
-    size.z = array[4...7].distance([0,0,0])
     if model_type == "checkpoint"
-      return checkpoint_transform(pos.x, pos.z, rot.y, size.z)
+      return checkpoint_transform(pos.x, pos.z, rot.y, scale.z)
     end
-    return pos + rot + size
+    return pos + rot + scale
+  end
+
+  private
+
+  def scale_direction(vector)
+    direction = (vector.x <=> 0) + (vector.y <=> 0) + (vector.z <=> 0) <=> 0
+    direction = 1 if direction == 0
+    return direction
   end
 
   def matrix_to_euler(array)

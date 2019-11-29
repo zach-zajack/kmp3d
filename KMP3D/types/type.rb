@@ -62,6 +62,10 @@ module KMP3D
       i
     end
 
+    def update_setting(ent, value, col)
+      ent.edit_setting(col.to_i + 1, value)
+    end
+
     def update_group(value, row, col)
       @table[row.to_i + 1][col.to_i] = value
     end

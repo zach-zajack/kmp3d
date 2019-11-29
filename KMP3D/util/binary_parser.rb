@@ -51,6 +51,13 @@ module KMP3D
       [x, y, z]
     end
 
+    def read_scale
+      x = read_float
+      z = read_float
+      y = read_float
+      [x, y, z]
+    end
+
     def read_vector2d
       x = read_float.m
       y = -read_float.m

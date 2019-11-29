@@ -46,4 +46,51 @@ module KMP3D
       Math::PI - Math.atan2(pos.x - @prev.x, pos.y - @prev.y)
     end
   end
+
+  class KTPT < Vector
+    def initialize
+      @name = "Start Positions"
+      @settings = [
+        Settings.new(:text, :int16, "Player Index", "0xFFFF"),
+        Settings.new(:hidden, :uint16, "Padding", "0")
+      ]
+      super
+    end
+  end
+
+  class JGPT < Vector
+    def initialize
+      @name = "Respawns"
+      @settings = [
+        Settings.new(:hidden, :uint16, "ID", "0"),
+        Settings.new(:text, :int16, "Range", "0")
+      ]
+      super
+    end
+  end
+
+  class CNPT < Vector
+    def initialize
+      @name = "Cannons"
+      @settings = [
+        Settings.new(:hidden, :uint16, "ID", "0"),
+        Settings.new(
+          :dropdown, :int16, "Shoot Effect", "0",
+          ["Straight", "Curved", "Slow & Curved"]
+        )
+      ]
+      super
+    end
+  end
+
+  class MSPT < Vector
+    def initialize
+      @name = "End Positions"
+      @settings = [
+        Settings.new(:hidden, :uint16, "ID", "0"),
+        Settings.new(:text, :uint16, "Unknown", "0")
+      ]
+      super
+    end
+  end
 end

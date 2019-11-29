@@ -81,7 +81,7 @@ module KMP3D
     def edit_point_value(value, id, col)
       ent = Data.get_entity(@type.type_name, id)
       setting = @type.settings[col.to_i]
-      ent.edit_setting(col.to_i+1, value) if setting_valid?(setting, value)
+      @type.update_setting(ent, value, col) if setting_valid?(setting, value)
       update_row(ent)
     end
 

@@ -52,6 +52,12 @@ module KMP3D
       end
     end
 
+    def entities_after_group(type_name, group)
+      entities.select do |ent|
+        ent.type?(type_name) && ent.kmp3d_group > group
+      end
+    end
+
     def get_entity(type_name, id)
       return kmp3d_entities(type_name)[id.to_i]
     end

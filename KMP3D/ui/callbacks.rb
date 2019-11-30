@@ -41,7 +41,10 @@ module KMP3D
     def delete_group(id)
       @type.table.delete_at(id.to_i)
       Data.model.start_operation("Remove #{@type.type_name} Group #{id}")
-      Data.kmp3d_entities(@type.type_name).each { |ent| ent.erase! }
+      Data.entities_in_group(@type.type_name, id.to_i).each { |ent| ent.erase! }
+      Data.entities_after_group(@type.type_name, id.to_i).each do |ent|
+        ent.edit_setting(0, ent.kmp3d_group - 1)
+      end
       KMP3D::Data.model.commit_operation
       refresh_html
     end

@@ -1,7 +1,7 @@
 module KMP3D
   module Observer
     def activate
-      load_kmp3d_model
+      Data.load_kmp3d_model
       @dlg.show unless @dlg.visible?
       @id = Data.model.tools.active_tool_id
       refresh_html

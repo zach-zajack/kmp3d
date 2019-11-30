@@ -18,10 +18,6 @@ module KMP3D
       model.layers
     end
 
-    def on_kmp3d_model?
-      model.get_attribute("KMP3D", "MODEL", false)
-    end
-
     def model_dir
       path = Data.model.path
       rindex = path.rindex(/[\\\/]/)
@@ -76,14 +72,14 @@ module KMP3D
       model.definitions.load("#{DIR}/models/#{name}.skp")
     end
 
-    def create_kmp3d_model
+    def load_kmp3d_model
+      return if model.get_attribute("KMP3D", "KMP3D-model?", false)
       Dir["#{DIR}/models/*.skp"].each { |d| model.definitions.load(d) }
       @types.each { |t| layers.add(t.name).visible = false }
-      model.set_attribute("KMP3D", "MODEL", true)
+      model.set_attribute("KMP3D", "KMP3D-model?", true)
     end
 
-    def reload(observer, init = false)
-      return unless on_kmp3d_model? || init
+    def reload(observer)
       model.add_observer(observer)
       selection.add_observer(observer)
       @types = [

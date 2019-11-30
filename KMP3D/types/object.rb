@@ -23,7 +23,7 @@ module KMP3D
     end
 
     def model
-      model_for(@table[@group + 1][0])
+      on_external_settings? ? model_for(0) : model_for(@table[@group + 1][0])
     end
 
     def object?

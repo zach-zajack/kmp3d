@@ -5,7 +5,9 @@ module KMP3D
     Group = Struct.new(:range, :id)
 
     def import
-      path = UI.openpanel("Select a file to import from.")
+      path = UI.openpanel(
+        "Select a file to import from.", Data.model_dir, "*.kmp"
+      )
       return if path.nil?
       Data.model.start_operation("Import KMP")
       @parser = BinaryParser.new(path)

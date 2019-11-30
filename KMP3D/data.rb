@@ -18,6 +18,20 @@ module KMP3D
       model.layers
     end
 
+    def model_dir
+      path = Data.model.path
+      rindex = path.rindex(/[\\\/]/)
+      return "" if rindex.nil?
+      return path[0..rindex]
+    end
+
+    def model_name
+      path = Data.model.path
+      rindex = path.rindex(/[\\\/]/)
+      return "untitled" if rindex.nil?
+      return path[rindex + 1...-4]
+    end
+
     def set_layer_visible(type_name)
       @types.each { |type| layers[type.name].visible = type.name == type_name }
     end
@@ -38,6 +52,12 @@ module KMP3D
       end
     end
 
+    def entities_after_group(type_name, group)
+      entities.select do |ent|
+        ent.type?(type_name) && ent.kmp3d_group > group
+      end
+    end
+
     def get_entity(type_name, id)
       return kmp3d_entities(type_name)[id.to_i]
     end
@@ -54,18 +74,15 @@ module KMP3D
       @hybrid_types
     end
 
-    def css
-      css = Sketchup.read_default("KMP3D", "CSS", "default")
-      css = "default" unless File.exist?("#{DIR}/css/#{css}.css")
-      File.open("#{DIR}/css/#{css}.css").read
-    end
-
-    def css_themes
-      Dir["#{DIR}/css/*.css"].map { |f| f[f.rindex(/[\\\/]/)+1...-4] }
-    end
-
     def load_def(name)
-      @defs[name]
+      model.definitions.load("#{DIR}/models/#{name}.skp")
+    end
+
+    def load_kmp3d_model
+      return if model.get_attribute("KMP3D", "KMP3D-model?", false)
+      Dir["#{DIR}/models/*.skp"].each { |d| model.definitions.load(d) }
+      @types.each { |t| layers.add(t.name).visible = false }
+      model.set_attribute("KMP3D", "KMP3D-model?", true)
     end
 
     def reload(observer)
@@ -79,12 +96,6 @@ module KMP3D
         KTPT.new, ENPT.new, ITPT.new,
         POTI.new, JGPT.new, CNPT.new, MSPT.new
       ]
-      @defs = {}
-      Dir["#{DIR}/models/*.skp"].each do |f|
-        name = f[f.rindex(/[\\\/]/)+1...-4]
-        @defs[name] = model.definitions.load(f)
-      end
-      @types.each { |t| layers.add(t.name).visible = false }
     end
   end
 end

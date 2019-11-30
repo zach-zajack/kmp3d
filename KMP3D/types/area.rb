@@ -8,16 +8,16 @@ module KMP3D
           :dropdown, :byte, "Area Type", "0",
           [
             "Camera", "Env Effect", "BFG Entry Swap", "Moving Road",
-            "Force Recalc.", "Minimap control", "Music Change", "Boos",
+            "Force Recalc.", "Minimap Control", "Music Change", "Boos",
             "Draw Distance", "Unknown (0x09)", "Fall Boundary"
           ]
         ),
         Settings.new(:text, :byte, "Camera", "0xFF"),
         Settings.new(:text, :byte, "Priority", "0"),
-        Settings.new(:text, :uint16, "S1", "0"),
-        Settings.new(:text, :uint16, "S2", "0"),
-        Settings.new(:text, :byte, "Route", "0"),
-        Settings.new(:text, :byte, "ENPT", "0"),
+        Settings.new(:text, :uint16, "Set. 1", "0"),
+        Settings.new(:text, :uint16, "Set. 2", "0"),
+        Settings.new(:text, :byte, "Route", "0xFF"),
+        Settings.new(:text, :byte, "ENPT", "0xFF"),
         Settings.new(:hidden, :uint16, "Padding", "0")
       ]
       super

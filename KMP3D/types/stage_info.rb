@@ -4,8 +4,10 @@ module KMP3D
       @name = "Stage Info"
       @external_settings = [
         Settings.new(:text, :byte, "Lap Count", "3"),
-        Settings.new(:text, :byte, "Pole Position", "0"),
-        Settings.new(:text, :byte, "Driver Distance", "0"),
+        Settings.new(:dropdown, :byte, "Pole Position", "0", ["Left", "Right"]),
+        Settings.new(
+          :dropdown, :byte, "Driver Distance", "0", ["Normal", "Closer"]
+        ),
         Settings.new(:text, :float, "Speed Modifier", "1.0")
       ]
       super

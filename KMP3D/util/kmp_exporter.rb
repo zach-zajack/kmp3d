@@ -3,7 +3,9 @@ module KMP3D
     module_function
 
     def export
-      path = UI.savepanel("Select a file to export to.")
+      path = UI.savepanel(
+        "Select a file to export to.",  Data.model_dir, "#{Data.model_name}.kmp"
+      )
       return if path.nil?
       @writer = BinaryWriter.new(path)
       write_header

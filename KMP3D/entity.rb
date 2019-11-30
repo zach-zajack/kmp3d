@@ -63,10 +63,11 @@ class Sketchup::ComponentInstance
     pos.y =  array[14].to_m
     pos.z = -array[13].to_m
     return pos if model_type == "point" && !type?("GOBJ")
+    sign = determinant(array) <=> 0
     scale = []
-    scale.x = scale_direction(array[0...3])  * array[0...3].distance([0,0,0])
-    scale.y = scale_direction(array[8...11]) * array[8...11].distance([0,0,0])
-    scale.z = scale_direction(array[4...7])  * array[4...7].distance([0,0,0])
+    scale.x = array[0...3].distance([0,0,0])
+    scale.y = array[8...11].distance([0,0,0]) * sign
+    scale.z = array[4...7].distance([0,0,0])
     array = \
       array[0...3].map  { |a| a/scale.x } + [array[3]] + \
       array[4...7].map  { |a| a/scale.z } + [array[7]] + \
@@ -81,10 +82,10 @@ class Sketchup::ComponentInstance
 
   private
 
-  def scale_direction(vector)
-    direction = (vector.x <=> 0) + (vector.y <=> 0) + (vector.z <=> 0) <=> 0
-    direction = 1 if direction == 0
-    return direction
+  def determinant(array)
+    array[0]*array[6]*array[9] + array[0]*array[5]*array[10] + \
+    array[1]*array[6]*array[8] + array[1]*array[4]*array[10] + \
+    array[2]*array[5]*array[8] + array[2]*array[4]*array[9]
   end
 
   def matrix_to_euler(array)

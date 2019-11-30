@@ -15,6 +15,11 @@ module KMP3D
       add_callbacks
     end
 
+    def load_kmp3d_model
+      Data.reload(self, true)
+      Data.create_kmp3d_model unless Data.on_kmp3d_model?
+    end
+
     def refresh_html
       @type = Data.types[@type_index]
       @dlg.set_html(generate_head + generate_body(@type.to_html))

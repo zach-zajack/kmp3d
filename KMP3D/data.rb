@@ -18,6 +18,24 @@ module KMP3D
       model.layers
     end
 
+    def on_kmp3d_model?
+      model.get_attribute("KMP3D", "MODEL", false)
+    end
+
+    def model_dir
+      path = Data.model.path
+      rindex = path.rindex(/[\\\/]/)
+      return "" if rindex.nil?
+      return path[0..rindex]
+    end
+
+    def model_name
+      path = Data.model.path
+      rindex = path.rindex(/[\\\/]/)
+      return "untitled" if rindex.nil?
+      return path[rindex + 1...-4]
+    end
+
     def set_layer_visible(type_name)
       @types.each { |type| layers[type.name].visible = type.name == type_name }
     end
@@ -54,21 +72,18 @@ module KMP3D
       @hybrid_types
     end
 
-    def css
-      css = Sketchup.read_default("KMP3D", "CSS", "default")
-      css = "default" unless File.exist?("#{DIR}/css/#{css}.css")
-      File.open("#{DIR}/css/#{css}.css").read
-    end
-
-    def css_themes
-      Dir["#{DIR}/css/*.css"].map { |f| f[f.rindex(/[\\\/]/)+1...-4] }
-    end
-
     def load_def(name)
-      @defs[name]
+      model.definitions.load("#{DIR}/models/#{name}.skp")
     end
 
-    def reload(observer)
+    def create_kmp3d_model
+      Dir["#{DIR}/models/*.skp"].each { |d| model.definitions.load(d) }
+      @types.each { |t| layers.add(t.name).visible = false }
+      model.set_attribute("KMP3D", "MODEL", true)
+    end
+
+    def reload(observer, init = false)
+      return unless on_kmp3d_model? || init
       model.add_observer(observer)
       selection.add_observer(observer)
       @types = [
@@ -79,12 +94,6 @@ module KMP3D
         KTPT.new, ENPT.new, ITPT.new,
         POTI.new, JGPT.new, CNPT.new, MSPT.new
       ]
-      @defs = {}
-      Dir["#{DIR}/models/*.skp"].each do |f|
-        name = f[f.rindex(/[\\\/]/)+1...-4]
-        @defs[name] = model.definitions.load(f)
-      end
-      @types.each { |t| layers.add(t.name).visible = false }
     end
   end
 end

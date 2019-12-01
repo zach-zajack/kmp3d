@@ -37,11 +37,17 @@ module KMP3D
       next_bytes(4).unpack("F").first
     end
 
-    def read_vector3d
+    def read_position3d
       x = read_float.m
       z = read_float.m
       y = -read_float.m
       [x, y, z]
+    end
+
+    def read_position2d
+      x = read_float.m
+      y = -read_float.m
+      [x, y]
     end
 
     def read_rotation
@@ -58,10 +64,11 @@ module KMP3D
       [x, y, z]
     end
 
-    def read_vector2d
-      x = read_float.m
-      y = -read_float.m
-      [x, y]
+    def read_vector3d
+      x = read_float
+      z = read_float
+      y = -read_float
+      [x, y, z]
     end
   end
 end

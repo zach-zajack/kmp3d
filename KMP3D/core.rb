@@ -14,6 +14,7 @@ module KMP3D
   require "#{DIR}/types/hybrid"
   require "#{DIR}/util/binary_parser"
   require "#{DIR}/util/binary_writer"
+  require "#{DIR}/util/kcl_importer"
   require "#{DIR}/util/kmp_importer"
   require "#{DIR}/util/kmp_exporter"
   require "#{DIR}/entity"
@@ -23,8 +24,9 @@ module KMP3D
   tool_cmd = UI::Command.new("KMP3D Tool") { Data.model.select_tool(tool) }
   tool_cmd.small_icon = tool_cmd.large_icon = "#{DIR}/images/tool.png"
 
-  exporter_cmd = UI::Command.new("Export KMP...") { KMPExporter.export }
-  importer_cmd = UI::Command.new("Import KMP...") do
+  kcl_importer_cmd = UI::Command.new("Import KCL...") { KCLImporter.import }
+  kmp_exporter_cmd = UI::Command.new("Export KMP...") { KMPExporter.export }
+  kmp_importer_cmd = UI::Command.new("Import KMP...") do
     Data.load_kmp3d_model
     KMPImporter.import
     tool.refresh_html
@@ -35,8 +37,9 @@ module KMP3D
 
   menu = UI.menu.add_submenu("KMP3D")
   menu.add_item(tool_cmd)
-  menu.add_item(exporter_cmd)
-  menu.add_item(importer_cmd)
+  menu.add_item(kmp_exporter_cmd)
+  menu.add_item(kmp_importer_cmd)
+  menu.add_item(kcl_importer_cmd)
 
   toolbar = UI::Toolbar.new("KMP3D")
   toolbar.add_item(tool_cmd)

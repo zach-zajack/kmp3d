@@ -9,6 +9,7 @@ module KMP3D
         "Select a file to import from.", Data.model_dir, "*.kmp"
       )
       return if path.nil?
+      ask_kcl_import(path)
       Data.model.start_operation("Import KMP")
       @parser = BinaryParser.new(path)
       @gobj_ids = []
@@ -19,6 +20,14 @@ module KMP3D
       Data.model.commit_operation
       Sketchup.status_text = "KMP3D: Finished importing!"
       UI.beep
+    end
+
+    def ask_kcl_import(path)
+      kcl_path = File.dirname(path) + "/course.kcl"
+      return unless File.exist?(kcl_path)
+      msg = "A course.kcl file was found in the directory of the KMP file." \
+            "Would you like to import it as well?"
+      KCLImporter.import(kcl_path) if UI.messagebox(msg, MB_YESNO) == IDYES
     end
 
     def read_header
@@ -103,7 +112,7 @@ module KMP3D
     end
 
     def import_vector
-      position = @parser.read_vector3d
+      position = @parser.read_position3d
       rotation = @parser.read_rotation
       settings = import_settings(@type.settings)
       @type.import(position, rotation, 0, settings)
@@ -111,15 +120,15 @@ module KMP3D
 
     def import_point(group_type, group_index)
       group = get_group_index(group_type, group_index)
-      position = @parser.read_vector3d
+      position = @parser.read_position3d
       settings = import_settings(@type.settings)
       @type.import(position, group, settings)
     end
 
     def import_ckpt(index)
       group = get_group_index(@ckph, index)
-      position1 = @parser.read_vector2d
-      position2 = @parser.read_vector2d
+      position1 = @parser.read_position2d
+      position2 = @parser.read_position2d
       respawn = @parser.read_byte
       type = @parser.read_byte
       checkpoint_type = format(type, type == 0xFF)
@@ -131,7 +140,7 @@ module KMP3D
     def import_gobj
       id = @parser.read_uint16
       @parser.read_uint16 # padding
-      position = @parser.read_vector3d
+      position = @parser.read_position3d
       rotation = @parser.read_rotation
       scale = @parser.read_scale
       settings = import_settings(@type.settings)
@@ -146,7 +155,7 @@ module KMP3D
       @type.table[index+1] = [smooth == 1, cyclic == 1]
       @type.save_settings
       points.times do
-        position = @parser.read_vector3d
+        position = @parser.read_position3d
         settings = import_settings(@type.settings)
         @type.import(position, index, settings)
       end
@@ -154,7 +163,7 @@ module KMP3D
 
     def import_area
       settings = import_settings(@type.settings[0...4])
-      position = @parser.read_vector3d
+      position = @parser.read_position3d
       rotation = @parser.read_rotation
       scale = @parser.read_scale
       settings += import_settings(@type.settings[4..-1])

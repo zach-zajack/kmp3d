@@ -25,6 +25,7 @@ module KMP3D
     def deactivate(view)
       Data.model.abort_operation
       view.invalidate
+      refresh_html
     end
 
     def onMouseMove(flags, x, y, view)

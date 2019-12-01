@@ -69,9 +69,9 @@ module KMP3D
     end
 
     def row_attribs(id, selected)
-      return {} if on_external_settings? || id.to_i < 0
+      return {} if id.to_i < 0
       attribs = {:id => "row#{id}"}
-      attribs[:class] = "selected" if selected
+      attribs[:class] = "selected" if !on_external_settings? && selected
       return attribs
     end
 

@@ -6,7 +6,7 @@ module KMP3D
       @dlg.add_action_callback("addGroup") { add_group }
       @dlg.add_action_callback("focusRow") { |_, id| focus_row(id) }
       @dlg.add_action_callback("deleteRow") { |_, id| delete_row(id) }
-      @dlg.add_action_callback("selectRow") { |_, id| select_point(id) }
+      @dlg.add_action_callback("selectRow") { |_, id| select_row(id) }
       @dlg.add_action_callback("switchType") { |_, id| switch_type(id) }
       @dlg.add_action_callback("switchGroup") { |_, id| switch_group(id) }
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
@@ -41,11 +41,12 @@ module KMP3D
     def delete_group(id)
       @type.table.delete_at(id.to_i)
       Data.model.start_operation("Remove #{@type.type_name} Group #{id}")
-      Data.entities_in_group(@type.type_name, id.to_i).each { |ent| ent.erase! }
-      Data.entities_after_group(@type.type_name, id.to_i).each do |ent|
+      Data.entities.erase_entities(Data.entities_in_group(@type.type_name, id))
+      Data.entities_after_group(@type.type_name, id).each do |ent|
         ent.edit_setting(0, ent.kmp3d_group - 1)
       end
       KMP3D::Data.model.commit_operation
+      @type.group -= 1
       refresh_html
     end
 
@@ -56,8 +57,22 @@ module KMP3D
       refresh_html
     end
 
+    def select_row(id)
+      @type.on_external_settings? ? select_group(id) : select_point(id)
+    end
+
+    def select_group(id)
+      selected_ents = Data.entities_in_group(@type.type_name, id)
+      selected = (selected_ents - @prev_selection) != []
+      selected_ents.each do |ent|
+        selected ? Data.selection.add(ent) : Data.selection.remove(ent)
+      end
+      selected ? \
+        @prev_selection += selected_ents : @prev_selection -= selected_ents
+      @dlg.execute_script(toggle_select(id, selected))
+    end
+
     def select_point(id)
-      return if @type.on_external_settings?
       ent = Data.get_entity(@type.type_name, id)
       Data.selection.toggle(ent)
       @prev_selection << ent

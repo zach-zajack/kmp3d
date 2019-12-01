@@ -23,6 +23,7 @@ module KMP3D
     end
 
     def deactivate(view)
+      @comp.erase! # ensure comp gets removed
       Data.model.abort_operation
       view.invalidate
       refresh_html

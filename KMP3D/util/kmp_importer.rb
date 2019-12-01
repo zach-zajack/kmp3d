@@ -26,7 +26,7 @@ module KMP3D
       kcl_path = File.dirname(path) + "/course.kcl"
       return unless File.exist?(kcl_path)
       msg = "A course.kcl file was found in the directory of the KMP file." \
-            "Would you like to import it as well?"
+            " Would you like to import it as well?"
       KCLImporter.import(kcl_path) if UI.messagebox(msg, MB_YESNO) == IDYES
     end
 

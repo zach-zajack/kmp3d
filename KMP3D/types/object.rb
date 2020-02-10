@@ -4,6 +4,7 @@ module KMP3D
       @name = "Objects"
       @external_settings = [Settings.new(:text, :uint16, "Object ID", "101")]
       @settings = [
+        Settings.new(:text, :uint16, "Ref ID", "0x0"),
         Settings.new(:text, :uint16, "Route", "0xFFFF"),
         Settings.new(:text, :uint16, "S1", "0"),
         Settings.new(:text, :uint16, "S2", "0"),

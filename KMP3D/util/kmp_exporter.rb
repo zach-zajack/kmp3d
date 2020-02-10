@@ -157,9 +157,9 @@ module KMP3D
 
     def export_gobj(ent)
       @writer.write_uint16(ent.kmp3d_group)
-      @writer.write_uint16(0) # padding
+      export_settings(ent, 0, 1)
       write_kmp_transform(ent)
-      export_settings(ent)
+      export_settings(ent, 1)
     end
 
     def export_area(ent)

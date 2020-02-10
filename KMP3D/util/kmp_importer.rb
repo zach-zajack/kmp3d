@@ -139,11 +139,11 @@ module KMP3D
 
     def import_gobj
       id = @parser.read_uint16
-      @parser.read_uint16 # padding
+      settings = import_settings(@type.settings[0...1])
       position = @parser.read_position3d
       rotation = @parser.read_rotation
       scale = @parser.read_scale
-      settings = import_settings(@type.settings)
+      settings += import_settings(@type.settings[1..-1])
       @gobj_ids << id
       @type.import(position, rotation, scale, id, settings)
     end

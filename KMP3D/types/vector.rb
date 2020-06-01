@@ -81,6 +81,23 @@ module KMP3D
       ]
       super
     end
+
+    def transform(comp, pos)
+      case @step
+      when 0 then comp.transform!(Geom::Transformation.translation(pos))
+      when 1
+        comp.transform!(Geom::Transformation.rotation(@prev, [0, 0, 1], \
+          angle(pos)))
+        comp.transform!(Geom::Transformation.translation(pos - @prev))
+      end
+    end
+
+    def helper_text
+      case @step
+      when 0 then "(Step 1/2) Click to place the cannon's start position."
+      when 1 then "(Step 2/2) Click to place the cannon's end position."
+      end
+    end
   end
 
   class MSPT < Vector

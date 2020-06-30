@@ -23,6 +23,12 @@ module KMP3D
       "Objects"
     end
 
+    def add_group(init=false)
+      return super if init
+      id = UI.inputbox(["Enter Object ID"], ["101"], "Add Object")
+      @table << id
+    end
+
     def model
       on_external_settings? ? model_for(0) : model_for(@table[@group + 1][0])
     end

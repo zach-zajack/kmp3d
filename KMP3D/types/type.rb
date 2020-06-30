@@ -13,7 +13,7 @@ module KMP3D
       if @external_settings # external settings deal with groups, mostly
         @table = Data.model.get_attribute("KMP3D", \
           type_name, [Array.new(@external_settings.length)])
-        add_group if @table.length == 1
+        add_group(true) if @table.length == 1
       end
     end
 
@@ -38,7 +38,7 @@ module KMP3D
       Data.model.set_attribute("KMP3D", type_name, @table)
     end
 
-    def add_group
+    def add_group(init=false)
       return unless @external_settings
       @table << @external_settings.map { |s| s.default }
     end

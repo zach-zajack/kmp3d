@@ -29,6 +29,7 @@ module KMP3D
       return super if init
       id = UI.inputbox(["Enter Object Name"], ["itembox"], [@obj_list], "Add Object").first
       @table << [id]
+      return if UI.messagebox("Import Object SKP?", MB_YESNO) == IDNO
       @object_paths[id] = Data.model.definitions.load(UI.openpanel(
         "Select a file to import from.", Data.model_dir, "SKP|*.skp||"
       ))

@@ -53,7 +53,7 @@ class Sketchup::ComponentInstance
   end
 
   def kmp3d_group
-    kmp3d_settings[0].to_i
+    kmp3d_settings[0]
   end
 
   def kmp_transform

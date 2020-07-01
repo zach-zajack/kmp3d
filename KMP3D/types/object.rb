@@ -2,7 +2,7 @@ module KMP3D
   class GOBJ < Type
     def initialize
       @name = "Objects"
-      @external_settings = [Settings.new(:text, :uint16, "Object ID", "101")]
+      @external_settings = [Settings.new(:text, :uint16, "Object ID", "itembox")]
       @settings = [
         Settings.new(:text, :uint16, "Ref ID", "0x0"),
         Settings.new(:text, :uint16, "Route", "0xFFFF"),
@@ -16,17 +16,22 @@ module KMP3D
         Settings.new(:text, :uint16, "S8", "0"),
         Settings.new(:text, :uint16, "Flag", "0x3F")
       ]
+      @object_paths = {"itembox" => Data.load_def("itembox")}
+      @obj_list = Objects::LIST.keys.join("|")
       super
     end
 
     def settings_name
-      "Objects"
+      ""
     end
 
     def add_group(init=false)
       return super if init
-      id = UI.inputbox(["Enter Object ID"], ["101"], "Add Object")
-      @table << id
+      id = UI.inputbox(["Enter Object Name"], ["itembox"], [@obj_list], "Add Object").first
+      @table << [id]
+      @object_paths[id] = Data.model.definitions.load(UI.openpanel(
+        "Select a file to import from.", Data.model_dir, "SKP|*.skp||"
+      ))
     end
 
     def model
@@ -59,7 +64,7 @@ module KMP3D
     end
 
     def group_id(i)
-      @table[i.to_i + 1][0].to_i
+      @table[i.to_i + 1][0]
     end
 
     def update_group(value, row, col)
@@ -75,10 +80,7 @@ module KMP3D
     private
 
     def model_for(i)
-      case i.to_s
-      when "101" then Data.load_def("itembox")
-      else Data.load_def("point")
-      end
+      @object_paths[i.to_s] || Data.load_def("point")
     end
   end
 end

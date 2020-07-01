@@ -156,7 +156,7 @@ module KMP3D
     end
 
     def export_gobj(ent)
-      @writer.write_uint16(ent.kmp3d_group)
+      @writer.write_uint16(Objects::LIST[ent.kmp3d_group])
       export_settings(ent, 0, 1)
       write_kmp_transform(ent)
       export_settings(ent, 1)

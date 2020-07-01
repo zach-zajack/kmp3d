@@ -17,6 +17,7 @@ module KMP3D
   require "#{DIR}/util/kcl_importer"
   require "#{DIR}/util/kmp_importer"
   require "#{DIR}/util/kmp_exporter"
+  require "#{DIR}/objects"
   require "#{DIR}/entity"
   require "#{DIR}/data"
 

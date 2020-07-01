@@ -17,12 +17,18 @@ module KMP3D
         Settings.new(:text, :uint16, "Flag", "0x3F")
       ]
       @object_paths = {"itembox" => Data.load_def("itembox")}
-      @obj_list = Objects::LIST.keys.join("|")
+      @obj_list = \
+        Data.model.get_attribute("KMP3D", "GOBJ", Objects::LIST.keys.join("|"))
       super
     end
 
     def settings_name
       ""
+    end
+
+    def save_settings
+      super
+      Data.model.set_attribute("KMP3D", "GOBJ", @object_paths)
     end
 
     def add_group(init=false)

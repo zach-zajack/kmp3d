@@ -23,5 +23,5 @@ KMP3D is a [Google SketchUp](https://www.sketchup.com/) plugin that functions as
 - Updated models
 - Preview of paths
 - Ability to reorder points
-- Comprehensive database for GOBJ points and their settings
-- CAME and AREA support
+- Comprehensive database for GOBJ settings
+- CAME support

@@ -56,7 +56,7 @@ module KMP3D
         end
       end
       table << tag(:td, :style => "width:20px") do
-        tag(:button, :onclick => callback("deleteRow", id)) { "&#x2715;" }
+        tag(:button, :onclick => callback("deleteRow", id+1)) { "&#x2715;" }
       end
     end
 

@@ -55,7 +55,7 @@ module KMP3D
           table_input("#{id},#{table_id}", col, setting)
         end
       end
-      table << tag(:td, :style => "width:20px") do
+      table << tag(:td, :class => "delete") do
         tag(:button, :onclick => callback("deleteRow", id+1)) { "&#x2715;" }
       end
     end
@@ -85,6 +85,10 @@ module KMP3D
       when :text then tag(:input, attributes.merge(:type => "text"))
       when :dropdown then select(value.to_i, attributes, setting.opts)
       when :checkbox then checkbox("", attributes, value == "true")
+      when :path
+        attributes = {:id => id, :onclick => callback("objPathChange", id)}
+        path = value.path
+        tag(:button, attributes) { path[path.rindex(/[\\\/]/) + 1..-1] }
       end
     end
   end

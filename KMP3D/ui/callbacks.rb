@@ -10,6 +10,7 @@ module KMP3D
       @dlg.add_action_callback("switchType") { |_, id| switch_type(id) }
       @dlg.add_action_callback("switchGroup") { |_, id| switch_group(id) }
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
+      @dlg.add_action_callback("objPathChange") { |_, id| obj_path_change(id) }
       @dlg.add_action_callback("setHybridType") { |_, id| set_hybrid_type(id) }
       @dlg.add_action_callback("setHybridGroup") { set_hybrid_group }
       @dlg.add_action_callback("typesScroll") { |_, px| @scroll_types = px }
@@ -83,9 +84,8 @@ module KMP3D
       id = table_id.split(",").first
       row = table_id.split(",").last
       value = @dlg.get_element_value(table_id)
-      if value == "true" then value = "false"
-      elsif value == "false" then value = "true"
-      end
+      value = "false" if value == "true"
+      value = "true" if value == "false"
       @type.on_external_settings? ? \
         edit_group_value(value, id, row) : edit_point_value(value, id, row)
     end
@@ -125,6 +125,16 @@ module KMP3D
       refresh_html
     end
 
+    def obj_path_change(table_id)
+      id = table_id.split(",").first
+      row = table_id.split(",").last
+      path = Data.model.definitions.load(UI.openpanel(
+        "Select a file to import from.", Data.model_dir, "SKP|*.skp||"
+      ))
+      @type.update_group(path, id, row)
+      refresh_html
+    end
+
     private
 
     def setting_valid?(setting, value)
@@ -138,6 +148,7 @@ module KMP3D
 
     def valid?(input, value)
       case input
+      when :obj then !Objects::LIST[value].nil?
       when :byte then valid_int_within(value, 0, 0xFF)
       when :bytes
         value != "" && \

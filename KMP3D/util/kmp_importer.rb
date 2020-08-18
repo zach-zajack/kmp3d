@@ -67,8 +67,10 @@ module KMP3D
         entries.times { |i| import_ckpt(i) }
       when "GOBJ"
         entries.times { import_gobj }
-        existing_ids = @type.table[1..-1].map { |t| t[0].to_i }
-        (@gobj_ids.uniq - existing_ids).each { |id| @type.table << [id.to_s] }
+        existing_ids = @type.table[1..-1].map { |t| t[0] }
+        (@gobj_ids.uniq - existing_ids).each do |id|
+          @type.table << [id, Data.load_obj(id)]
+        end
         @type.save_settings
       when "POTI" then entries.times { |i| import_poti(i) }
       when "AREA" then entries.times { import_area }
@@ -138,7 +140,7 @@ module KMP3D
     end
 
     def import_gobj
-      id = @parser.read_uint16
+      id = Objects.name_from_id(@parser.read_uint16)
       settings = import_settings(@type.settings[0...1])
       position = @parser.read_position3d
       rotation = @parser.read_rotation

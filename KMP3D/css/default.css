@@ -121,9 +121,12 @@ table input {
 
 table button {
   padding: 0;
-  width: 20px;
   color: #000;
   font-weight: bold;
+}
+
+.delete button {
+  width: 20px;
   border-radius: 20px;
   background-color: #ddd;
 }

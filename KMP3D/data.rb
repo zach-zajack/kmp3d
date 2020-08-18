@@ -42,19 +42,20 @@ module KMP3D
 
     def entities_in_group(type_name, group)
       entities.select do |ent|
-        ent.type?(type_name) && ent.kmp3d_group.to_i == group.to_i
+        next unless ent.type?(type_name)
+        ent.type?(type_name) && ent.kmp3d_group == group.to_s
       end
     end
 
     def entities_before_group(type_name, group)
       entities.select do |ent|
-        ent.type?(type_name) && ent.kmp3d_group.to_i < group.to_i
+        ent.type?(type_name) && ent.kmp3d_group < group.to_s
       end
     end
 
     def entities_after_group(type_name, group)
       entities.select do |ent|
-        ent.type?(type_name) && ent.kmp3d_group.to_i > group.to_i
+        ent.type?(type_name) && ent.kmp3d_group > group.to_s
       end
     end
 
@@ -76,6 +77,12 @@ module KMP3D
 
     def load_def(name)
       model.definitions.load("#{DIR}/models/#{name}.skp")
+    end
+
+    def load_obj(id)
+      path = "objects/#{Objects::LIST[id].model}"
+      File.file?("#{DIR}/models/#{path}.skp") ? \
+        load_def(path) : load_def("point")
     end
 
     def load_kmp3d_model

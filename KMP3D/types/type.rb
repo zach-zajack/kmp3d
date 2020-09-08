@@ -29,6 +29,10 @@ module KMP3D
       false
     end
 
+    def checkpoint?
+      false
+    end
+
     def camera?
       false
     end
@@ -37,10 +41,7 @@ module KMP3D
       false
     end
 
-    def points_array
-      Data.entities_in_group(type_name, group_id(@group)).map do |ent|
-        ent.transformation.origin
-      end
+    def draw_connected_points(view, comp)
     end
 
     def save_settings

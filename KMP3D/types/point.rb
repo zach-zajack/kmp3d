@@ -17,6 +17,17 @@ module KMP3D
       comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
       comp.layer = name
     end
+
+    def draw_connected_points(view, comp)
+      view.line_stipple = "-"
+      view.line_width = 10
+      view.drawing_color = "Crimson"
+      array = Data.entities_in_group(type_name, group_id(@group)).map do |ent|
+        ent.transformation.origin
+      end
+      array << comp.transformation.origin
+      view.draw_polyline(array) if array.length >= 2
+    end
   end
 
   class ENPT < Point

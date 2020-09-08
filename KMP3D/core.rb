@@ -10,6 +10,7 @@ module KMP3D
   require "#{DIR}/types/checkpoint"
   require "#{DIR}/types/object"
   require "#{DIR}/types/area"
+  require "#{DIR}/types/camera"
   require "#{DIR}/types/stage_info"
   require "#{DIR}/types/hybrid"
   require "#{DIR}/util/binary_parser"

@@ -116,11 +116,13 @@ module KMP3D
     end
 
     def switch_type(id)
+      @type.step = 0
       @type_index = id.to_i
       refresh_html
     end
 
     def switch_group(id)
+      @type.step = 0
       @type.group = id.to_i
       refresh_html
     end

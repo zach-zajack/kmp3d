@@ -29,8 +29,18 @@ module KMP3D
       false
     end
 
+    def camera?
+      false
+    end
+
     def hybrid?
       false
+    end
+
+    def points_array
+      Data.entities_in_group(type_name, group_id(@group)).map do |ent|
+        ent.transformation.origin
+      end
     end
 
     def save_settings

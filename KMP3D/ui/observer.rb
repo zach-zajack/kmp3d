@@ -54,6 +54,16 @@ module KMP3D
 
     def draw(view)
       @ip.draw(view)
+      view.draw(GL_TRIANGLES, @comp)
+      if @type.camera?
+        view.draw(GL_LINE, [@ip.position]) if @type.step == 1
+      elsif !@type.object?
+        view.drawing_color = (@type.vector? ? "Aqua" : "Crimson")
+        view.line_stipple = "-"
+        view.line_width = 5
+        array = @type.points_array + [@ip.position]
+        view.draw_polyline(array) if array.length >= 2
+      end
     end
 
     def onSelectionBulkChange(_)

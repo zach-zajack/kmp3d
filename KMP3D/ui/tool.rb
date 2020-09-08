@@ -50,6 +50,7 @@ module KMP3D
     end
 
     def type_groups
+      return sidenav(@type.group, "switchGroup", @type.camtype) if @type.camera?
       return "" unless @type.external_settings
       len = @type.groups
       settings = (0..len).map do |i|

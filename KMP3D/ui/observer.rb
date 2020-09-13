@@ -33,9 +33,11 @@ module KMP3D
       @comp.visible = false
       return if !@dlg.visible? || @type.on_external_settings?
       @ip.pick(view, x, y)
-      @comp = @type.transform(@prev_comp.copy, @ip.position)
-      @comp.layer = @type.name
-      @comp.definition = @type.model
+      unless @type.hide_point?
+        @comp = @type.transform(@prev_comp.copy, @ip.position)
+        @comp.layer = @type.name
+        @comp.definition = @type.model
+      end
       view.tooltip = @ip.tooltip if @ip.valid?
       Sketchup.status_text = @type.helper_text
       view.invalidate
@@ -44,7 +46,7 @@ module KMP3D
     def onLButtonDown(flags, x, y, view)
       return if !@ip.valid? || @type.on_external_settings?
       if @type.advance_steps(@ip.position) == 0
-        @type.add_comp(@comp)
+        @comp = @type.add_comp(@comp)
         Data.model.commit_operation
         add_row(@comp) unless @type.hybrid?
         update_comp
@@ -54,11 +56,11 @@ module KMP3D
 
     def draw(view)
       @ip.draw(view)
-      @type.draw_connected_points(view, @comp)
+      @type.draw_connected_points(view, @comp, @ip.position)
     end
 
     def onSelectionBulkChange(_)
-      return if @type.hybrid?
+      return if !@type || @type.hybrid?
       update_selection
       Data.selection.each do |ent|
         @prev_selection << ent
@@ -67,7 +69,7 @@ module KMP3D
     end
 
     def onSelectionCleared(_)
-      return if @type.hybrid?
+      return if !@type || @type.hybrid?
       update_selection
     end
 

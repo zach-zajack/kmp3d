@@ -25,23 +25,35 @@ module KMP3D
       true
     end
 
+    def hide_point?
+      @camtype_model[@group] != :point && @step < 2
+    end
+
+    def draw_connected_points(view, comp, pos)
+      return unless hide_point?
+      view.line_stipple = "-"
+      view.draw_polyline([@prev, pos]) if @step == 1
+    end
+
     def transform(comp, pos)
-      case @camtype_model[@group]
-      when :point
-        comp.transform!(Geom::Transformation.translation(pos))
-      when :rails
-      end
+      comp.transform!(Geom::Transformation.translation(pos))
     end
 
     def advance_steps(pos)
       case @camtype_model[@group]
       when :rails
+        # needed for add_comp
+        add_rails(pos) if @step == 1
         @step += 1
         @step %= 2
       when :both
+        add_rails(pos) if @step == 1
+        add_point(pos) if @step == 2
         @step += 1
         @step %= 3
       end
+      @prev = pos
+      return @step
     end
 
     def helper_text
@@ -77,7 +89,22 @@ module KMP3D
       false
     end
 
+    def add_comp(comp)
+      @camtype_model[@group] == :point ? \
+        super(comp) : super(@comp_group.to_component)
+    end
+
+    def add_point(pos)
+      @comp_group.entities.add_instance(model, pos)
+    end
+
     private
+
+    def add_rails(pos)
+      @comp_group = Data.entities.add_group
+      @comp_group.layer = @name
+      @comp_group.entities.add_cline(@prev, pos)
+    end
 
     def transform_rail_start(comp, pos)
       comp.transform!(Geom::Transformation.translation(pos - [0, 1500.m, 0]))

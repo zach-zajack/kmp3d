@@ -18,7 +18,7 @@ module KMP3D
       comp.layer = name
     end
 
-    def draw_connected_points(view, comp)
+    def draw_connected_points(view, comp, pos)
       view.line_stipple = "-"
       view.line_width = 10
       view.drawing_color = "Crimson"

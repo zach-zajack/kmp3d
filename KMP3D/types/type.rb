@@ -41,7 +41,11 @@ module KMP3D
       false
     end
 
-    def draw_connected_points(view, comp)
+    def hide_point?
+      false
+    end
+
+    def draw_connected_points(view, comp, pos)
     end
 
     def save_settings
@@ -99,6 +103,7 @@ module KMP3D
 
     def add_comp(comp)
       comp.name = "KMP3D " + component_settings
+      return comp
     end
 
     def next_groups

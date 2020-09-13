@@ -37,6 +37,8 @@ module KMP3D
 
   Sketchup.add_observer(tool)
   Data.reload(tool)
+  Data.model.definitions.purge_unused
+  Data.model.materials.purge_unused
 
   menu = UI.menu.add_submenu("KMP3D")
   menu.add_item(tool_cmd)

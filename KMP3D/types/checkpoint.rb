@@ -15,7 +15,7 @@ module KMP3D
       true
     end
 
-    def draw_connected_points(view, comp)
+    def draw_connected_points(view, comp, pos)
       view.line_width = 5
       view.drawing_color = "Aqua"
       array1 = []

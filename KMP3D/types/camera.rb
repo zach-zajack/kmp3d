@@ -9,9 +9,7 @@ module KMP3D
       @camtype_model = [:rails, :point, :point, :point, :both, :rails, :point]
       @settings = [
         Settings.new(:text, :byte, "Next", "0xFF"),
-        Settings.new(:text, :byte, "Shake", "0"),
         Settings.new(:text, :byte, "Route", "0xFF"),
-        Settings.new(:text, :uint16, "Cam vel.", "60"),
         Settings.new(:text, :uint16, "Zoom vel.", "60"),
         Settings.new(:text, :uint16, "View vel.", "60"),
         Settings.new(:text, :float, "Zoom start", "0.0"),
@@ -76,13 +74,22 @@ module KMP3D
 
     def inputs
       # settings added due to next point using previous settings
-      inputs = [[-1, false] + @settings.map { |s| s.default }]
+      inputs = [[-1, false] + camtype_settings(@settings.map { |s| s.default })]
       Data.entities_in_group(type_name, @group).each do |ent|
         id = ent.kmp3d_id(type_name)
         selected = Data.selection.include?(ent)
         inputs << [id, selected] + ent.kmp3d_settings[1..-1]
       end
       return inputs
+    end
+
+    def to_html
+      tag(:table) do
+        if on_external_settings?
+          table_rows(@table, @external_settings) * ""
+        else table_rows(inputs, camtype_settings(@settings)) * ""
+        end
+      end
     end
 
     def on_external_settings?
@@ -98,8 +105,13 @@ module KMP3D
       end
     end
 
-    def add_point(pos)
-      @comp_group.entities.add_instance(model, pos)
+    def camtype_settings(settings)
+      case @camtype[@group]
+      when "Goal", "FixSearch", "KartFollow" then [settings[2]] + settings[4..5]
+      when "PathSearch" then settings[1..2] + settings[4..5]
+      when "KartPathFollow" then settings[2..6]
+      when "OP_FixMoveAt", "OP_PathMoveAt" then settings
+      end
     end
 
     private
@@ -110,12 +122,12 @@ module KMP3D
       @comp_group.entities.add_cline(@prev, pos)
     end
 
-    def transform_rail_start(comp, pos)
-      comp.transform!(Geom::Transformation.translation(pos - [0, 1500.m, 0]))
+    def add_point(pos)
+      @comp_group.entities.add_instance(model, pos)
     end
 
-    def camtype_settings(settings)
-
+    def transform_rail_start(comp, pos)
+      comp.transform!(Geom::Transformation.translation(pos - [0, 1500.m, 0]))
     end
   end
 end

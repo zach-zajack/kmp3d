@@ -90,8 +90,12 @@ module KMP3D
     end
 
     def add_comp(comp)
-      @camtype_model[@group] == :point ? \
-        super(comp) : super(@comp_group.to_component)
+      if @camtype_model[@group] == :point
+        super(comp)
+      else
+        comp.erase!
+        super(@comp_group.to_component)
+      end
     end
 
     def add_point(pos)

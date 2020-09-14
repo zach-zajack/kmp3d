@@ -1,6 +1,7 @@
 module KMP3D
   module Observer
     def activate
+      Data.reload(self)
       Data.load_kmp3d_model
       @dlg.show unless @dlg.visible?
       @id = Data.model.tools.active_tool_id
@@ -74,12 +75,12 @@ module KMP3D
     end
 
     def onOpenModel(_)
-      Data.reload(self)
+      Data.signal_reload
       @dlg.close if @dlg.visible?
     end
 
     def onNewModel(_)
-      Data.reload(self)
+      Data.signal_reload
       @dlg.close if @dlg.visible?
     end
 

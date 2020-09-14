@@ -93,6 +93,8 @@ module KMP3D
     end
 
     def reload(observer)
+      return unless @reload
+      @reload = false
       model.add_observer(observer)
       selection.add_observer(observer)
       @types = [
@@ -103,6 +105,10 @@ module KMP3D
         KTPT.new, ENPT.new, ITPT.new,
         POTI.new, JGPT.new, CNPT.new, MSPT.new
       ]
+    end
+
+    def signal_reload
+      @reload = true
     end
   end
 end

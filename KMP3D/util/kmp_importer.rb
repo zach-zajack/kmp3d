@@ -155,7 +155,7 @@ module KMP3D
       points = @parser.read_uint16
       smooth = @parser.read_byte
       cyclic = @parser.read_byte
-      @type.table[index+1] = [smooth == 1, cyclic == 1]
+      @type.table[index+1] = [smooth, cyclic]
       @type.save_settings
       points.times do
         position = @parser.read_position3d

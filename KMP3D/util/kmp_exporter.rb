@@ -148,9 +148,9 @@ module KMP3D
 
     def export_came(ent)
       settings = ent.kmp3d_settings[1..-1]
-      index = ent.kmp3d_group.to_i
-      type = CAME::CAMTYPES[index]
-      @writer.write_byte(index)
+      type_index = ent.kmp3d_group.to_i
+      type = CAME::CAMTYPES[type_index]
+      @writer.write_byte(type_index)
       @writer.write_byte(type.opening ? settings.shift : 0xFF)  # next camera
       @writer.write_byte(0) # camshake
       @writer.write_byte(type.route ? settings.shift : 0xFF) # route
@@ -169,20 +169,24 @@ module KMP3D
 
     def came_position(ent, type)
       case type.model
-      when :point then ent.transformation.origin
+      when :point then scale_point(ent.transformation.origin)
       when :rails then [0, 0, 0]
       when :both
         ents = ent.definition.entities
         comp = ents.select { |e| e.typename == "ComponentInstance" }
-        comp.first.transformation.origin
+        scale_point(comp.first.transformation.origin)
       end
     end
 
     def came_rails(ent, type)
       return [[0, 0, 0], [0, 0, 0]] if type.model == :point
       ents = ent.definition.entities
-      line = ents.select { |e| e.typename == "ConstructionLine" }
-      return [line.first.start, line.first.end]
+      line = ents.select { |e| e.typename == "ConstructionLine" }.first
+      return [scale_point(line.start), scale_point(line.end)]
+    end
+
+    def scale_point(point)
+      point.to_a.map { |c| c.to_m }
     end
 
     def write_section_stgi

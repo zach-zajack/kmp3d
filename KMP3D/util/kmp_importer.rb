@@ -74,6 +74,7 @@ module KMP3D
         @type.save_settings
       when "POTI" then entries.times { |i| import_poti(i) }
       when "AREA" then entries.times { import_area }
+      when "CAME" then entries.times { import_came }
       when "STGI" then import_stgi
       end
     end
@@ -170,6 +171,27 @@ module KMP3D
       scale = @parser.read_scale
       settings += import_settings(@type.settings[4..-1])
       @type.import(position, rotation, scale, 0, settings)
+    end
+
+    def import_came
+      settings = []
+      type_index = @parser.read_byte
+      settings << @parser.read_byte # next camera
+      @parser.read_byte # camshake
+      settings << @parser.read_byte # route
+      @parser.read_uint16 # pointspeed
+      settings << @parser.read_uint16 # zoomspeed
+      settings << @parser.read_uint16 # viewspeed
+      @parser.read_byte # start flag
+      @parser.read_byte # movie flag
+      position = @parser.read_position3d
+      @parser.read_rotation # does nothing for now
+      settings << @parser.read_float # zoom start
+      settings << @parser.read_float # zoom end
+      rail_start = @parser.read_position3d
+      rail_end = @parser.read_position3d
+      settings << @parser.read_float # time
+      @type.import(position, rail_start, rail_end, type_index, settings)
     end
 
     def import_stgi

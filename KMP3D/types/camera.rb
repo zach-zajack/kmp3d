@@ -82,6 +82,18 @@ module KMP3D
       end
     end
 
+    def import(pos, rail_start, rails_end, group, settings)
+      @group = group
+      camtypemdl = CAMTYPES[@group].model
+      settings = camtype_settings(settings)
+      skp_grp = Data.entities.add_group
+      skp_grp.entities.add_cline(rail_start, rails_end) if camtypemdl != :point
+      skp_grp.entities.add_instance(model, pos) if camtypemdl != :rails
+      comp = skp_grp.to_component
+      comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
+      comp.layer = name
+    end
+
     def inputs
       # settings added due to next point using previous settings
       inputs = [[-1, false] + camtype_settings(@settings.map { |s| s.default })]
@@ -129,7 +141,7 @@ module KMP3D
 
     def add_rails(pos)
       @comp_group = Data.entities.add_group
-      @comp_group.layer = @name
+      @comp_group.layer = name
       @comp_group.entities.add_cline(@prev, pos)
     end
 

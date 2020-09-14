@@ -1,12 +1,18 @@
 module KMP3D
   class CAME < Type
-    attr_reader :camtype
+    CamType = Struct.new(:name, :model, :route, :opening)
+    CAMTYPES = [
+      CamType.new("Goal",           :rails, false, false),
+      CamType.new("FixSearch",      :point, false, false),
+      CamType.new("PathSearch",     :point,  true, false),
+      CamType.new("KartFollow",     :point, false, false),
+      CamType.new("KartPathFollow",  :both, false,  true),
+      CamType.new("OP_FixMoveAt",   :rails,  true,  true),
+      CamType.new("OP_PathMoveAt",  :point,  true, false)
+    ]
 
     def initialize
       @name = "Cameras"
-      @camtype = ["Goal", "FixSearch", "PathSearch", "KartFollow", \
-        "KartPathFollow", "OP_FixMoveAt", "OP_PathMoveAt"]
-      @camtype_model = [:rails, :point, :point, :point, :both, :rails, :point]
       @settings = [
         Settings.new(:text, :byte, "Next", "0xFF"),
         Settings.new(:text, :byte, "Route", "0xFF"),
@@ -19,12 +25,16 @@ module KMP3D
       super
     end
 
+    def camtype
+      CAMTYPES.map { |type| type.name }
+    end
+
     def camera?
       true
     end
 
     def hide_point?
-      @camtype_model[@group] != :point && @step < 2
+      CAMTYPES[@group].model != :point && @step < 2
     end
 
     def draw_connected_points(view, comp, pos)
@@ -38,7 +48,7 @@ module KMP3D
     end
 
     def advance_steps(pos)
-      case @camtype_model[@group]
+      case CAMTYPES[@group].model
       when :rails
         # needed for add_comp
         add_rails(pos) if @step == 1
@@ -55,7 +65,7 @@ module KMP3D
     end
 
     def helper_text
-      case @camtype_model[@group]
+      case CAMTYPES[@group].model
       when :point
         "Click to place the position of the camera."
       when :rails
@@ -97,7 +107,7 @@ module KMP3D
     end
 
     def add_comp(comp)
-      if @camtype_model[@group] == :point
+      if CAMTYPES[@group].model == :point
         super(comp)
       else
         comp.erase!
@@ -106,11 +116,12 @@ module KMP3D
     end
 
     def camtype_settings(settings)
-      case @camtype[@group]
-      when "Goal", "FixSearch", "KartFollow" then [settings[2]] + settings[4..5]
-      when "PathSearch" then settings[1..2] + settings[4..5]
-      when "KartPathFollow" then settings[2..6]
-      when "OP_FixMoveAt", "OP_PathMoveAt" then settings
+      if CAMTYPES[@group].route && CAMTYPES[@group].opening
+        settings
+      elsif CAMTYPES[@group].route && !CAMTYPES[@group].opening
+        settings[1..2] + settings[4..5]
+      else
+        [settings[2]] + settings[4..5]
       end
     end
 

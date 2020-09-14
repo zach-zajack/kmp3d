@@ -35,7 +35,7 @@ module KMP3D
       write_section("GOBJ") { |ent| export_gobj(ent) }
       write_section_poti
       write_section("AREA") { |ent| export_area(ent) }
-      write_unhandled("CAME")
+      write_section("CAME") { |ent| export_came(ent) }
       write_section("JGPT") { |ent| export_ent(ent) }
       write_section("CNPT") { |ent| export_ent(ent) }
       write_section("MSPT") { |ent| export_ent(ent) }
@@ -86,12 +86,6 @@ module KMP3D
       end
     end
 
-    def write_unhandled(type_name)
-      Sketchup.status_text = "KMP3D: Exporting #{type_name}..."
-      write_section_offset
-      write_section_header(type_name, 0, 0)
-    end
-
     def write_section_poti
       Sketchup.status_text = "KMP3D: Exporting POTI..."
       @type = Data.type_by_name("POTI")
@@ -107,21 +101,6 @@ module KMP3D
       end
     end
 
-    def write_section_stgi
-      Sketchup.status_text = "KMP3D: Exporting STGI..."
-      write_section_offset
-      write_section_header("STGI", 1, 0)
-      settings = Data.type_by_name("STGI").table[1]
-      @writer.write_byte(settings[0]) # lap count
-      @writer.write_byte(settings[1]) # pole position
-      @writer.write_byte(settings[2]) # driver distance
-      @writer.write_byte(0) # flare
-      @writer.write_byte(0)
-      @writer.write_uint32(0xFFFFFF4B) # color
-      @writer.write_byte(0)
-      @writer.bytes += [settings[3].to_f].pack("g")[0,2]
-    end
-
     def write_kmp_transform(ent)
       ent.kmp_transform.each { |v| @writer.write_float(v) }
     end
@@ -130,7 +109,6 @@ module KMP3D
       ent_settings = ent.kmp3d_settings[lower_range + 1..upper_range]
       type_settings = @type.settings[lower_range, ent_settings.length]
       type_settings.zip(ent_settings).each do |template, setting|
-        setting = setting.hex if setting[0,2] == "0x"
         case template.input
         when :byte then @writer.write_byte(setting)
         when :float then @writer.write_float(setting)
@@ -166,6 +144,60 @@ module KMP3D
       export_settings(ent, 0, 4)
       write_kmp_transform(ent)
       export_settings(ent, 4)
+    end
+
+    def export_came(ent)
+      settings = ent.kmp3d_settings[1..-1]
+      index = ent.kmp3d_group.to_i
+      type = CAME::CAMTYPES[index]
+      @writer.write_byte(index)
+      @writer.write_byte(type.opening ? settings.shift : 0xFF)  # next camera
+      @writer.write_byte(0) # camshake
+      @writer.write_byte(type.route ? settings.shift : 0xFF) # route
+      @writer.write_uint16(0) # pointspeed
+      @writer.write_uint16(settings.shift) # zoomspeed
+      @writer.write_uint16(type.opening ? settings.shift : 0) # viewspeed
+      @writer.write_byte(0) # start flag
+      @writer.write_byte(0) # movie flag
+      @writer.write_vector3d(came_position(ent, type))
+      @writer.write_vector3d([0, 0, 0]) # rotation
+      @writer.write_float(settings.shift) # zoom start
+      @writer.write_float(settings.shift) # zoom end
+      came_rails(ent, type).each { |r| @writer.write_vector3d(r) }
+      @writer.write_float(type.opening ? settings.shift : 0.0)
+    end
+
+    def came_position(ent, type)
+      case type.model
+      when :point then ent.transformation.origin
+      when :rails then [0, 0, 0]
+      when :both
+        ents = ent.definition.entities
+        comp = ents.select { |e| e.typename == "ComponentInstance" }
+        comp.first.transformation.origin
+      end
+    end
+
+    def came_rails(ent, type)
+      return [[0, 0, 0], [0, 0, 0]] if type.model == :point
+      ents = ent.definition.entities
+      line = ents.select { |e| e.typename == "ConstructionLine" }
+      return [line.first.start, line.first.end]
+    end
+
+    def write_section_stgi
+      Sketchup.status_text = "KMP3D: Exporting STGI..."
+      write_section_offset
+      write_section_header("STGI", 1, 0)
+      settings = Data.type_by_name("STGI").table[1]
+      @writer.write_byte(settings[0]) # lap count
+      @writer.write_byte(settings[1]) # pole position
+      @writer.write_byte(settings[2]) # driver distance
+      @writer.write_byte(0) # flare
+      @writer.write_byte(0)
+      @writer.write_uint32(0xFFFFFF4B) # color
+      @writer.write_byte(0)
+      @writer.bytes += [settings[3].to_f].pack("g")[0,2]
     end
   end
 end

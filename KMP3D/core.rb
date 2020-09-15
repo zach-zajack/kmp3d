@@ -30,6 +30,7 @@ module KMP3D
   kcl_importer_cmd = UI::Command.new("Import KCL...") { KCLImporter.import }
   kmp_exporter_cmd = UI::Command.new("Export KMP...") { KMPExporter.export }
   kmp_importer_cmd = UI::Command.new("Import KMP...") do
+    Data.reload(tool)
     Data.load_kmp3d_model
     KMPImporter.import
     tool.refresh_html

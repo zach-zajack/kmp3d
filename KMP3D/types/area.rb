@@ -52,7 +52,7 @@ module KMP3D
     def update_setting(ent, value, col)
       Data.model.start_operation("Update area point")
       super
-      ent.definition = model_for(value)
+      ent.definition = model_for(value) if col.to_i == 0
       Data.model.commit_operation
     end
 

@@ -3,6 +3,7 @@ module KMP3D
     def activate
       Data.reload(self)
       Data.load_kmp3d_model
+      Sketchup.active_model.rendering_options["DrawHidden"] = false
       @dlg.show unless @dlg.visible?
       @id = Data.model.tools.active_tool_id
       refresh_html
@@ -19,7 +20,6 @@ module KMP3D
       @type.step = 0
       @comp = Data.entities.add_instance(@type.model, IDENTITY)
       @comp.visible = false
-      @prev_comp = @comp
       @undone = false
     end
 
@@ -35,7 +35,7 @@ module KMP3D
       return if !@dlg.visible? || @type.on_external_settings?
       @ip.pick(view, x, y)
       unless @type.hide_point?
-        @comp = @type.transform(@prev_comp.copy, @ip.position)
+        @comp = @type.transform(@prev_comp, @ip.position)
         @comp.layer = @type.name
         @comp.definition = @type.model
       end

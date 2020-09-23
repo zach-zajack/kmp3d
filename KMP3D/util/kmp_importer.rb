@@ -178,7 +178,8 @@ module KMP3D
       type_index = @parser.read_byte
       settings << @parser.read_byte # next camera
       @parser.read_byte # camshake
-      settings << @parser.read_byte # route
+      route = @parser.read_byte
+      settings << format(route, route == 0xFF)
       @parser.read_uint16 # pointspeed
       settings << @parser.read_uint16 # zoomspeed
       settings << @parser.read_uint16 # viewspeed
@@ -199,7 +200,8 @@ module KMP3D
       pole_pos = @parser.read_byte
       distance = @parser.read_byte
       @parser.head += 6 # lens flare settings
-      speed_mod = (@parser.next_bytes(2) + "\0\0").unpack("g").first
+      @parser.read_byte # ignore first byte for speed mod
+      speed_mod = (@parser.next_bytes(2) + "\0\0").unpack("F").first
       speed_mod = 1.0 if speed_mod == 0.0 # backwards compatibility
       @type.table[1] = [lap_count, pole_pos, distance, speed_mod]
       @type.save_settings

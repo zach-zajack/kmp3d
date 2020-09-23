@@ -1,5 +1,9 @@
 module KMP3D
   class Point < Type
+    def sequential_id?
+      true
+    end
+    
     def transform(comp, pos)
       comp.transform!(Geom::Transformation.translation(pos))
     end

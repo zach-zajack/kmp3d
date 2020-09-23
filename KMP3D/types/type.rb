@@ -45,6 +45,10 @@ module KMP3D
       false
     end
 
+    def sequential_id?
+      false
+    end
+
     def draw_connected_points(view, comp, pos)
     end
 

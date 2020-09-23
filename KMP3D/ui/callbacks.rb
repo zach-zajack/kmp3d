@@ -40,11 +40,14 @@ module KMP3D
     end
 
     def delete_group(id)
+      gid = @type.group_id(id.to_i - 1)
       @type.table.delete_at(id.to_i)
-      Data.model.start_operation("Remove #{@type.type_name} Group #{id}")
-      Data.entities.erase_entities(Data.entities_in_group(@type.type_name, id))
-      Data.entities_after_group(@type.type_name, id).each do |ent|
-        ent.edit_setting(0, ent.kmp3d_group - 1)
+      Data.model.start_operation("Remove #{@type.type_name} Group #{gid}")
+      Data.entities.erase_entities(Data.entities_in_group(@type.type_name, gid))
+      if @type.sequential_id?
+        Data.entities_after_group(@type.type_name, gid).each do |ent|
+          ent.edit_setting(0, ent.kmp3d_group.to_i - 1)
+        end
       end
       KMP3D::Data.model.commit_operation
       @type.group -= 1
@@ -53,7 +56,7 @@ module KMP3D
 
     def delete_point(id)
       KMP3D::Data.model.start_operation("Remove KMP3D Point")
-      Data.get_entity(@type.type_name, id).erase!
+      Data.get_entity(@type.type_name, id.to_i - 1).erase!
       KMP3D::Data.model.commit_operation
       refresh_html
     end

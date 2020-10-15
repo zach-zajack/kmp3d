@@ -1,7 +1,7 @@
 module KMP3D
   module KMPMath
     module_function
-    
+
     def determinant(array)
       array[0]*array[6]*array[9] + array[0]*array[5]*array[10] + \
       array[1]*array[6]*array[8] + array[1]*array[4]*array[10] + \
@@ -42,6 +42,15 @@ module KMP3D
       x2 = x + scale * Math.cos(angle)
       y2 = y + scale * Math.sin(angle)
       return [x1, y1, x2, y2]
+    end
+
+    def lerp(p1, p2, t)
+      Geom::Transformation.interpolate(p1, p2, t)
+    end
+
+    def bezier_at(pts, t)
+      return pts[0] if pts.length == 1
+      bezier_at(Array.new(pts.length - 1) { |i| lerp(pts[i], pts[i+1], t) }, t)
     end
   end
 end

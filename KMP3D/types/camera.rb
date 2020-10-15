@@ -13,6 +13,7 @@ module KMP3D
 
     def initialize
       @name = "Cameras"
+      @op_cam_index = Data.model.get_attribute("KMP3D", "CAME", 0)
       @settings = [
         Settings.new(:text, :byte, "Next", "0xFF"),
         Settings.new(:text, :byte, "Route", "0xFF"),
@@ -26,7 +27,7 @@ module KMP3D
     end
 
     def camtype
-      CAMTYPES.map { |type| type.name }
+      CAMTYPES.map { |type| type.name } << "Camera Settings"
     end
 
     def camera?
@@ -38,7 +39,7 @@ module KMP3D
     end
 
     def draw_connected_points(view, comp, pos)
-      return unless hide_point?
+      return unless on_external_settings? || hide_point?
       view.line_stipple = "-"
       view.draw_polyline([@prev, pos]) if @step == 1
     end
@@ -106,16 +107,17 @@ module KMP3D
     end
 
     def to_html
-      tag(:table) do
-        if on_external_settings?
-          table_rows(@table, @external_settings) * ""
-        else table_rows(inputs, camtype_settings(@settings)) * ""
+      if on_external_settings?
+        tag(:div, :class => "cameras") { camera_settings_html }
+      else
+        tag(:table) do
+          table_rows(inputs, camtype_settings(@settings)) * ""
         end
       end
     end
 
     def on_external_settings?
-      false
+      @group == 7
     end
 
     def add_comp(comp)
@@ -137,7 +139,19 @@ module KMP3D
       end
     end
 
+    def save_settings
+      Data.model.set_attribute("KMP3D", "CAME", @op_cam_index)
+    end
+
     private
+
+    def camera_settings_html
+      "Initial opening camera index: " + \
+      tag(:input, :id => "opCameIdx", :type => "text", :size => "2", \
+        :value => @op_cam_index, :onchange => callback("setOpCamIdx")) + br + \
+      tag(:button, :onclick => "opCamPlay") { "Play Opening Cameras" } + br + \
+      tag(:button, :onclick => "rpCamPlay") { "Play Replay Cameras" }
+    end
 
     def add_rails(pos)
       @comp_group = Data.entities.add_group

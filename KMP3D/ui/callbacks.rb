@@ -14,7 +14,9 @@ module KMP3D
       @dlg.add_action_callback("setHybridType") { |_, id| set_hybrid_type(id) }
       @dlg.add_action_callback("setHybridGroup") { set_hybrid_group }
       @dlg.add_action_callback("typesScroll") { |_, px| @scroll_types = px }
-      @dlg.add_action_callback("tableScroll") { |_, px| @scroll_table = px }
+      @dlg.add_action_callback("setOpCamIdx") { set_op_camera_index }
+      @dlg.add_action_callback("opCamPlay") { play_opening_cameras }
+      @dlg.add_action_callback("rpCamPlay") { play_replay_cameras }
     end
 
     def add_group
@@ -138,6 +140,18 @@ module KMP3D
       ))
       @type.update_group(path, id, row)
       refresh_html
+    end
+
+    def set_op_camera_index
+      @type.op_cam_index = @dlg.get_element_value("opCameIdx")
+    end
+
+    def play_opening_cameras
+
+    end
+
+    def play_replay_cameras
+
     end
 
     private

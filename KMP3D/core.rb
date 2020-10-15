@@ -1,5 +1,6 @@
 module KMP3D
   require "#{DIR}/math"
+  require "#{DIR}/ui/camera_preview"
   require "#{DIR}/ui/html_helpers"
   require "#{DIR}/ui/callbacks"
   require "#{DIR}/ui/observer"

@@ -1,14 +1,16 @@
 module KMP3D
   class CAME < Type
+    attr_accessor :op_cam_index
+
     CamType = Struct.new(:name, :model, :route, :opening)
     CAMTYPES = [
-      CamType.new("Goal",           :rails, false, false),
-      CamType.new("FixSearch",      :point, false, false),
-      CamType.new("PathSearch",     :point,  true, false),
-      CamType.new("KartFollow",     :point, false, false),
-      CamType.new("KartPathFollow",  :both, false,  true),
-      CamType.new("OP_FixMoveAt",   :rails,  true,  true),
-      CamType.new("OP_PathMoveAt",  :point,  true, false)
+      CamType.new("0 Goal",           :rails, false, false),
+      CamType.new("1 FixSearch",      :point, false, false),
+      CamType.new("2 PathSearch",     :point,  true, false),
+      CamType.new("3 KartFollow",     :point, false, false),
+      CamType.new("4 KartPathFollow",  :both, false,  true),
+      CamType.new("5 OP_FixMoveAt",   :rails,  true,  true),
+      CamType.new("6 OP_PathMoveAt",  :point,  true,  true)
     ]
 
     def initialize
@@ -130,13 +132,12 @@ module KMP3D
     end
 
     def camtype_settings(settings)
-      if CAMTYPES[@group].route && CAMTYPES[@group].opening
-        settings
-      elsif CAMTYPES[@group].route && !CAMTYPES[@group].opening
-        settings[1..2] + settings[4..5]
-      else
-        [settings[2]] + settings[4..5]
-      end
+      settings = settings.clone
+      settings[0] = nil unless CAMTYPES[@group].opening # next camera
+      settings[1] = nil unless CAMTYPES[@group].route # route
+      settings[3] = nil unless CAMTYPES[@group].model != :point # viewspeed
+      settings[6] = nil unless CAMTYPES[@group].opening # time
+      return settings.compact
     end
 
     def save_settings
@@ -149,8 +150,10 @@ module KMP3D
       "Initial opening camera index: " + \
       tag(:input, :id => "opCameIdx", :type => "text", :size => "2", \
         :value => @op_cam_index, :onchange => callback("setOpCamIdx")) + br + \
-      tag(:button, :onclick => "opCamPlay") { "Play Opening Cameras" } + br + \
-      tag(:button, :onclick => "rpCamPlay") { "Play Replay Cameras" }
+      tag(:button, :onclick => callback("opCamPlay")) \
+        { "Play Opening Cameras" } + br + \
+      tag(:button, :onclick => callback("rpCamPlay")) \
+        { "Play Replay Cameras" }
     end
 
     def add_rails(pos)

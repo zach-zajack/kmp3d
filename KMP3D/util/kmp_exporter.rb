@@ -156,7 +156,7 @@ module KMP3D
       @writer.write_byte(type.route ? settings.shift : 0xFF) # route
       @writer.write_uint16(0) # pointspeed
       @writer.write_uint16(settings.shift) # zoomspeed
-      @writer.write_uint16(type.opening ? settings.shift : 0) # viewspeed
+      @writer.write_uint16(type.model != :point ? settings.shift : 0) # vspeed
       @writer.write_byte(0) # start flag
       @writer.write_byte(0) # movie flag
       @writer.write_vector3d(came_position(ent, type))

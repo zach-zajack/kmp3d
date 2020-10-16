@@ -42,7 +42,7 @@ module KMP3D
     end
 
     def col_html(id, kmp3d_id, row, settings)
-      tag(:td, :onclick => callback("selectRow", kmp3d_id)) { id } + \
+      tag(:td, :onclick => callback("selectRow", kmp3d_id)) { kmp3d_id } + \
         table_columns(kmp3d_id, row, settings) * ""
     end
 

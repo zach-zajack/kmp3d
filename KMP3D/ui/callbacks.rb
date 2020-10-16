@@ -147,7 +147,8 @@ module KMP3D
     end
 
     def play_opening_cameras
-
+      ent = Data.get_entity("CAME", @type.op_cam_index)
+      Data.model.active_view.animation = CameraPreview.new(ent)
     end
 
     def play_replay_cameras

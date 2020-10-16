@@ -45,7 +45,7 @@ module KMP3D
     end
 
     def lerp(p1, p2, t)
-      Geom::Transformation.interpolate(p1, p2, t)
+      Geom::Transformation.interpolate(p1, p2, t).origin
     end
 
     def bezier_at(pts, t)

@@ -54,7 +54,8 @@ module KMP3D
       @parser.head = @header_length + section_offset
       section_id = @parser.read(4)
       entries = @parser.read_uint16
-      @parser.read_uint16 # extra data
+      extra_data1 = @parser.read_byte
+      extra_data2 = @parser.read_byte
       @type = Data.type_by_name(section_id)
       Sketchup.status_text = "KMP3D: Importing #{section_id}..."
       case section_id
@@ -74,7 +75,9 @@ module KMP3D
         @type.save_settings
       when "POTI" then entries.times { |i| import_poti(i) }
       when "AREA" then entries.times { import_area }
-      when "CAME" then entries.times { import_came }
+      when "CAME"
+        @type.op_cam_index = extra_data1
+        entries.times { import_came }
       when "STGI" then import_stgi
       end
     end
@@ -176,7 +179,8 @@ module KMP3D
     def import_came
       settings = []
       type_index = @parser.read_byte
-      settings << @parser.read_byte # next camera
+      next_cam = @parser.read_byte
+      settings << format(next_cam, next_cam == 0xFF)
       @parser.read_byte # camshake
       route = @parser.read_byte
       settings << format(route, route == 0xFF)

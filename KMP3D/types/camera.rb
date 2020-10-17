@@ -85,6 +85,28 @@ module KMP3D
       end
     end
 
+    def table_helper_text
+      # Based off http://wiki.tockdom.com/wiki/KMP_Editing/Cameras
+      case @group
+      when 0
+        "Activates immediately after passing the goal; with the player as the origin, the camera's View Start position both follows and looks at the player. It can be reactivated as a Replay Camera if linked to an AREA, but does not display in spectator (online/waiting) mode."
+      when 1
+        "Camera stays static in View Start location, and always looks towards the player."
+      when 2
+        "Route controlled, always looks at the player."
+      when 3
+        "With the player as the origin, the camera's View Start position both follows and looks at the player."
+      when 4
+        "From its position, it looks at View Start and shifts view to View End."
+      when 5
+        "Opening camera, follows route; from its position, it looks at View Start and shifts view to View End."
+      when 6
+        "Opening camera onboard with same effects as normal drive Camera (unsure)."
+      else
+        "Unused"
+      end
+    end
+
     def import(pos, rail_start, rails_end, group, settings)
       @group = group
       camtypemdl = CAMTYPES[@group].model
@@ -112,9 +134,9 @@ module KMP3D
       if on_external_settings?
         tag(:div, :class => "cameras") { camera_settings_html }
       else
-        tag(:table) do
-          table_rows(inputs, camtype_settings(@settings)) * ""
-        end
+        tag(:table) \
+          { table_rows(inputs, camtype_settings(@settings)) * "" } + \
+        tag(:div, :class => "helper-text") { table_helper_text }
       end
     end
 

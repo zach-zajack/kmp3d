@@ -1,7 +1,4 @@
 * {
-  overflow: hidden;
-  white-space: nowrap;
-  word-break: break-all;
   text-overflow: ellipsis;
   font-family: sans-serif;
   font-size: 13px;
@@ -83,6 +80,16 @@ button.selected, button.selected:hover, tr.selected, table .selected button {
   height: 100%;
   overflow: auto;
   padding-left: 120px;
+}
+
+.helper-text {
+  position: absolute;
+  padding: 10px;
+  left: 120px;
+  right: 0;
+  border-top: 1px solid #888;
+  background-color: #ddd;
+  bottom: 0;
 }
 
 table {

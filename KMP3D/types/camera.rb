@@ -172,10 +172,12 @@ module KMP3D
       "Initial opening camera index: " + \
       tag(:input, :id => "opCameIdx", :type => "text", :size => "2", \
         :value => @op_cam_index, :onchange => callback("setOpCamIdx")) + br + \
-      tag(:button, :onclick => callback("opCamPlay")) \
+      tag(:button, :onclick => callback("playOpening")) \
         { "Play Opening Cameras" } + br + \
-      tag(:button, :onclick => callback("rpCamPlay")) \
-        { "Play Replay Cameras" }
+      tag(:button, :onclick => callback("playReplay")) \
+        { "Play Replay Cameras" } + br + \
+      tag(:button, :onclick => callback("stopReplay")) \
+        { "Stop Camera Playback" }
     end
 
     def add_rails(pos)

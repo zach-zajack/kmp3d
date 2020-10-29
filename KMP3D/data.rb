@@ -43,19 +43,19 @@ module KMP3D
     def entities_in_group(type_name, group)
       entities.select do |ent|
         next unless ent.type?(type_name)
-        ent.type?(type_name) && ent.kmp3d_group == group.to_s
+        ent.type?(type_name) && ent.kmp3d_group.to_i == group.to_i
       end
     end
 
     def entities_before_group(type_name, group)
       entities.select do |ent|
-        ent.type?(type_name) && ent.kmp3d_group < group.to_s
+        ent.type?(type_name) && ent.kmp3d_group.to_i < group.to_i
       end
     end
 
     def entities_after_group(type_name, group)
       entities.select do |ent|
-        ent.type?(type_name) && ent.kmp3d_group > group.to_s
+        ent.type?(type_name) && ent.kmp3d_group.to_i > group.to_i
       end
     end
 

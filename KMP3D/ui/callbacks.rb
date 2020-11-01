@@ -176,13 +176,13 @@ module KMP3D
     def valid?(input, value)
       case input
       when :obj then !Objects::LIST[value].nil?
-      when :byte then valid_int_within(value, 0, 0xFF)
+      when :byte then valid_int_within(value, -1, 0xFF)
       when :bytes
         value != "" && \
-        value.split(",", -1).all? { |v| valid_int_within(v, 0, 0xFF) }
+        value.split(",", -1).all? { |v| valid_int_within(v, -1, 0xFF) }
       when :float then /^[-]?\d*\.?\d+$/.match(value)
       when :int16 then valid_int_within(value, -0x7FFF, 0x7FFF)
-      when :uint16 then valid_int_within(value, 0, 0xFFFF)
+      when :uint16 then valid_int_within(value, -1, 0xFFFF)
       end
     end
   end

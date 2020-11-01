@@ -1,50 +1,66 @@
 module KMP3D
-  class CameraPreview
-    def initialize(ent)
-      get_ent_settings(ent)
-    end
-
-    def time
-      (Time.now - @start_time)/(@total_time/60.0)
-    end
-
-    def nextFrame(view)
-      pos  = KMP3D::KMPMath.bezier_at(@points, time)
-      rail = KMP3D::KMPMath.lerp(@rail_start, @rail_end, time)
-      zoom = KMP3D::KMPMath.lerp(@zoom_start, @zoom_end, time)
-      view.camera = Sketchup::Camera.new(pos, rail, Z_AXIS, true)
-      view.show_frame
-      return true if time < 1 # continue animation
-      case @next_came
-      when "0xFF", "-1", "255" then return false # stop animation
-      else
-        get_ent_settings(Data.get_entity("CAME", @next_came))
-        return true
-      end
-    end
-
-    private
+  module CameraPreview
+    Route = Struct.new(:pos, :speed)
+    MKW_FRAMERATE = 59.94
 
     def get_ent_settings(ent)
-      @group = ent.kmp3d_group.to_i
-      @type = CAME::CAMTYPES[@group]
-      @settings = ent.kmp3d_settings[1..-1]
-      @points = route_path(ent)
+      @group      = ent.kmp3d_group.to_i
+      @type       = CAME::CAMTYPES[@group]
+      @settings   = ent.kmp3d_settings[1..-1]
+      @points     = route_path(ent)
+      @point_prog = 0
       @rail_start, @rail_end = came_rails(ent)
-      # add smooth setting
+      @rail_dist  = @rail_start.distance(@rail_end).to_m
+      @rail_prog  = 0
       @next_came  = @settings[0]
       @zoom_vel   = @settings[2].to_f
       @view_vel   = @settings[3].to_f
-      @zoom_start = @settings[4].to_f
+      @zoom_prog  = @settings[4].to_f
       @zoom_end   = @settings[5].to_f
       @total_time = @settings[6].to_f
       @start_time = Time.now
+      @prev_time  = Time.now
+    end
+
+    def time
+      (Time.now - @start_time) * MKW_FRAMERATE
+    end
+
+    def delta
+      Time.now - @prev_time
+    end
+
+    def lerp(p1, p2, t)
+      Geom::Transformation.interpolate(p1, p2, t).origin
+    end
+
+    #def next_pos
+    #  return @points[0].pos if @points.length == 1
+    #  @point_prog += delta * @points[0].speed * MKW_FRAMERATE
+    #  dist = @points[0].pos.distance(@points[1].pos).to_m
+    #  ratio = @point_prog/dist
+    #  return lerp(@points[0].pos, @points[1].pos, ratio) if ratio <= 1
+    #  @points.shift
+    #  return next_pos
+    #end
+
+    def target
+      @rail_prog += delta * @view_vel * 100/MKW_FRAMERATE
+      ratio = @rail_prog/@rail_dist
+      ratio = 1 if ratio > 1
+      lerp(@rail_start, @rail_end, ratio)
+    end
+
+    def zoom
+      @zoom_prog += delta * @zoom_vel * 100/MKW_FRAMERATE
+      @zoom_prog = @zoom_end if @zoom_prog >= @zoom_end
+      return @zoom_prog
     end
 
     def route_path(ent)
-      return [ent.transformation.origin] if !CAME::CAMTYPES[@group].route
+      return [Route.new(ent.transformation.origin, 0)] if !@type.route
       return Data.entities_in_group("POTI", @settings[1]).map do |ent|
-        ent.transformation.origin
+        Route.new(ent.transformation.origin, ent.kmp3d_settings[1].to_f)
       end
     end
 
@@ -54,5 +70,50 @@ module KMP3D
       line = ents.select { |e| e.typename == "ConstructionLine" }.first
       return [line.start, line.end]
     end
+
+    def points
+      @points.map { |p| p.pos }
+    end
+  end
+
+  class CameraOpening
+    include CameraPreview
+
+    def initialize(ent)
+      get_ent_settings(ent)
+    end
+
+    def nextFrame(view)
+      pos = KMP3D::KMPMath.bezier_at(points, time/@total_time)
+      view.camera = Sketchup::Camera.new(pos, target, Z_AXIS, true, zoom)
+      view.show_frame
+      @prev_time = Time.now
+      return true if time < @total_time # continue animation
+      return false if @next_came === ["0xFF", "-1", "255"] # stop animation
+      get_ent_settings(Data.get_entity("CAME", @next_came))
+      return true
+    end
+  end
+
+  class CameraReplay
+    include CameraPreview
+
+    def initialize(ent)
+      get_ent_settings(ent)
+      @enpt = Data.kmp3d_entities("ENPT").map { |e| e.transformation.origin }
+      @area = Data.kmp3d_entities("AREA")
+    end
+
+    #def nextFrame(view)
+    #  ratio = time / (30 * MKW_FRAMERATE)
+    #  player_pos = KMP3D::KMPMath.bezier_at(@enpt, ratio)
+    #  # TODO: area priority
+    #  area = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, tgt) }.first
+    #  get_ent_settings(Data.get_entity("CAME", area.kmp3d_settings[1])) if area
+    #  pos = KMP3D::KMPMath.bezier_at(points, ratio)
+    #  view.camera = Sketchup::Camera.new(pos, tgt, Z_AXIS, true, zoom)
+    #  view.show_frame
+    #  return ratio < 1
+    #end
   end
 end

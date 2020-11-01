@@ -52,5 +52,12 @@ module KMP3D
       return pts[0] if pts.length == 1
       bezier_at(Array.new(pts.length - 1) { |i| lerp(pts[i], pts[i+1], t) }, t)
     end
+
+    def intersect_area?(area, pt)
+      min = area.bounds.min
+      max = area.bounds.max
+      min.x < pt.x && min.y < pt.y && min.z < pt.z && \
+      max.x > pt.x && max.y > pt.y && max.z > pt.z
+    end
   end
 end

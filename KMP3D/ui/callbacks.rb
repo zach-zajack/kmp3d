@@ -149,10 +149,13 @@ module KMP3D
 
     def play_opening_cameras
       ent = Data.get_entity("CAME", @type.op_cam_index)
-      Data.model.active_view.animation = CameraPreview.new(ent)
+      Data.model.active_view.animation = CameraOpening.new(ent)
     end
 
     def play_replay_cameras
+      ent = Data.entities_in_group("CAME", 0).first
+      return UI.messagebox("Missing camera type 0") if ent.nil?
+      Data.model.active_view.animation = CameraReplay.new(ent)
     end
 
     def stop_replay_cameras

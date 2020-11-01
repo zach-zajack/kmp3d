@@ -8,7 +8,7 @@ module KMP3D
       )
       return if path.nil?
       Data.reload(self)
-      @writer = BinaryWriter.new(path+"~")
+      @writer = BinaryWriter.new(path)
       File.exist?(path) ? write_merged(path) : write_scratch
       @writer.insert_uint32(4, @writer.head)
       @writer.write_to_file

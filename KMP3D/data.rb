@@ -96,7 +96,6 @@ module KMP3D
       return unless @reload
       @reload = false
       model.add_observer(observer)
-      model.active_view.add_observer(observer)
       selection.add_observer(observer)
       @types = [
         KTPT.new, ENPT.new, ITPT.new, CKPT.new, GOBJ.new, POTI.new,

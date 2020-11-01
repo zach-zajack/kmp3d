@@ -25,7 +25,6 @@ module KMP3D
       array1 = []
       array2 = []
       ents = Data.entities_in_group(type_name, group_id(@group))
-      ents << comp
       ents.each do |ent|
         pos = ent.transformation.origin
         rot = KMPMath.matrix_to_euler(ent.transformation.to_a)

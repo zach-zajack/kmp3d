@@ -7,41 +7,81 @@ module KMP3D
         "Select a file to export to.",  Data.model_dir, "#{Data.model_name}.kmp"
       )
       return if path.nil?
-      @writer = BinaryWriter.new(path)
-      write_header
-      write_sections
+      Data.reload(self)
+      @writer = BinaryWriter.new(path+"~")
+      File.exist?(path) ? write_merged(path) : write_scratch
       @writer.insert_uint32(4, @writer.head)
       @writer.write_to_file
+      Sketchup.status_text = "KMP3D: Finished exporting!"
+      UI.beep
+    end
+
+    def write_scratch
+      write_header
+      Data.types[0...-1].each { |type| write_section_name(type.type_name) }
+    end
+
+    def write_merged(path)
+      write_header
+      @parser = BinaryParser.new(path)
+      error("wrong file type") unless @parser.read(4) == "RKMD"
+      @parser.read_uint32 # file length
+      error("invalid number of sections") unless @parser.read_uint16 == 15
+      header_length = @parser.read_uint16
+      @parser.read_uint32 # version
+      @section_offsets_addr = @parser.head
+      @offsets = Array.new(15) { header_length + @parser.read_uint32 }
+      15.times { |i| merge_section(i) }
+    end
+
+    def merge_section(n)
+      @parser.head = @offsets[n]
+      type = @parser.read(4)
+      ents = Data.kmp3d_entities(type)
+      return if ["ENPH", "ITPH", "CKPH"].include?(type)
+      ents != [] || type == "STGI" ? \
+        write_section_name(type) : write_old_section(type, n)
+    end
+
+    def write_old_section(type, n)
+      write_section_offset # write the new section offset
+      @parser.head = @offsets[n]
+      section_length = @offsets[n+1] - @offsets[n]
+      @writer.write(@parser.read(section_length))
+      # write the header too!
+      return unless ["ENPT", "ITPT", "CKPT"].include?(type)
+      write_old_section(type.sub("PT", "PH"), n+1)
     end
 
     def write_header
       @writer.write("RKMD")
       @writer.write_uint32(0) # skip file length for now
       @writer.write_uint16(15) # sections
-      @writer.write_uint16(0x4C) # header length
+      @writer.write_uint16(0x4C)
       @writer.write_uint32(0x9D8) # file version
       @section_offsets_addr = @writer.head
       15.times { @writer.write_uint32(0) }
     end
 
-    def write_sections
-      write_section("KTPT") { |ent| export_ent(ent) }
-      write_section("ENPT") { |ent| export_ent(ent) }
-      write_group("ENPH", "ENPT")
-      write_section("ITPT") { |ent| export_ent(ent) }
-      write_group("ITPH", "ITPT")
-      write_section("CKPT") { |ent| export_ckpt(ent) }
-      write_group("CKPH", "CKPT")
-      write_section("GOBJ") { |ent| export_gobj(ent) }
-      write_section_poti
-      write_section("AREA") { |ent| export_area(ent) }
-      write_section("CAME") { |ent| export_came(ent) }
-      write_section("JGPT") { |ent| export_ent(ent) }
-      write_section("CNPT") { |ent| export_ent(ent) }
-      write_section("MSPT") { |ent| export_ent(ent) }
-      write_section_stgi
-      Sketchup.status_text = "KMP3D: Finished exporting!"
-      UI.beep
+    def write_section_name(type)
+      case type
+      when "KTPT", "JGPT", "CNPT", "MSPT"
+        write_section(type) { |ent| export_ent(ent) }
+      when "ENPT"
+        write_section("ENPT") { |ent| export_ent(ent) }
+        write_group("ENPH", "ENPT")
+      when "ITPT"
+        write_section("ITPT") { |ent| export_ent(ent) }
+        write_group("ITPH", "ITPT")
+      when "CKPT"
+        write_section("CKPT") { |ent| export_ckpt(ent) }
+        write_group("CKPH", "CKPT")
+      when "GOBJ" then write_section("GOBJ") { |ent| export_gobj(ent) }
+      when "POTI" then write_section_poti
+      when "AREA" then write_section("AREA") { |ent| export_area(ent) }
+      when "CAME" then write_section("CAME") { |ent| export_came(ent) }
+      when "STGI" then write_section_stgi
+      end
     end
 
     def write_section_offset
@@ -202,6 +242,11 @@ module KMP3D
       @writer.write_uint32(0xFFFFFF4B) # color
       @writer.write_byte(0)
       @writer.bytes += [settings[3].to_f].pack("g")[0,2]
+    end
+
+    def error(message)
+      raise "KMP3D: Cannot merge file, #{message}"
+      write_scratch
     end
   end
 end

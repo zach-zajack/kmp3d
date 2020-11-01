@@ -58,7 +58,7 @@ module KMP3D
 
     def draw(view)
       @ip.draw(view)
-      @type.draw_connected_points(view, @comp, @ip.position)
+      @type.draw_connected_points(view, @ip.position)
     end
 
     def onSelectionBulkChange(_)

@@ -3,7 +3,7 @@ module KMP3D
     def sequential_id?
       true
     end
-    
+
     def transform(comp, pos)
       comp.transform!(Geom::Transformation.translation(pos))
     end
@@ -22,14 +22,13 @@ module KMP3D
       comp.layer = name
     end
 
-    def draw_connected_points(view, comp, pos)
+    def draw_connected_points(view, pos)
       view.line_stipple = "-"
       view.line_width = 10
       view.drawing_color = "Crimson"
       array = Data.entities_in_group(type_name, group_id(@group)).map do |ent|
         ent.transformation.origin
       end
-      array << comp.transformation.origin
       view.draw_polyline(array) if array.length >= 2
     end
   end

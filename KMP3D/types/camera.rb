@@ -40,10 +40,10 @@ module KMP3D
       CAMTYPES[@group].model != :point && @step < 2
     end
 
-    def draw_connected_points(view, comp, pos)
-      return unless on_external_settings? || hide_point?
+    def draw_connected_points(view, pos)
+      return unless (on_external_settings? || hide_point?) && pos && @step == 1
       view.line_stipple = "-"
-      view.draw_polyline([@prev, pos]) if @step == 1
+      view.draw_polyline([@prev, pos])
     end
 
     def transform(comp, pos)

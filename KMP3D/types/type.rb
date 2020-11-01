@@ -49,7 +49,7 @@ module KMP3D
       false
     end
 
-    def draw_connected_points(view, comp, pos)
+    def draw_connected_points(view, pos)
     end
 
     def save_settings

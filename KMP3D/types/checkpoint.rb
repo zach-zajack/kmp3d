@@ -21,20 +21,25 @@ module KMP3D
 
     def draw_connected_points(view, pos, selection=false)
       view.line_width = 5
-      array1 = []
-      array2 = []
+      c = 0
+      oob_areas = Data.kmp3d_entities("AREA").select \
+        { |area| area.kmp3d_settings[2].to_i == 10 }
       groups.times do |group|
-        view.drawing_color = (@group == group && selection ? "Blue" : "Aqua")
+        color = (@group == group && selection ? "Blue" : "Aqua")
         Data.entities_in_group(type_name, group).each do |ent|
           pos = ent.transformation.origin
           rot = KMPMath.matrix_to_euler(ent.transformation.to_a)
           scale = ent.transformation.to_a[4...7].distance([0,0,0]).m
           points = KMPMath.checkpoint_transform(pos.x, pos.y, -rot.y, scale)
-          array1 << points[0..1] + [pos.z]
-          array2 << points[2..3] + [pos.z]
+          p1 = points[0..1] + [pos.z]
+          p2 = points[2..3] + [pos.z]
+          view.drawing_color = (coob_active?(oob_areas, c) ? "DarkRed" : color)
+          view.draw_lines(p1, @prev1) if @prev1
+          view.draw_lines(p2, @prev2) if @prev2
+          @prev1 = p1
+          @prev2 = p2
+          c += 1
         end
-        view.draw_polyline(array1) if array1.length >= 2
-        view.draw_polyline(array2) if array2.length >= 2
       end
     end
 
@@ -100,6 +105,13 @@ module KMP3D
     end
 
     private
+
+    def coob_active?(areas, c)
+      areas.any? do |area|
+        p1, p2 = area.kmp3d_settings[5..6].map { |p| p.to_i }
+        (([p1, p2].min...[p1, p2].max) === c) ^ (p1 > p2)
+      end
+    end
 
     def closest_kmp3d_entity_height(pos)
       sorted = @kmp3d_points.sort do |ent1, ent2|

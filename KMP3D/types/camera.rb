@@ -122,10 +122,10 @@ module KMP3D
     def select_point(ent)
       route = ent.kmp3d_settings[2]
       return if ["0xFF", "-1", "255"].include?(route)
-      selected_ents = Data.entities_in_group("POTI", route.to_i)
-      selected_ents.each do |ent|
-        Data.selection.toggle(ent)
-      end
+      ents = Data.entities_in_group("POTI", route)
+      Data.selection.contains?(ent) ?
+        ents.each { |e| Data.selection.add(e) } : \
+        ents.each { |e| Data.selection.remove(e) }
     end
 
     def inputs

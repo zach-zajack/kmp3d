@@ -89,8 +89,9 @@ module KMP3D
     end
 
     def select_point(ent)
-      respawn = ent.kmp3d_settings[1]
-      Data.selection.toggle(Data.get_entity("JGPT", respawn))
+      respawn = Data.get_entity("JGPT", ent.kmp3d_settings[1])
+      Data.selection.contains?(ent) ? \
+        Data.selection.add(respawn) : Data.selection.remove(respawn)
     end
 
     def set_kmp3d_points

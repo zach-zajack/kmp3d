@@ -52,7 +52,9 @@ module KMP3D
     def select_point(ent)
       camera = ent.kmp3d_settings[3]
       return if ["0xFF", "-1", "255"].include?(camera)
-      Data.selection.toggle(Data.get_entity("CAME", camera))
+      cam_ent = Data.get_entity("CAME", camera)
+      Data.selection.contains?(ent) ? \
+        Data.selection.add(cam_ent) : Data.selection.remove(cam_ent)
     end
 
     def update_setting(ent, value, col)

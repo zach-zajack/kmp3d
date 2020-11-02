@@ -56,6 +56,13 @@ module KMP3D
       Data.model.commit_operation
     end
 
+    def table_helper_text
+      "If using Conditional Out of Bounds code:" + br + \
+      "Set. 1 refers to the checkpoint that enables the AREA when crossed."+br+\
+      "Set. 2 refers to the checkpoint that disables it when crossed."+br+\
+      "If the second checkpoint comes before the first, it is disabled the following lap (Riidefi's only)."
+    end
+
     private
 
     def model_for(value)

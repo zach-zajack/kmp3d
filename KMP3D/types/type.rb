@@ -66,6 +66,9 @@ module KMP3D
       "#{type_name}(#{group_id(@group)},#{inputs[-1][2..-1] * ','}) "
     end
 
+    def table_helper_text
+    end
+
     def inputs
       # settings added due to next point using previous settings
       inputs = [[-1, false] + @settings.map { |s| s.default }]

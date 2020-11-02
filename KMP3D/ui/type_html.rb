@@ -1,12 +1,14 @@
 module KMP3D
   module TypeHTML
     def to_html
-      tag(:table) do
+      table = tag(:table) do
         if on_external_settings?
           table_rows(@table, @external_settings) * ""
-        else table_rows(inputs, @settings) * ""
+        else
+          table_rows(inputs, @settings) * ""
         end
       end
+      table + tag(:div, :class => "helper-text") { table_helper_text }
     end
 
     def row_html(ent)

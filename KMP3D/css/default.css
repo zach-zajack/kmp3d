@@ -30,7 +30,6 @@ select {
   overflow: auto;
 }
 
-
 .types button {
   width: 100%;
   padding: 1px;
@@ -103,6 +102,9 @@ th {
   font-size: 14px;
   font-weight: normal;
   background-color: #ccc;
+  overflow: hidden;
+  white-space: nowrap;
+  word-break: break-all;
 }
 
 td {

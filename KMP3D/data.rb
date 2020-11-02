@@ -33,7 +33,12 @@ module KMP3D
     end
 
     def set_layer_visible(type_name)
-      @types.each { |type| layers[type.name].visible = type.name == type_name }
+      # prev layers
+      @layers.each { |name| layers[name].visible = false } if @layers
+      @layers = [type_name]
+      @layers << "Routes"  if type_name == "Cameras"
+      @layers << "Cameras" if type_name == "Areas"
+      @layers.each { |name| layers[name].visible = true }
     end
 
     def kmp3d_entities(type_name)
@@ -67,8 +72,12 @@ module KMP3D
       @types
     end
 
-    def type_by_name(name)
+    def type_by_typename(name)
       @types.select { |type| type.type_name == name }.first
+    end
+
+    def type_by_name(name)
+      @types.select { |type| type.name == name }.first
     end
 
     def hybrid_types

@@ -58,7 +58,11 @@ module KMP3D
 
     def draw(view)
       @ip.draw(view)
-      @type.draw_connected_points(view, @ip.position)
+      Data.layers.each do |layer|
+        next unless layer.visible?
+        type = Data.type_by_name(layer.name)
+        type.draw_connected_points(view, @ip.position) if type
+      end
     end
 
     def onSelectionBulkChange(_)

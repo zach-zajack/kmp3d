@@ -98,7 +98,7 @@ module KMP3D
     def write_section(type_name)
       Sketchup.status_text = "KMP3D: Exporting #{type_name}..."
       @index = 0
-      @type = Data.type_by_name(type_name)
+      @type = Data.type_by_typename(type_name)
       ents = Data.kmp3d_entities(type_name)
       write_section_offset
       write_section_header(type_name, ents.length, 0)
@@ -110,7 +110,7 @@ module KMP3D
 
     def write_group(sect_name, type_name)
       Sketchup.status_text = "KMP3D: Exporting #{type_name}..."
-      @type = Data.type_by_name(type_name)
+      @type = Data.type_by_typename(type_name)
       write_section_offset
       write_section_header(sect_name, @type.groups, 0)
       @type.groups.times do |i|
@@ -128,7 +128,7 @@ module KMP3D
 
     def write_section_poti
       Sketchup.status_text = "KMP3D: Exporting POTI..."
-      @type = Data.type_by_name("POTI")
+      @type = Data.type_by_typename("POTI")
       total_ents = Data.kmp3d_entities("POTI").length
       write_section_offset
       write_section_header("POTI", @type.groups, total_ents)
@@ -233,7 +233,7 @@ module KMP3D
       Sketchup.status_text = "KMP3D: Exporting STGI..."
       write_section_offset
       write_section_header("STGI", 1, 0)
-      settings = Data.type_by_name("STGI").table[1]
+      settings = Data.type_by_typename("STGI").table[1]
       @writer.write_byte(settings[0]) # lap count
       @writer.write_byte(settings[1]) # pole position
       @writer.write_byte(settings[2]) # driver distance

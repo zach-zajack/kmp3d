@@ -56,7 +56,7 @@ module KMP3D
       entries = @parser.read_uint16
       extra_data1 = @parser.read_byte
       extra_data2 = @parser.read_byte
-      @type = Data.type_by_name(section_id)
+      @type = Data.type_by_typename(section_id)
       Sketchup.status_text = "KMP3D: Importing #{section_id}..."
       case section_id
       when "KTPT", "JGPT", "CNPT", "MSPT"
@@ -89,7 +89,7 @@ module KMP3D
       next_groups = Array.new(6) { @parser.read_byte }
       next_groups.delete(255)
       @parser.read_uint16 # padding
-      @type = Data.type_by_name(type_name)
+      @type = Data.type_by_typename(type_name)
       @type.table[index+1] = [next_groups * ", "]
       @type.save_settings
       return Group.new((first_index...first_index+length))

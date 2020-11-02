@@ -30,9 +30,6 @@ select {
   overflow: auto;
 }
 
-.types * {
-  display: block;
-}
 
 .types button {
   width: 100%;

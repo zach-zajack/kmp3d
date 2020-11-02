@@ -10,6 +10,7 @@ module KMP3D
       @dlg.add_action_callback("switchType") { |_, id| switch_type(id) }
       @dlg.add_action_callback("switchGroup") { |_, id| switch_group(id) }
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
+      @dlg.add_action_callback("toggleLayer") { |_, id| toggle_layer(id) }
       @dlg.add_action_callback("objPathChange") { |_, id| obj_path_change(id) }
       @dlg.add_action_callback("setHybridType") { |_, id| set_hybrid_type(id) }
       @dlg.add_action_callback("setHybridGroup") { set_hybrid_group }
@@ -85,6 +86,14 @@ module KMP3D
       @type.select_point(ent)
       @prev_selection << ent
       update_row(ent)
+    end
+
+    def toggle_layer(layer)
+      visible = !Data.layers[layer].visible?
+      Data.layers[layer].visible = visible
+      # to make sure they don't desync
+      js = "document.getElementById('#{layer}').checked=#{visible};"
+      @dlg.execute_script(js)
     end
 
     def edit_value(table_id)

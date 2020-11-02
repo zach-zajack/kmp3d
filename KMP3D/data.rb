@@ -28,7 +28,7 @@ module KMP3D
     def model_name
       path = Data.model.path
       rindex = path.rindex(/[\\\/]/)
-      return "untitled" if rindex.nil?
+      return "course" if rindex.nil?
       return path[rindex + 1...-4]
     end
 
@@ -37,7 +37,7 @@ module KMP3D
       @layers.each { |name| layers[name].visible = false }
       @layers = [type_name]
       @layers << "Routes"   if type_name == "Cameras"
-      @layers << "Cameras"  if type_name == "Areas"
+      @layers << "Cameras"  if type_name == "Area"
       @layers << "Respawns" if type_name == "Checkpoints"
       @layers.each { |name| layers[name].visible = true }
     end

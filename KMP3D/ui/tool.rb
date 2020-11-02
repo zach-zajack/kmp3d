@@ -17,8 +17,8 @@ module KMP3D
 
     def refresh_html
       @type = Data.types[@type_index]
-      @dlg.set_html(generate_head + generate_body(@type.to_html))
       Data.set_layer_visible(@type.name)
+      @dlg.set_html(generate_head + generate_body(@type.to_html))
     end
 
     def update_row(ent)
@@ -58,13 +58,22 @@ module KMP3D
         else "#{@type.settings_name} #{@type.group_id(i)}"
         end
       end
-      sidenav(@type.group, "switchGroup", settings)
+      sidenav(@type.group, "switchGroup", settings) + \
+        tag(:button, :onclick => callback("addGroup")) \
+          { "Add #{@type.settings_name}" }
     end
 
-    def settings_button
-      return "" unless @type.external_settings
-      tag(:button, :onclick => callback("addGroup")) \
-        { "Add #{@type.settings_name}" }
+    def linked_types
+      linked = []
+      linked << "Routes"      if @type.name == "Cameras"
+      linked << "Cameras"     if @type.name == "Area"
+      linked << "Checkpoints" if @type.name == "Area"
+      linked << "Respawns"    if @type.name == "Checkpoints"
+      checkboxes = linked.map do |type|
+        attribs = {:id => type, :onchange => callback("toggleLayer", type)}
+        checkbox(type, attribs, Data.layers[type].visible?)
+      end
+      checkboxes * br
     end
 
     def generate_head
@@ -77,7 +86,7 @@ module KMP3D
     def generate_body(table_html)
       tag(:body, {:onload => scroll_onload}) do
         tag(:div, :id => "types", :onscroll => on_scroll("types"),
-          :class => "types") { types + type_groups + settings_button } + \
+          :class => "types") { types + type_groups + linked_types } + \
         tag(:div, :id => "table", :onscroll => on_scroll("table"),
           :class => "table") { table_html }
       end

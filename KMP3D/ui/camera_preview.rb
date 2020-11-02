@@ -84,12 +84,13 @@ module KMP3D
     end
 
     def nextFrame(view)
+      # TODO: replace n-order bezier with piecewise lines/cubic parametrics
       pos = KMP3D::KMPMath.bezier_at(points, time/@total_time)
       view.camera = Sketchup::Camera.new(pos, target, Z_AXIS, true, zoom)
       view.show_frame
       @prev_time = Time.now
-      return true if time < @total_time # continue animation
-      return false if @next_came === ["0xFF", "-1", "255"] # stop animation
+      return true if time < @total_time # continue animation if true
+      return false if ["0xFF", "-1", "255"].include?(@next_came)
       get_ent_settings(Data.get_entity("CAME", @next_came))
       return true
     end
@@ -104,16 +105,16 @@ module KMP3D
       @area = Data.kmp3d_entities("AREA")
     end
 
-    #def nextFrame(view)
-    #  ratio = time / (30 * MKW_FRAMERATE)
-    #  player_pos = KMP3D::KMPMath.bezier_at(@enpt, ratio)
-    #  # TODO: area priority
-    #  area = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, tgt) }.first
-    #  get_ent_settings(Data.get_entity("CAME", area.kmp3d_settings[1])) if area
-    #  pos = KMP3D::KMPMath.bezier_at(points, ratio)
-    #  view.camera = Sketchup::Camera.new(pos, tgt, Z_AXIS, true, zoom)
-    #  view.show_frame
-    #  return ratio < 1
-    #end
+    def nextFrame(view)
+      ratio = time / (30 * MKW_FRAMERATE)
+      player_pos = KMP3D::KMPMath.bezier_at(@enpt, ratio)
+      # TODO: area priority
+      area = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, tgt) }.first
+      get_ent_settings(Data.get_entity("CAME", area.kmp3d_settings[1])) if area
+      pos = KMP3D::KMPMath.bezier_at(points, ratio)
+      view.camera = Sketchup::Camera.new(pos, tgt, Z_AXIS, true, zoom)
+      view.show_frame
+      return ratio < 1
+    end
   end
 end

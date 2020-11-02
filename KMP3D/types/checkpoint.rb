@@ -19,22 +19,23 @@ module KMP3D
       true
     end
 
-    def draw_connected_points(view, pos)
+    def draw_connected_points(view, pos, disable_selection=false)
       view.line_width = 5
-      view.drawing_color = "Aqua"
       array1 = []
       array2 = []
-      ents = Data.entities_in_group(type_name, group_id(@group))
-      ents.each do |ent|
-        pos = ent.transformation.origin
-        rot = KMPMath.matrix_to_euler(ent.transformation.to_a)
-        scale = ent.transformation.to_a[4...7].distance([0,0,0]).m
-        points = KMPMath.checkpoint_transform(pos.x, pos.y, -rot.y, scale)
-        array1 << points[0..1] + [pos.z]
-        array2 << points[2..3] + [pos.z]
+      groups.times do |group|
+        view.drawing_color = (@group == group && selection ? "Blue" : "Aqua")
+        Data.entities_in_group(type_name, group).each do |ent|
+          pos = ent.transformation.origin
+          rot = KMPMath.matrix_to_euler(ent.transformation.to_a)
+          scale = ent.transformation.to_a[4...7].distance([0,0,0]).m
+          points = KMPMath.checkpoint_transform(pos.x, pos.y, -rot.y, scale)
+          array1 << points[0..1] + [pos.z]
+          array2 << points[2..3] + [pos.z]
+        end
+        view.draw_polyline(array1) if array1.length >= 2
+        view.draw_polyline(array2) if array2.length >= 2
       end
-      view.draw_polyline(array1) if array1.length >= 2
-      view.draw_polyline(array2) if array2.length >= 2
     end
 
     def model

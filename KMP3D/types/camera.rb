@@ -40,7 +40,7 @@ module KMP3D
       CAMTYPES[@group].model != :point && @step < 2
     end
 
-    def draw_connected_points(view, pos)
+    def draw_connected_points(view, pos, selection=false)
       return unless (on_external_settings? || hide_point?) && pos && @step == 1
       view.line_stipple = "-"
       view.draw_polyline([@prev, pos])

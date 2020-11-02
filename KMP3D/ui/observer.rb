@@ -61,7 +61,7 @@ module KMP3D
       Data.layers.each do |layer|
         next unless layer.visible?
         type = Data.type_by_name(layer.name)
-        type.draw_connected_points(view, @ip.position) if type
+        type.draw_connected_points(view, @ip.position, type == @type) if type
       end
     end
 

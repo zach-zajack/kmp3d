@@ -22,14 +22,17 @@ module KMP3D
       comp.layer = name
     end
 
-    def draw_connected_points(view, pos)
+    def draw_connected_points(view, pos, selection=false)
       view.line_stipple = "-"
       view.line_width = 10
-      view.drawing_color = "Crimson"
-      array = Data.entities_in_group(type_name, group_id(@group)).map do |ent|
-        ent.transformation.origin
+
+      groups.times do |group|
+        view.drawing_color = (@group == group && selection ? "Blue" : "DarkRed")
+        array = Data.entities_in_group(type_name, group).map do |ent|
+          ent.transformation.origin
+        end
+        view.draw_polyline(array) if array.length >= 2
       end
-      view.draw_polyline(array) if array.length >= 2
     end
   end
 

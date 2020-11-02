@@ -120,7 +120,6 @@ module KMP3D
     end
 
     def select_point(ent)
-      return unless ent.kmp3d_object?
       route = ent.kmp3d_settings[2]
       return if ["0xFF", "-1", "255"].include?(route)
       selected_ents = Data.entities_in_group("POTI", route.to_i)

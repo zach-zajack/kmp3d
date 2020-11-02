@@ -34,10 +34,11 @@ module KMP3D
 
     def set_layer_visible(type_name)
       # prev layers
-      @layers.each { |name| layers[name].visible = false } if @layers
+      @layers.each { |name| layers[name].visible = false }
       @layers = [type_name]
-      @layers << "Routes"  if type_name == "Cameras"
-      @layers << "Cameras" if type_name == "Areas"
+      @layers << "Routes"   if type_name == "Cameras"
+      @layers << "Cameras"  if type_name == "Areas"
+      @layers << "Respawns" if type_name == "Checkpoints"
       @layers.each { |name| layers[name].visible = true }
     end
 
@@ -107,6 +108,7 @@ module KMP3D
 
     def reload(observer)
       return unless @reload
+      @layers = []
       @reload = false
       model.add_observer(observer)
       selection.add_observer(observer)

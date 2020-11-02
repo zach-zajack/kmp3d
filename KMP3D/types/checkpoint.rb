@@ -88,6 +88,11 @@ module KMP3D
       comp.layer = name
     end
 
+    def select_point(ent)
+      respawn = ent.kmp3d_settings[1]
+      Data.selection.toggle(Data.get_entity("JGPT", respawn))
+    end
+
     def set_kmp3d_points
       @kmp3d_points = Data.entities.select { |ent| ent.kmp3d_object? }
       @kmp3d_points.map! { |ent| ent.transformation.origin }

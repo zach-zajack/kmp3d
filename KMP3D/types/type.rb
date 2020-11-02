@@ -85,7 +85,6 @@ module KMP3D
     end
 
     def select_point(ent)
-      Data.selection.toggle(ent)
     end
 
     def update_setting(ent, value, col)

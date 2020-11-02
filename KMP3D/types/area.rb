@@ -49,6 +49,12 @@ module KMP3D
       comp.layer = name
     end
 
+    def select_point(ent)
+      p camera = ent.kmp3d_settings[3]
+      return if ["0xFF", "-1", "255"].include?(camera)
+      Data.selection.toggle(Data.get_entity("CAME", camera))
+    end
+
     def update_setting(ent, value, col)
       Data.model.start_operation("Update area point")
       super

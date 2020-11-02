@@ -48,24 +48,28 @@ module KMP3D
     def entities_in_group(type_name, group)
       entities.select do |ent|
         next unless ent.type?(type_name)
-        ent.type?(type_name) && ent.kmp3d_group.to_i == group.to_i
+        ent.type?(type_name) && ent.kmp3d_group.to_i == hexify(group)
       end
     end
 
     def entities_before_group(type_name, group)
       entities.select do |ent|
-        ent.type?(type_name) && ent.kmp3d_group.to_i < group.to_i
+        ent.type?(type_name) && ent.kmp3d_group.to_i < hexify(group)
       end
     end
 
     def entities_after_group(type_name, group)
       entities.select do |ent|
-        ent.type?(type_name) && ent.kmp3d_group.to_i > group.to_i
+        ent.type?(type_name) && ent.kmp3d_group.to_i > hexify(group)
       end
     end
 
     def get_entity(type_name, id)
-      return kmp3d_entities(type_name)[id.to_i]
+      return kmp3d_entities(type_name)[hexify(id)]
+    end
+
+    def hexify(data)
+      data.to_s[0,2] == "0x" ? data.hex : data.to_i
     end
 
     def types

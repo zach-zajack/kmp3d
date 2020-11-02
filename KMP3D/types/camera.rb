@@ -119,6 +119,16 @@ module KMP3D
       comp.layer = name
     end
 
+    def select_point(ent)
+      return unless ent.kmp3d_object?
+      route = ent.kmp3d_settings[2]
+      return if ["0xFF", "-1", "255"].include?(route)
+      selected_ents = Data.entities_in_group("POTI", route.to_i)
+      selected_ents.each do |ent|
+        Data.selection.toggle(ent)
+      end
+    end
+
     def inputs
       # settings added due to next point using previous settings
       inputs = [[-1, false] + camtype_settings(@settings.map { |s| s.default })]

@@ -19,7 +19,7 @@ module KMP3D
       true
     end
 
-    def draw_connected_points(view, pos, disable_selection=false)
+    def draw_connected_points(view, pos, selection=false)
       view.line_width = 5
       array1 = []
       array2 = []

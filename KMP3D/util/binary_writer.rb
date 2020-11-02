@@ -20,19 +20,19 @@ module KMP3D
     end
 
     def write_byte(data)
-      @bytes += [hexify(data)].pack("C")
+      @bytes += [Data.hexify(data)].pack("C")
     end
 
     def write_uint16(data)
-      @bytes += [hexify(data)].pack("S").reverse
+      @bytes += [Data.hexify(data)].pack("S").reverse
     end
 
     def write_int16(data)
-      @bytes += [hexify(data)].pack("s").reverse
+      @bytes += [Data.hexify(data)].pack("s").reverse
     end
 
     def write_uint32(data)
-      @bytes += [hexify(data)].pack("L").reverse
+      @bytes += [Data.hexify(data)].pack("L").reverse
     end
 
     def write_float(data)
@@ -40,20 +40,13 @@ module KMP3D
     end
 
     def write_vector3d(data)
-      p data
       write_float(data.x)
       write_float(data.z)
       write_float(-data.y)
     end
 
     def insert_uint32(pos, data)
-      @bytes[pos, 4] = [hexify(data)].pack("L").reverse
-    end
-
-    private
-
-    def hexify(data)
-      data.to_s[0,2] == "0x" ? data.hex : data.to_i
+      @bytes[pos, 4] = [Data.hexify(data)].pack("L").reverse
     end
   end
 end

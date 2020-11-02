@@ -49,7 +49,7 @@ module KMP3D
       false
     end
 
-    def draw_connected_points(view, pos)
+    def draw_connected_points(view, pos, selection=false)
     end
 
     def save_settings
@@ -82,6 +82,10 @@ module KMP3D
 
     def group_id(i)
       i
+    end
+
+    def select_point(ent)
+      Data.selection.toggle(ent)
     end
 
     def update_setting(ent, value, col)

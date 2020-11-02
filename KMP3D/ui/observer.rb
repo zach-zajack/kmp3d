@@ -69,6 +69,7 @@ module KMP3D
       return if !@type || @type.hybrid?
       update_selection
       Data.selection.each do |ent|
+        @type.select_point(ent)
         @prev_selection << ent
         update_row(ent)
       end

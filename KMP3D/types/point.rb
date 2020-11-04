@@ -23,9 +23,7 @@ module KMP3D
     end
 
     def draw_connected_points(view, pos, selection=false)
-      view.line_stipple = "-"
-      view.line_width = 10
-
+      view.line_width = 5
       groups.times do |group|
         view.drawing_color = (@group == group && selection ? "Blue" : "DarkRed")
         array = Data.entities_in_group(type_name, group).map do |ent|

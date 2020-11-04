@@ -2,15 +2,15 @@ module KMP3D
   class CAME < Type
     attr_accessor :op_cam_index
 
-    CamType = Struct.new(:name, :model, :route, :opening)
+    CamType = Struct.new(:name, :model, :route, :opening, :rel_pos)
     CAMTYPES = [
-      CamType.new("0 Goal",           :rails, false, false),
-      CamType.new("1 FixSearch",      :point, false, false),
-      CamType.new("2 PathSearch",     :point,  true, false),
-      CamType.new("3 KartFollow",     :point, false, false),
-      CamType.new("4 KartPathFollow",  :both, false,  true),
-      CamType.new("5 OP_FixMoveAt",   :rails,  true,  true),
-      CamType.new("6 OP_PathMoveAt",  :point,  true,  true)
+      CamType.new("0 Goal",           :point, false, false,  true),
+      CamType.new("1 FixSearch",      :point, false, false, false),
+      CamType.new("2 PathSearch",     :point,  true, false, false),
+      CamType.new("3 KartFollow",     :point, false, false,  true),
+      CamType.new("4 KartPathFollow", :both,  false,  true, false),
+      CamType.new("5 OP_FixMoveAt",   :rails,  true,  true, false),
+      CamType.new("6 OP_PathMoveAt",  :rails,  true,  true, false)
     ]
 
     def initialize
@@ -19,10 +19,14 @@ module KMP3D
       @settings = [
         Settings.new(:text, :byte, "Next", "0xFF"),
         Settings.new(:text, :byte, "Route", "0xFF"),
-        Settings.new(:text, :uint16, "Zoom vel.", "60"),
-        Settings.new(:text, :uint16, "View vel.", "60"),
-        Settings.new(:text, :float, "Zoom start", "0.0"),
-        Settings.new(:text, :float, "Zoom end", "0.0"),
+        Settings.new(:text, :uint16, "Zoom vel.", "5"),
+        Settings.new(:text, :uint16, "View vel.", "0"),
+        Settings.new(:text, :float, "Zoom start", "45.0"),
+        Settings.new(:text, :float, "Zoom end", "45.0"),
+        Settings.new(:hidden, :vec3, "Rotation", "0.0, 0.0, 0.0"),
+        # aka View Start
+        Settings.new(:text, :vec3, "Relative Pos.", "0.0, 0.0, 0.0"),
+        Settings.new(:hidden, :vec3, "View End", "0.0, 0.0, 0.0"),
         Settings.new(:text, :float, "Time", "60.0")
       ]
       super
@@ -109,13 +113,13 @@ module KMP3D
 
     def import(pos, rail_start, rails_end, group, settings)
       @group = group
-      camtypemdl = CAMTYPES[@group].model
+      camtypemdl = CAMTYPES[group].model
       settings = camtype_settings(settings)
       skp_grp = Data.entities.add_group
       skp_grp.entities.add_cline(rail_start, rails_end) if camtypemdl != :point
       skp_grp.entities.add_instance(model, pos) if camtypemdl != :rails
       comp = skp_grp.to_component
-      comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
+      comp.name = "KMP3D #{type_name}(#{group},#{settings * '|'})"
       comp.layer = name
     end
 
@@ -167,7 +171,8 @@ module KMP3D
       settings[0] = nil unless CAMTYPES[@group].opening # next camera
       settings[1] = nil unless CAMTYPES[@group].route # route
       settings[3] = nil unless CAMTYPES[@group].model != :point # viewspeed
-      settings[6] = nil unless CAMTYPES[@group].opening # time
+      settings[7] = nil unless CAMTYPES[@group].rel_pos # relative position
+      settings[9] = nil unless CAMTYPES[@group].opening # time
       return settings.compact
     end
 

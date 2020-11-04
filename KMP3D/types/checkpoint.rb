@@ -89,7 +89,7 @@ module KMP3D
       comp = Data.entities.add_instance(model, avg)
       comp.transform!(Geom::Transformation.scaling(avg, 1.0, scale(pos2), 1.0))
       comp.transform!(Geom::Transformation.rotation(avg, [0,0,1], angle(pos2)))
-      comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
+      comp.name = "KMP3D #{type_name}(#{group},#{settings * '|'})"
       comp.layer = name
     end
 

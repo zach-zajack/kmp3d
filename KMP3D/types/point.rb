@@ -18,7 +18,7 @@ module KMP3D
 
     def import(pos, group, settings)
       comp = Data.entities.add_instance(model, pos)
-      comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
+      comp.name = "KMP3D #{type_name}(#{group},#{settings * '|'})"
       comp.layer = name
     end
 

@@ -37,7 +37,7 @@ class Sketchup::ComponentInstance
   end
 
   def kmp3d_settings
-    name[name.index("(") + 1..name.index(")") - 1].split(",")
+    name[name.index("(") + 1..name.index(")") - 1].split("|")
   end
 
   def edit_setting(index, value)

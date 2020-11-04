@@ -63,7 +63,7 @@ module KMP3D
     end
 
     def component_settings
-      "#{type_name}(#{group_id(@group)},#{inputs[-1][2..-1] * ','}) "
+      "#{type_name}(#{group_id(@group)}|#{inputs[-1][2..-1] * '|'}) "
     end
 
     def table_helper_text
@@ -117,7 +117,7 @@ module KMP3D
     end
 
     def next_groups
-      @table[1..-1].map { |row| row[0].split(",").map { |i| i.to_i } }
+      @table[1..-1].map { |row| row[0].split("|").map { |i| i.to_i } }
     end
 
     def prev_groups

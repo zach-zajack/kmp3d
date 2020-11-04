@@ -58,7 +58,7 @@ module KMP3D
       comp.transform!(Geom::Transformation.rotation(pos, [1, 0, 0],  rot[0]))
       comp.transform!(Geom::Transformation.rotation(pos, [0, 0, 1],  rot[1]))
       comp.transform!(Geom::Transformation.rotation(pos, [0, 1, 0], -rot[2]))
-      comp.name = "KMP3D #{type_name}(#{group},#{settings * ','})"
+      comp.name = "KMP3D #{type_name}(#{group},#{settings * '|'})"
       comp.layer = name
     end
 

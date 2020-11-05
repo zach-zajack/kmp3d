@@ -23,10 +23,10 @@ module KMP3D
         Settings.new(:text, :uint16, "View vel.", "0"),
         Settings.new(:text, :float, "Zoom start", "45.0"),
         Settings.new(:text, :float, "Zoom end", "45.0"),
-        Settings.new(:hidden, :vec3, "Rotation", "0.0, 0.0, 0.0"),
+        Settings.new(:hidden, :vec3, "Rotation", "0, 0, 0"),
         # aka View Start
-        Settings.new(:text, :vec3, "Relative Pos.", "0.0, 0.0, 0.0"),
-        Settings.new(:hidden, :vec3, "View End", "0.0, 0.0, 0.0"),
+        Settings.new(:text, :vec3, "Relative Pos.", "0, 0, 0"),
+        Settings.new(:hidden, :vec3, "View End", "0, 0, 0"),
         Settings.new(:text, :float, "Time", "60.0")
       ]
       super
@@ -114,7 +114,6 @@ module KMP3D
     def import(pos, rail_start, rails_end, group, settings)
       @group = group
       camtypemdl = CAMTYPES[group].model
-      settings = camtype_settings(settings)
       skp_grp = Data.entities.add_group
       skp_grp.entities.add_cline(rail_start, rails_end) if camtypemdl != :point
       skp_grp.entities.add_instance(model, pos) if camtypemdl != :rails
@@ -132,24 +131,40 @@ module KMP3D
         ents.each { |e| Data.selection.remove(e) }
     end
 
-    def inputs
-      # settings added due to next point using previous settings
-      inputs = [[-1, false] + camtype_settings(@settings.map { |s| s.default })]
-      Data.entities_in_group(type_name, @group).each do |ent|
-        id = ent.kmp3d_id(type_name)
-        selected = Data.selection.include?(ent)
-        inputs << [id, selected] + ent.kmp3d_settings[1..-1]
-      end
-      return inputs
-    end
-
     def to_html
       if on_external_settings?
         tag(:div, :class => "cameras") { camera_settings_html }
       else
         tag(:table) \
-          { table_rows(inputs, camtype_settings(@settings)) * "" } + \
+          { table_rows(inputs, @settings) * "" } + \
         tag(:div, :class => "helper-text") { table_helper_text }
+      end
+    end
+
+    def prompt_columns(row, settings)
+      table = row.zip(settings).map do |col, setting|
+        next if setting.type == :hidden
+        tag(:th) { tag(:span) { setting.prompt } }
+      end
+      table << tag(:th, :style => "width:20px") { "" }
+    end
+
+    def table_rows(inputs, settings)
+      id = -1
+      camtype_settings(settings)
+      inputs.map do |row|
+        kmp3d_id = row.shift
+        selected = row.shift
+        camtype_settings(row)
+        tag(:tr, row_attribs(kmp3d_id, selected)) do
+          if id < 0
+            cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
+          else
+            cols = col_html(id, kmp3d_id, row, settings)
+          end
+          id += 1
+          next cols
+        end
       end
     end
 
@@ -167,13 +182,12 @@ module KMP3D
     end
 
     def camtype_settings(settings)
-      settings = settings.clone
       settings[0] = nil unless CAMTYPES[@group].opening # next camera
       settings[1] = nil unless CAMTYPES[@group].route # route
       settings[3] = nil unless CAMTYPES[@group].model != :point # viewspeed
       settings[7] = nil unless CAMTYPES[@group].rel_pos # relative position
       settings[9] = nil unless CAMTYPES[@group].opening # time
-      return settings.compact
+      settings.compact!
     end
 
     def save_settings

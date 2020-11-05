@@ -50,8 +50,6 @@ module KMP3D
 
     def table_columns(id, row, settings)
       table_id = -1
-      p row
-      p settings
       table = row.zip(settings).map do |col, setting|
         next if setting.type == :hidden
         table_id += 1

@@ -17,17 +17,20 @@ module KMP3D
       @name = "Cameras"
       @op_cam_index = Data.model.get_attribute("KMP3D", "CAME", 0)
       @settings = [
-        Settings.new(:text, :byte, "Next", "0xFF"),
-        Settings.new(:text, :byte, "Route", "0xFF"),
-        Settings.new(:text, :uint16, "Zoom vel.", "5"),
-        Settings.new(:text, :uint16, "View vel.", "0"),
-        Settings.new(:text, :float, "Zoom start", "45.0"),
-        Settings.new(:text, :float, "Zoom end", "45.0"),
-        Settings.new(:hidden, :vec3, "Rotation", "0, 0, 0"),
-        # aka View Start
-        Settings.new(:text, :vec3, "Relative Pos.", "0, 0, 0"),
-        Settings.new(:hidden, :vec3, "View End", "0, 0, 0"),
-        Settings.new(:text, :float, "Time", "60.0")
+        Settings.new(:text,   :byte,   "Next", "0xFF"),
+        Settings.new(:hidden, :byte,   "Camshake", "0"),
+        Settings.new(:text,   :byte,   "Route", "0xFF"),
+        Settings.new(:hidden, :uint16, "Point vel.", "0"),
+        Settings.new(:text,   :uint16, "Zoom vel.", "5"),
+        Settings.new(:text,   :uint16, "View vel.", "0"),
+        Settings.new(:hidden, :byte,   "Start flag", "0"),
+        Settings.new(:hidden, :byte,   "Movie flag", "0"),
+        Settings.new(:hidden, :vec3,   "Rotation", "0, 0, 0"),
+        Settings.new(:text,   :float,  "Zoom start", "45.0"),
+        Settings.new(:text,   :float,  "Zoom end", "45.0"),
+        Settings.new(:text,   :vec3,   "Relative Pos.", "0, 0, 0"), # view start
+        Settings.new(:hidden, :vec3,   "View End", "0, 0, 0"),
+        Settings.new(:text,   :float,  "Time", "60.0")
       ]
       super
     end
@@ -118,12 +121,12 @@ module KMP3D
       skp_grp.entities.add_cline(rail_start, rails_end) if camtypemdl != :point
       skp_grp.entities.add_instance(model, pos) if camtypemdl != :rails
       comp = skp_grp.to_component
-      comp.name = "KMP3D #{type_name}(#{group},#{settings * '|'})"
+      comp.name = "KMP3D #{type_name}(#{group}|#{settings * '|'})"
       comp.layer = name
     end
 
     def select_point(ent)
-      route = ent.kmp3d_settings[2]
+      route = ent.kmp3d_settings[3]
       return if ["0xFF", "-1", "255"].include?(route)
       ents = Data.entities_in_group("POTI", route)
       Data.selection.contains?(ent) ?
@@ -182,11 +185,11 @@ module KMP3D
     end
 
     def camtype_settings(settings)
-      settings[0] = nil unless CAMTYPES[@group].opening # next camera
-      settings[1] = nil unless CAMTYPES[@group].route # route
-      settings[3] = nil unless CAMTYPES[@group].model != :point # viewspeed
-      settings[7] = nil unless CAMTYPES[@group].rel_pos # relative position
-      settings[9] = nil unless CAMTYPES[@group].opening # time
+    #  settings[0]  = nil unless CAMTYPES[@group].opening # next camera
+    #  settings[2]  = nil unless CAMTYPES[@group].route # route
+    #  settings[5]  = nil unless CAMTYPES[@group].model != :point # viewspeed
+    #  settings[11] = nil unless CAMTYPES[@group].rel_pos # relative position
+    #  settings[13] = nil unless CAMTYPES[@group].opening # time
       settings.compact!
     end
 

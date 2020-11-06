@@ -44,7 +44,7 @@ class Sketchup::ComponentInstance
     settings = kmp3d_settings
     settings[index] = value
     name_clone = name
-    name_clone[name.index("(") + 1..name.index(")") - 1] = settings.join(",")
+    name_clone[name.index("(") + 1..name.index(")") - 1] = settings.join("|")
     self.name = name_clone
   end
 

@@ -33,7 +33,7 @@ module KMP3D
         end
         tag(:tr, row_attribs(kmp3d_id, selected)) do
           if id < 0
-            cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
+            cols = tag(:th) { "ID" } + prompt_columns(settings) * ""
           else
             cols = col_html(id, kmp3d_id, row, settings)
           end
@@ -62,10 +62,9 @@ module KMP3D
       end
     end
 
-    def prompt_columns(row, settings)
-      table = row.zip(settings).map do |col, setting|
-        next if setting.type == :hidden
-        tag(:th) { tag(:span) { setting.prompt } }
+    def prompt_columns(settings)
+      table = settings.map do |setting|
+        tag(:th) { tag(:span) { setting.prompt } } if setting.type != :hidden
       end
       table << tag(:th, :style => "width:20px") { "" }
     end

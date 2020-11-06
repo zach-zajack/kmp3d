@@ -144,31 +144,12 @@ module KMP3D
       end
     end
 
-    def prompt_columns(row, settings)
-      table = row.zip(settings).map do |col, setting|
-        next if setting.type == :hidden
-        tag(:th) { tag(:span) { setting.prompt } }
-      end
-      table << tag(:th, :style => "width:20px") { "" }
+    def table_columns(id, row, settings)
+      super(id, camtype_settings(row.clone), camtype_settings(settings.clone))
     end
 
-    def table_rows(inputs, settings)
-      id = -1
-      camtype_settings(settings)
-      inputs.map do |row|
-        kmp3d_id = row.shift
-        selected = row.shift
-        camtype_settings(row)
-        tag(:tr, row_attribs(kmp3d_id, selected)) do
-          if id < 0
-            cols = tag(:th) { "ID" } + prompt_columns(row, settings) * ""
-          else
-            cols = col_html(id, kmp3d_id, row, settings)
-          end
-          id += 1
-          next cols
-        end
-      end
+    def prompt_columns(settings)
+      super(camtype_settings(settings.clone))
     end
 
     def on_external_settings?
@@ -185,11 +166,11 @@ module KMP3D
     end
 
     def camtype_settings(settings)
-    #  settings[0]  = nil unless CAMTYPES[@group].opening # next camera
-    #  settings[2]  = nil unless CAMTYPES[@group].route # route
-    #  settings[5]  = nil unless CAMTYPES[@group].model != :point # viewspeed
-    #  settings[11] = nil unless CAMTYPES[@group].rel_pos # relative position
-    #  settings[13] = nil unless CAMTYPES[@group].opening # time
+      settings[0]  = nil unless CAMTYPES[@group].opening # next camera
+      settings[2]  = nil unless CAMTYPES[@group].route # route
+      settings[5]  = nil unless CAMTYPES[@group].model != :point # viewspeed
+      settings[11] = nil unless CAMTYPES[@group].rel_pos # relative position
+      settings[13] = nil unless CAMTYPES[@group].opening # time
       settings.compact!
     end
 

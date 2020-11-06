@@ -191,42 +191,36 @@ module KMP3D
       type_index = ent.kmp3d_group.to_i
       type = CAME::CAMTYPES[type_index]
       @writer.write_byte(type_index)
-      @writer.write_byte(type.opening ? settings.shift : 0xFF)  # next camera
-      @writer.write_byte(0) # camshake
-      @writer.write_byte(type.route ? settings.shift : 0xFF) # route
-      @writer.write_uint16(0) # pointspeed
-      @writer.write_uint16(settings.shift) # zoomspeed
-      @writer.write_uint16(type.model != :point ? settings.shift : 0) # vspeed
-      @writer.write_byte(0) # start flag
-      @writer.write_byte(0) # movie flag
-      @writer.write_vector3d(came_position(ent, type))
-      @writer.write_vector3d([0, 0, 0]) # rotation
-      @writer.write_float(settings.shift) # zoom start
-      @writer.write_float(settings.shift) # zoom end
-      came_rails(ent, type).each { |r| @writer.write_vector3d(r) }
-      @writer.write_float(type.opening ? settings.shift : 0.0)
+      export_settings(ent, 0, 8)
+      write_came_position(ent, type, settings)
+      @writer.write_csv_float(settings[9]) # rotation
+      @writer.write_float(settings[10]) # zoom start
+      @writer.write_float(settings[11]) # zoom end
+      write_came_rails(ent, type, settings)
+      @writer.write_float(settings[14]) # time
     end
 
-    def came_position(ent, type)
+    def write_came_position(ent, type, settings)
       case type.model
-      when :point then scale_point(ent.transformation.origin)
-      when :rails then [0, 0, 0]
+      when :point then @writer.write_position(ent.transformation.origin)
+      when :rails then @writer.write_csv_float(settings[8])
       when :both
         ents = ent.definition.entities
         comp = ents.select { |e| e.typename == "ComponentInstance" }
-        scale_point(comp.first.transformation.origin)
+        @writer.write_position(comp.first.transformation.origin)
       end
     end
 
-    def came_rails(ent, type)
-      return [[0, 0, 0], [0, 0, 0]] if type.model == :point
-      ents = ent.definition.entities
-      line = ents.select { |e| e.typename == "ConstructionLine" }.first
-      return [scale_point(line.start), scale_point(line.end)]
-    end
-
-    def scale_point(point)
-      point.to_a.map { |c| c.to_m }
+    def write_came_rails(ent, type, settings)
+      if type.model == :point
+        @writer.write_csv_float(settings[12])
+        @writer.write_csv_float(settings[13])
+      else
+        ents = ent.definition.entities
+        line = ents.select { |e| e.typename == "ConstructionLine" }.first
+        @writer.write_position(line.start)
+        @writer.write_position(line.end)
+      end
     end
 
     def write_section_stgi
@@ -245,7 +239,7 @@ module KMP3D
     end
 
     def error(message)
-      raise "KMP3D: Cannot merge file, #{message}"
+      UI.messagebox("KMP3D: Cannot merge file, #{message}")
       write_scratch
     end
   end

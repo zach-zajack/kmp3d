@@ -25,6 +25,7 @@ module KMP3D
         Settings.new(:text,   :uint16, "View vel.", "0"),
         Settings.new(:hidden, :byte,   "Start flag", "0"),
         Settings.new(:hidden, :byte,   "Movie flag", "0"),
+        Settings.new(:hidden, :vec3,   "Position", "0, 0, 0"),
         Settings.new(:hidden, :vec3,   "Rotation", "0, 0, 0"),
         Settings.new(:text,   :float,  "Zoom start", "45.0"),
         Settings.new(:text,   :float,  "Zoom end", "45.0"),
@@ -116,11 +117,15 @@ module KMP3D
 
     def import(pos, rail_start, rails_end, group, settings)
       @group = group
-      camtypemdl = CAMTYPES[group].model
-      skp_grp = Data.entities.add_group
-      skp_grp.entities.add_cline(rail_start, rails_end) if camtypemdl != :point
-      skp_grp.entities.add_instance(model, pos) if camtypemdl != :rails
-      comp = skp_grp.to_component
+      camtype_model = CAMTYPES[group].model
+      if camtype_model == :point
+        comp = Data.entities.add_instance(model, pos)
+      else
+        skp_grp = Data.entities.add_group
+        skp_grp.entities.add_cline(rail_start, rails_end)
+        skp_grp.entities.add_instance(model, pos) if camtype_model == :both
+        comp = skp_grp.to_component
+      end
       comp.name = "KMP3D #{type_name}(#{group}|#{settings * '|'})"
       comp.layer = name
     end
@@ -169,8 +174,8 @@ module KMP3D
       settings[0]  = nil unless CAMTYPES[@group].opening # next camera
       settings[2]  = nil unless CAMTYPES[@group].route # route
       settings[5]  = nil unless CAMTYPES[@group].model != :point # viewspeed
-      settings[11] = nil unless CAMTYPES[@group].rel_pos # relative position
-      settings[13] = nil unless CAMTYPES[@group].opening # time
+      settings[12] = nil unless CAMTYPES[@group].rel_pos # relative position
+      settings[14] = nil unless CAMTYPES[@group].opening # time
       settings.compact!
     end
 

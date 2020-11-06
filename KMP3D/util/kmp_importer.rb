@@ -131,6 +131,12 @@ module KMP3D
       @type.import(position, group, settings)
     end
 
+    def import_position_stored(settings)
+      x, y, z = Array.new(3) { @parser.read_float }
+      settings << [x, y, z].join(", ")
+      return [x.m, -z.m, y.m]
+    end
+
     def import_ckpt(index)
       group = get_group_index(@ckph, index)
       position1 = @parser.read_position2d
@@ -177,24 +183,14 @@ module KMP3D
     end
 
     def import_came
-      settings = []
       type_index = @parser.read_byte
-      next_cam = @parser.read_byte
-      settings << format(next_cam, next_cam == 0xFF)
-      @parser.read_byte # camshake
-      route = @parser.read_byte
-      settings << format(route, route == 0xFF)
-      @parser.read_uint16 # pointspeed
-      settings << @parser.read_uint16 # zoomspeed
-      settings << @parser.read_uint16 # viewspeed
-      @parser.read_byte # start flag
-      @parser.read_byte # movie flag
-      position = @parser.read_position3d
-      @parser.read_rotation # does nothing for now
+      settings = import_settings(@type.settings[0...8])
+      position = import_position_stored(settings)
+      import_position_stored(settings) # rotation
       settings << @parser.read_float # zoom start
       settings << @parser.read_float # zoom end
-      rail_start = @parser.read_position3d
-      rail_end = @parser.read_position3d
+      rail_start = import_position_stored(settings)
+      rail_end   = import_position_stored(settings)
       settings << @parser.read_float # time
       @type.import(position, rail_start, rail_end, type_index, settings)
     end

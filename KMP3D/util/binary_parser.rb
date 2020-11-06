@@ -14,7 +14,7 @@ module KMP3D
     end
 
     def next_bytes(num)
-      return read(num).reverse
+      read(num).reverse
     end
 
     def read_byte
@@ -41,34 +41,34 @@ module KMP3D
       x = read_float.m
       z = read_float.m
       y = -read_float.m
-      [x, y, z]
+      return [x, y, z]
     end
 
     def read_position2d
       x = read_float.m
       y = -read_float.m
-      [x, y]
+      return [x, y]
     end
 
     def read_rotation
       x = read_float.degrees
       y = read_float.degrees
       z = read_float.degrees
-      [x, y, z]
+      return [x, y, z]
     end
 
     def read_scale
       x = read_float
       z = read_float
       y = read_float
-      [x, y, z]
+      return [x, y, z]
     end
 
     def read_vector3d
       x = read_float
       z = read_float
       y = -read_float
-      [x, y, z]
+      return [x, y, z]
     end
   end
 end

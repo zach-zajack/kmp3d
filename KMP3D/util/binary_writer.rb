@@ -45,6 +45,14 @@ module KMP3D
       write_float(-data.y)
     end
 
+    def write_position(data)
+      write_vector3d(data.to_a.map { |c| c.to_m })
+    end
+
+    def write_csv_float(data)
+      data.split(",").each { |f| write_float(f) }
+    end
+
     def insert_uint32(pos, data)
       @bytes[pos, 4] = [Data.hexify(data)].pack("L").reverse
     end

@@ -51,8 +51,8 @@ module KMP3D
     def table_columns(id, row, settings)
       table_id = -1
       table = row.zip(settings).map do |col, setting|
-        next if setting.type == :hidden
         table_id += 1
+        next if setting.type == :hidden
         tag(:td, :onclick => callback("focusRow", id)) do
           table_input("#{id},#{table_id}", col, setting)
         end

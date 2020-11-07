@@ -117,19 +117,17 @@ module KMP3D
     end
 
     def next_groups
-      @table[1..-1].map { |row| row[0].split("|").map { |i| i.to_i } }
+      @table[1..-1].map { |row| row[0].split(",").map { |i| i.to_i } }
     end
 
     def prev_groups
       Array.new(groups) do |i|
-        ng = next_groups.clone
-        indices = ng.map do |group|
-          next unless group.include?(i)
-          index = ng.index(group)
-          ng[index] = nil
-          next index
+        next_groups.reduce([]) do |indices, grp|
+          prev = next_groups.index(grp)
+          # discard indices if they don't concern us or have already been added
+          next indices unless grp.include?(i) && indices[-1] != prev
+          indices << prev
         end
-        indices.compact
       end
     end
   end

@@ -37,11 +37,11 @@ module KMP3D
       Color.new("Moving Road", "SlateBlue"),
       Color.new("Special Wall", "DarkSlateBlue"),
       Color.new("Wall", "DarkSlateGray")
-    ]
+    ].freeze
 
-    def import(path = nil)
+    def import(path=nil)
       path ||= UI.openpanel(
-        "Select a file to import from.", Data.model_dir, "*.kcl"
+        "Select a file to import from.", Data.model_dir, "KCL|*.kcl||"
       )
       return if path.nil?
 
@@ -56,10 +56,10 @@ module KMP3D
       @normals   = read_vector_array(sect2_offset, sect3_offset)
       @triangles = parse_triangles(sect3_offset, sect4_offset)
 
-      add_faces(path)
+      add_faces
     end
 
-    def add_faces(path)
+    def add_faces
       Data.model.start_operation("Import KCL")
       @triangles.each do |flag, triangles|
         mesh = Geom::PolygonMesh.new(0, triangles.length)
@@ -107,8 +107,8 @@ module KMP3D
 
         cross_a = normal_a.cross(direction)
         cross_b = normal_b.cross(direction)
-        scale1 = length/cross_b.dot(normal_c)
-        scale2 = length/cross_a.dot(normal_c)
+        scale1 = length / cross_b.dot(normal_c)
+        scale2 = length / cross_a.dot(normal_c)
 
         cross_b.transform!(Geom::Transformation.new(scale1))
         cross_a.transform!(Geom::Transformation.new(scale2))

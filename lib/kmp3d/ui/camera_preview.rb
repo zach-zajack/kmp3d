@@ -34,7 +34,7 @@ module KMP3D
       Geom::Transformation.interpolate(p1, p2, t).origin
     end
 
-    #def next_pos
+    # def next_pos
     #  return @points[0].pos if @points.length == 1
     #  @point_prog += delta * @points[0].speed * MKW_FRAMERATE
     #  dist = @points[0].pos.distance(@points[1].pos).to_m
@@ -42,23 +42,23 @@ module KMP3D
     #  return lerp(@points[0].pos, @points[1].pos, ratio) if ratio <= 1
     #  @points.shift
     #  return next_pos
-    #end
+    # end
 
     def target
-      @rail_prog += delta * @view_vel * 100/MKW_FRAMERATE
-      ratio = @rail_prog/@rail_dist
+      @rail_prog += delta * @view_vel * 100 / MKW_FRAMERATE
+      ratio = @rail_prog / @rail_dist
       ratio = 1 if ratio > 1
       lerp(@rail_start, @rail_end, ratio)
     end
 
     def zoom
-      @zoom_prog += delta * @zoom_vel * 100/MKW_FRAMERATE
+      @zoom_prog += delta * @zoom_vel * 100 / MKW_FRAMERATE
       @zoom_prog = @zoom_end if @zoom_prog >= @zoom_end
       return @zoom_prog
     end
 
     def route_path(ent)
-      return [Route.new(ent.transformation.origin, 0)] if !@type.route
+      return [Route.new(ent.transformation.origin, 0)] unless @type.route
       return Data.entities_in_group("POTI", @settings[1]).map do |ent|
         Route.new(ent.transformation.origin, ent.kmp3d_settings[1].to_f)
       end
@@ -66,6 +66,7 @@ module KMP3D
 
     def came_rails(ent)
       return Array.new(2, ent.transformation.origin) if @type.model == :point
+
       ents = ent.definition.entities
       line = ents.select { |e| e.typename == "ConstructionLine" }.first
       return [line.start, line.end]
@@ -85,12 +86,13 @@ module KMP3D
 
     def nextFrame(view)
       # TODO: replace n-order bezier with piecewise lines/cubic parametrics
-      pos = KMP3D::KMPMath.bezier_at(points, time/@total_time)
+      pos = KMP3D::KMPMath.bezier_at(points, time / @total_time)
       view.camera = Sketchup::Camera.new(pos, target, Z_AXIS, true, zoom)
       view.show_frame
       @prev_time = Time.now
       return true if time < @total_time # continue animation if true
       return false if ["0xFF", "-1", "255"].include?(@next_came)
+
       get_ent_settings(Data.get_entity("CAME", @next_came))
       return true
     end

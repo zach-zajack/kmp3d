@@ -33,6 +33,7 @@ module KMP3D
 
     def focus_row(id)
       return if @type.on_external_settings?
+
       ent = Data.get_entity(@type.type_name, id)
       unless @prev_focus.nil?
         Data.selection.remove(@prev_focus)
@@ -75,8 +76,11 @@ module KMP3D
       selected_ents.each do |ent|
         selected ? Data.selection.add(ent) : Data.selection.remove(ent)
       end
-      selected ? \
-        @prev_selection += selected_ents : @prev_selection -= selected_ents
+      if selected
+        @prev_selection += selected_ents
+      else
+        @prev_selection -= selected_ents
+      end
       @dlg.execute_script(toggle_select(id, selected))
     end
 
@@ -102,8 +106,11 @@ module KMP3D
       value = @dlg.get_element_value(table_id)
       value = "false" if value == "true"
       value = "true" if value == "false"
-      @type.on_external_settings? ? \
-        edit_group_value(value, id, row) : edit_point_value(value, id, row)
+      if @type.on_external_settings?
+        edit_group_value(value, id, row)
+      else
+        edit_point_value(value, id, row)
+      end
     end
 
     def edit_group_value(value, row, col)
@@ -146,10 +153,10 @@ module KMP3D
     def obj_path_change(table_id)
       id = table_id.split(",").first
       row = table_id.split(",").last
-      path = Data.model.definitions.load(UI.openpanel(
+      path = UI.openpanel \
         "Select a file to import from.", Data.model_dir, "SKP|*.skp||"
-      ))
-      @type.update_group(path, id, row)
+      definition = Data.model.definitions.load(path)
+      @type.update_group(definition, id, row)
       refresh_html
     end
 
@@ -184,7 +191,7 @@ module KMP3D
     end
 
     def valid_float(value)
-      /^[-]?\d*\.?\d+$/.match(value)
+      /^-?\d*\.?\d+$/.match(value)
     end
 
     def valid?(input, value)
@@ -193,7 +200,7 @@ module KMP3D
       when :byte then valid_int_within(value, -1, 0xFF)
       when :bytes
         value != "" && \
-        value.split(",", -1).all? { |v| valid_int_within(v, -1, 0xFF) }
+          value.split(",", -1).all? { |v| valid_int_within(v, -1, 0xFF) }
       when :float then valid_float(value)
       when :int16 then valid_int_within(value, -0x7FFF, 0x7FFF)
       when :uint16 then valid_int_within(value, -1, 0xFFFF)

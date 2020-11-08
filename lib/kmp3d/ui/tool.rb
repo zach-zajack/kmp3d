@@ -1,6 +1,8 @@
 module KMP3D
   class Tool
-    include HTMLHelpers, Callbacks, Observer
+    include Observer
+    include Callbacks
+    include HTMLHelpers
 
     def initialize
       @dlg = UI::WebDialog.new("KMP3D", false, "KMP3D")
@@ -23,6 +25,7 @@ module KMP3D
       refresh_html if ent.deleted?
       row_id = ent.kmp3d_id(@type.type_name)
       return if row_id.nil? || @type.on_external_settings?
+
       selected = Data.selection.include?(ent)
       js = toggle_select(row_id, selected)
       id = 0
@@ -50,6 +53,7 @@ module KMP3D
     def type_groups
       return sidenav(@type.group, "switchGroup", @type.camtype) if @type.camera?
       return "" unless @type.external_settings
+
       len = @type.groups
       settings = (0..len).map do |i|
         if i == len then "#{@type.settings_name} Settings"
@@ -77,16 +81,16 @@ module KMP3D
     def generate_head
       tag(:head) do
         tag(:meta, :"http-equiv" => "X-UA-Compatible", :content => "IE=edge") +
-        tag(:style) { @css }
+          tag(:style) { @css }
       end
     end
 
     def generate_body(table_html)
       tag(:body, {:onload => scroll_onload}) do
         tag(:div, :id => "types", :onscroll => on_scroll("types"),
-          :class => "types") { types + type_groups + linked_types } + \
-        tag(:div, :id => "table", :onscroll => on_scroll("table"),
-          :class => "table") { table_html }
+                  :class => "types") { types + type_groups + linked_types } + \
+          tag(:div, :id => "table", :onscroll => on_scroll("table"),
+                    :class => "table") { table_html }
       end
     end
   end

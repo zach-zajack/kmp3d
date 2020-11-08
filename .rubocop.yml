@@ -1,0 +1,37 @@
+inherit_from: .rubocop_todo.yml
+
+# Older versions of SketchUp only support hash rockets
+Style/HashSyntax:
+  EnforcedStyle: hash_rockets
+
+# Style preference
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+# Much more concise to use %
+Style/FormatString:
+  Enabled: false
+
+# Looks silly and unreadable at times
+Style/RedundantReturn:
+  Enabled: false
+
+# Style preference
+Style/EmptyMethod:
+  EnforcedStyle: expanded
+
+# Not supported in SketchUp
+Style/UnpackFirst:
+  Enabled: false
+
+# Style preference, only if the following code is more than 1 line
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+# Differentiates from normal assignment and also more concise
+Layout/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+
+# Differentiates it from blocks and looks nicer
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space

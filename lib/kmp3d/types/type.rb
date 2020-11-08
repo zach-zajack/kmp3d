@@ -1,6 +1,7 @@
 module KMP3D
   class Type
-    include HTMLHelpers, Table
+    include Table
+    include HTMLHelpers
 
     attr_reader :name, :external_settings, :settings
     attr_accessor :group, :table, :step
@@ -11,8 +12,8 @@ module KMP3D
       @group = 0
       @step = 0
       if @external_settings # external settings deal with groups, mostly
-        @table = Data.model.get_attribute("KMP3D", \
-          type_name, [Array.new(@external_settings.length)])
+        @table = Data.model.get_attribute \
+          "KMP3D", type_name, [Array.new(@external_settings.length)]
         add_group(true) if @table.length == 1
       end
     end
@@ -57,7 +58,7 @@ module KMP3D
       Data.model.set_attribute("KMP3D", type_name, @table)
     end
 
-    def add_group(init=false)
+    def add_group(_init=false)
       return unless @external_settings
       @table << @external_settings.map { |s| s.default }
     end

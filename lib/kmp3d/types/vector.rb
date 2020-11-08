@@ -12,8 +12,9 @@ module KMP3D
       case @step
       when 0 then comp.transform!(Geom::Transformation.translation(pos))
       when 1
-        comp.transform!(Geom::Transformation.rotation(@prev, [0, 0, 1], \
-          angle(pos)))
+        comp.transform!(
+          Geom::Transformation.rotation(@prev, [0, 0, 1], angle(pos))
+        )
       end
     end
 
@@ -86,8 +87,9 @@ module KMP3D
       case @step
       when 0 then comp.transform!(Geom::Transformation.translation(pos))
       when 1
-        comp.transform!(Geom::Transformation.rotation(@prev, [0, 0, 1], \
-          angle(pos)))
+        comp.transform!(
+          Geom::Transformation.rotation(@prev, [0, 0, 1], angle(pos))
+        )
         comp.transform!(Geom::Transformation.translation(pos - @prev))
       end
     end

@@ -327,6 +327,6 @@ module KMP3D
       "EnvKarehaUp" => Object.new(753, "point"),
       "M_obj_kanban_y" => Object.new(754, "point"),
       "DKfalls" => Object.new(755, "point")
-    }
+    }.freeze
   end
 end

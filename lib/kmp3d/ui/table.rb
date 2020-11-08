@@ -16,7 +16,7 @@ module KMP3D
       kmp3d_id = ent.kmp3d_id(type_name)
       settings = ent.kmp3d_settings[1..-1]
       tag(:tr, row_attribs(kmp3d_id, false)) do
-        col_html(id, kmp3d_id, settings, @settings)
+        col_html(kmp3d_id, settings, @settings)
       end
     end
 
@@ -32,18 +32,18 @@ module KMP3D
           selected = row.shift
         end
         tag(:tr, row_attribs(kmp3d_id, selected)) do
-          if id < 0
-            cols = tag(:th) { "ID" } + prompt_columns(settings) * ""
-          else
-            cols = col_html(id, kmp3d_id, row, settings)
-          end
+          cols = if id < 0
+                   tag(:th) { "ID" } + prompt_columns(settings) * ""
+                 else
+                   col_html(kmp3d_id, row, settings)
+                 end
           id += 1
           next cols
         end
       end
     end
 
-    def col_html(id, kmp3d_id, row, settings)
+    def col_html(kmp3d_id, row, settings)
       tag(:td, :onclick => callback("selectRow", kmp3d_id)) { kmp3d_id } + \
         table_columns(kmp3d_id, row, settings) * ""
     end
@@ -53,12 +53,13 @@ module KMP3D
       table = row.zip(settings).map do |col, setting|
         table_id += 1
         next if setting.type == :hidden
+
         tag(:td, :onclick => callback("focusRow", id)) do
           table_input("#{id},#{table_id}", col, setting)
         end
       end
       table << tag(:td, :class => "delete") do
-        tag(:button, :onclick => callback("deleteRow", id+1)) { "&#x2715;" }
+        tag(:button, :onclick => callback("deleteRow", id + 1)) { "&#x2715;" }
       end
     end
 
@@ -71,6 +72,7 @@ module KMP3D
 
     def row_attribs(id, selected)
       return {} if id.to_i < 0
+
       attribs = {:id => "row#{id}"}
       attribs[:class] = "selected" if !on_external_settings? && selected
       return attribs
@@ -88,7 +90,7 @@ module KMP3D
       when :path
         attributes = {:id => id, :onclick => callback("objPathChange", id)}
         path = value.path
-        tag(:button, attributes) { path[path.rindex(/[\\\/]/) + 1..-1] }
+        tag(:button, attributes) { path[path.rindex(%r{[\\/]}) + 1..-1] }
       end
     end
   end

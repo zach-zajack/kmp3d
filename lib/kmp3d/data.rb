@@ -20,14 +20,14 @@ module KMP3D
 
     def model_dir
       path = Data.model.path
-      rindex = path.rindex(/[\\\/]/)
+      rindex = path.rindex(%r{[\\/]})
       return "" if rindex.nil?
       return path[0..rindex]
     end
 
     def model_name
       path = Data.model.path
-      rindex = path.rindex(/[\\\/]/)
+      rindex = path.rindex(%r{[\\/]})
       return "course" if rindex.nil?
       return path[rindex + 1...-4]
     end
@@ -48,7 +48,6 @@ module KMP3D
 
     def entities_in_group(type_name, group)
       entities.select do |ent|
-        next unless ent.type?(type_name)
         ent.type?(type_name) && ent.kmp3d_group.to_i == hexify(group)
       end
     end
@@ -70,7 +69,7 @@ module KMP3D
     end
 
     def hexify(data)
-      data.to_s[0,2] == "0x" ? data.hex : data.to_i
+      data.to_s[0, 2] == "0x" ? data.hex : data.to_i
     end
 
     def types
@@ -95,12 +94,16 @@ module KMP3D
 
     def load_obj(id)
       path = "objects/#{Objects::LIST[id].model}"
-      File.file?("#{DIR}/app/skps/#{path}.skp") ? \
-        load_def(path) : load_def("point")
+      if File.file?("#{DIR}/app/skps/#{path}.skp")
+        load_def(path)
+      else
+        load_def("point")
+      end
     end
 
     def load_kmp3d_model
       return if model.get_attribute("KMP3D", "KMP3D-model?", false)
+
       Dir["#{DIR}/app/skps/*.skp"].each { |d| model.definitions.load(d) }
       @types.each { |t| layers.add(t.name).visible = false }
       model.set_attribute("KMP3D", "KMP3D-model?", true)
@@ -108,6 +111,7 @@ module KMP3D
 
     def reload(observer)
       return unless @reload
+
       @layers = []
       @reload = false
       model.add_observer(observer)

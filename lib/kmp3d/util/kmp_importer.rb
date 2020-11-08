@@ -9,6 +9,7 @@ module KMP3D
         "Select a file to import from.", Data.model_dir, "KMP|*.kmp||"
       )
       return if path.nil?
+
       ask_kcl_import(path)
       Data.model.start_operation("Import KMP")
       @parser = BinaryParser.new(path)
@@ -25,6 +26,7 @@ module KMP3D
     def ask_kcl_import(path)
       kcl_path = File.dirname(path) + "/course.kcl"
       return unless File.exist?(kcl_path)
+
       msg = "A course.kcl file was found in the directory of the KMP file." \
             " Would you like to import it as well?"
       KCLImporter.import(kcl_path) if UI.messagebox(msg, MB_YESNO) == IDYES
@@ -41,12 +43,12 @@ module KMP3D
     def read_group(section_offset)
       @parser.head = @header_length + section_offset
       section_id = @parser.read(4)
-      entries = @parser.read_uint16
+      ents = @parser.read_uint16
       @parser.read_uint16 # extra data
       case section_id
-      when "ENPH" then @enph = Array.new(entries) { |i| import_group("ENPT",i) }
-      when "ITPH" then @itph = Array.new(entries) { |i| import_group("ITPT",i) }
-      when "CKPH" then @ckph = Array.new(entries) { |i| import_group("CKPT",i) }
+      when "ENPH" then @enph = Array.new(ents) { |i| import_group("ENPT", i) }
+      when "ITPH" then @itph = Array.new(ents) { |i| import_group("ITPT", i) }
+      when "CKPH" then @ckph = Array.new(ents) { |i| import_group("CKPT", i) }
       end
     end
 
@@ -90,9 +92,9 @@ module KMP3D
       next_groups.delete(255)
       @parser.read_uint16 # padding
       @type = Data.type_by_typename(type_name)
-      @type.table[index+1] = [next_groups * ", "]
+      @type.table[index + 1] = [next_groups * ", "]
       @type.save_settings
-      return Group.new((first_index...first_index+length))
+      return Group.new((first_index...first_index + length))
     end
 
     def get_group_index(groups, index)
@@ -164,7 +166,7 @@ module KMP3D
       points = @parser.read_uint16
       smooth = @parser.read_byte
       cyclic = @parser.read_byte
-      @type.table[index+1] = [smooth, cyclic]
+      @type.table[index + 1] = [smooth, cyclic]
       @type.save_settings
       points.times do
         position = @parser.read_position3d

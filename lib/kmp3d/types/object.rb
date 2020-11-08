@@ -29,6 +29,7 @@ module KMP3D
 
     def add_group(init=false)
       return super if init
+
       object = UI.inputbox(["Enter Object Name"], ["itembox"], [@obj_list], "Add Object").first
       @table << [object, Data.load_obj(object)]
     end
@@ -45,7 +46,7 @@ module KMP3D
       comp.transform!(Geom::Transformation.translation(pos))
     end
 
-    def advance_steps(pos)
+    def advance_steps(_pos)
       0
     end
 
@@ -53,7 +54,7 @@ module KMP3D
       "Click to add a new object."
     end
 
-    def import(pos, rot, scale, group, settings)
+    def import(pos, rot, _scale, group, settings)
       comp = Data.entities.add_instance(Data.load_obj(group), pos)
       comp.transform!(Geom::Transformation.rotation(pos, [1, 0, 0],  rot[0]))
       comp.transform!(Geom::Transformation.rotation(pos, [0, 0, 1],  rot[1]))

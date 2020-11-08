@@ -4,12 +4,12 @@ module KMP3D
       @name = "Stage Info"
       @external_settings = [
         Settings.new(:text, :byte, "Lap Count", "3"),
-        Settings.new(:dropdown, :byte, "Pole Position", "0", ["Left", "Right"]),
+        Settings.new(:dropdown, :byte, "Pole Position", "0", %w[Left Right]),
         Settings.new(
-          :dropdown, :byte, "Driver Distance", "0", ["Normal", "Closer"]
+          :dropdown, :byte, "Driver Distance", "0", %w[Normal Closer]
         ),
-        Settings.new(:dropdown, :byte, "Lens Flare", "0",
-          ["Enabled", "Disabled"]
+        Settings.new(
+          :dropdown, :byte, "Lens Flare", "0", %w[Enabled Disabled]
         ),
         Settings.new(:hidden, :byte, "Padding", "0"),
         Settings.new(:text, :uint32, "Flare Color (RGBA)", "0xE6E6E64B"),

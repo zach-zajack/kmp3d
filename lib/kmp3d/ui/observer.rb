@@ -31,9 +31,10 @@ module KMP3D
       refresh_html
     end
 
-    def onMouseMove(flags, x, y, view)
+    def onMouseMove(_flags, x, y, view)
       @comp.visible = false
       return if !@dlg.visible? || @type.on_external_settings?
+
       @ip.pick(view, x, y)
       unless @type.hide_point?
         @comp = @type.transform(@prev_comp.copy, @ip.position)
@@ -45,8 +46,9 @@ module KMP3D
       view.invalidate
     end
 
-    def onLButtonDown(flags, x, y, view)
+    def onLButtonDown(_flags, _x, _y, _view)
       return if !@ip.valid? || @type.on_external_settings?
+
       if @type.advance_steps(@ip.position) == 0
         @comp = @type.add_comp(@comp)
         Data.model.commit_operation
@@ -60,6 +62,7 @@ module KMP3D
       @ip.draw(view)
       Data.layers.each do |layer|
         next unless layer.visible?
+
         type = Data.type_by_name(layer.name)
         type.draw_connected_points(view, @ip.position, type == @type) if type
       end
@@ -67,6 +70,7 @@ module KMP3D
 
     def onSelectionBulkChange(_)
       return if !@type || @type.hybrid?
+
       update_selection
       Data.selection.each do |ent|
         @prev_selection << ent
@@ -91,11 +95,12 @@ module KMP3D
 
     def onPreSaveModel(_)
       Data.model.abort_operation
-      Data.types.each { |type| @type.save_settings }
+      Data.types.each { |_type| @type.save_settings }
     end
 
     def onTransactionUndo(_) # replace with onCancel at some point
       return if !tool_active? || @undone
+
       @undone = true # prevent recursion
       Sketchup.undo # call a second undo since new operation has already started
       update_comp

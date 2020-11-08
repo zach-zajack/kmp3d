@@ -4,14 +4,14 @@ module KMP3D
 
     CamType = Struct.new(:name, :model, :route, :opening, :rel_pos)
     CAMTYPES = [
-      CamType.new("0 Goal",           :point, false, false,  true),
+      CamType.new("0 Goal",           :point, false, false, true),
       CamType.new("1 FixSearch",      :point, false, false, false),
-      CamType.new("2 PathSearch",     :point,  true, false, false),
-      CamType.new("3 KartFollow",     :point, false, false,  true),
+      CamType.new("2 PathSearch",     :point, true, false, false),
+      CamType.new("3 KartFollow",     :point, false, false, true),
       CamType.new("4 KartPathFollow", :both,  false,  true, false),
       CamType.new("5 OP_FixMoveAt",   :rails,  true,  true, false),
       CamType.new("6 OP_PathMoveAt",  :rails,  true,  true, false)
-    ]
+    ].freeze
 
     def initialize
       @name = "Cameras"
@@ -48,8 +48,9 @@ module KMP3D
       CAMTYPES[@group].model != :point && @step < 2
     end
 
-    def draw_connected_points(view, pos, selection=false)
+    def draw_connected_points(view, pos, _selection=false)
       return unless (on_external_settings? || hide_point?) && pos && @step == 1
+
       view.line_stipple = "-"
       view.draw_polyline([@prev, pos])
     end
@@ -133,10 +134,13 @@ module KMP3D
     def select_point(ent)
       route = ent.kmp3d_settings[3]
       return if ["0xFF", "-1", "255"].include?(route)
+
       ents = Data.entities_in_group("POTI", route)
-      Data.selection.contains?(ent) ?
-        ents.each { |e| Data.selection.add(e) } : \
+      if Data.selection.contains?(ent)
+        ents.each { |e| Data.selection.add(e) }
+      else
         ents.each { |e| Data.selection.remove(e) }
+      end
     end
 
     def to_html
@@ -145,7 +149,7 @@ module KMP3D
       else
         tag(:table) \
           { table_rows(inputs, @settings) * "" } + \
-        tag(:div, :class => "helper-text") { table_helper_text }
+          tag(:div, :class => "helper-text") { table_helper_text }
       end
     end
 
@@ -187,14 +191,14 @@ module KMP3D
 
     def camera_settings_html
       "Initial opening camera index: " + \
-      tag(:input, :id => "opCameIdx", :type => "text", :size => "2", \
-        :value => @op_cam_index, :onchange => callback("setOpCamIdx")) + br + \
-      tag(:button, :onclick => callback("playOpening")) \
-        { "Play Opening Cameras" } + br + \
-      tag(:button, :onclick => callback("playReplay")) \
-        { "Play Replay Cameras" } + br + \
-      tag(:button, :onclick => callback("stopReplay")) \
-        { "Stop Camera Playback" }
+        tag(:input, :id => "opCameIdx", :type => "text", :size => "2", \
+                    :value => @op_cam_index, :onchange => callback("setOpCamIdx")) + br + \
+        tag(:button, :onclick => callback("playOpening")) \
+          { "Play Opening Cameras" } + br + \
+        tag(:button, :onclick => callback("playReplay")) \
+          { "Play Replay Cameras" } + br + \
+        tag(:button, :onclick => callback("stopReplay")) \
+          { "Stop Camera Playback" }
     end
 
     def add_rails(pos)

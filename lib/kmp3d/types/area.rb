@@ -3,10 +3,9 @@ module KMP3D
     def initialize
       @name = "Area"
       @settings = [
-        Settings.new(:dropdown, :byte, "Shape", "0", ["Cube", "Cylinder"]),
+        Settings.new(:dropdown, :byte, "Shape", "0", %w[Cube Cylinder]),
         Settings.new(
-          :dropdown, :byte, "Area Type", "0",
-          [
+          :dropdown, :byte, "Area Type", "0", [
             "Camera", "Env Effect", "BFG Entry Swap", "Moving Road",
             "Force Recalc.", "Minimap Control", "Music Change", "Boos",
             "Draw Distance", "Unknown (0x09)", "Fall Boundary"
@@ -31,7 +30,7 @@ module KMP3D
       comp.transform!(Geom::Transformation.translation(pos))
     end
 
-    def advance_steps(pos)
+    def advance_steps(_pos)
       0
     end
 
@@ -52,9 +51,13 @@ module KMP3D
     def select_point(ent)
       camera = ent.kmp3d_settings[3]
       return if ["0xFF", "-1", "255"].include?(camera)
+
       cam_ent = Data.get_entity("CAME", camera)
-      Data.selection.contains?(ent) ? \
-        Data.selection.add(cam_ent) : Data.selection.remove(cam_ent)
+      if Data.selection.contains?(ent)
+        Data.selection.add(cam_ent)
+      else
+        Data.selection.remove(cam_ent)
+      end
     end
 
     def update_setting(ent, value, col)
@@ -66,9 +69,9 @@ module KMP3D
 
     def table_helper_text
       "If using Conditional Out of Bounds code:" + br + \
-      "Set. 1 refers to the checkpoint that enables the AREA when crossed."+br+\
-      "Set. 2 refers to the checkpoint that disables it when crossed."+br+\
-      "If the second checkpoint comes before the first, it is disabled the following lap (Riidefi's only)."
+        "Set. 1 refers to the checkpoint that enables the AREA when crossed." + br + \
+        "Set. 2 refers to the checkpoint that disables it when crossed." + br + \
+        "If the second checkpoint comes before the first, it is disabled the following lap (Riidefi's only)."
     end
 
     private

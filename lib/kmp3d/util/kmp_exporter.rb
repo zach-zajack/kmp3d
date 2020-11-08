@@ -4,9 +4,12 @@ module KMP3D
 
     def export
       path = UI.savepanel(
-        "Select a file to export to.",  Data.model_dir, "#{Data.model_name}.kmp"
+        "Select a file to export to.",
+        Data.model_dir,
+        "KMP|*.kmp||"
       )
       return if path.nil?
+
       Data.reload(self)
       @writer = BinaryWriter.new(path)
       File.exist?(path) ? write_merged(path) : write_scratch
@@ -38,19 +41,23 @@ module KMP3D
       @parser.head = @offsets[n]
       type = @parser.read(4)
       ents = Data.kmp3d_entities(type)
-      return if ["ENPH", "ITPH", "CKPH"].include?(type)
-      ents != [] || type == "STGI" ? \
-        write_section_name(type) : write_old_section(type, n)
+      return if %w[ENPH ITPH CKPH].include?(type)
+
+      if ents != [] || type == "STGI"
+        write_section_name(type)
+      else
+        write_old_section(type, n)
+      end
     end
 
     def write_old_section(type, n)
       write_section_offset # write the new section offset
       @parser.head = @offsets[n]
-      section_length = @offsets[n+1] - @offsets[n]
+      section_length = @offsets[n + 1] - @offsets[n]
       @writer.write(@parser.read(section_length))
       # write the header too!
-      return unless ["ENPT", "ITPT", "CKPT"].include?(type)
-      write_old_section(type.sub("PT", "PH"), n+1)
+      return unless %w[ENPT ITPT CKPT].include?(type)
+      write_old_section(type.sub("PT", "PH"), n + 1)
     end
 
     def write_header
@@ -135,8 +142,8 @@ module KMP3D
       @type.groups.times do |i|
         ents = Data.entities_in_group("POTI", i)
         @writer.write_uint16(ents.length)
-        @writer.write_byte(@type.table[i+1][0] == "true" ? 1 : 0) # smooth
-        @writer.write_byte(@type.table[i+1][1] == "true" ? 1 : 0) # cyclic
+        @writer.write_byte(@type.table[i + 1][0] == "true" ? 1 : 0) # smooth
+        @writer.write_byte(@type.table[i + 1][1] == "true" ? 1 : 0) # cyclic
         ents.each { |ent| export_ent(ent) }
       end
     end
@@ -145,7 +152,7 @@ module KMP3D
       ent.kmp_transform.each { |v| @writer.write_float(v) }
     end
 
-    def export_ent_settings(ent, lower_range = 0, upper_range = -1)
+    def export_ent_settings(ent, lower_range=0, upper_range=-1)
       ent_settings = ent.kmp3d_settings[lower_range + 1..upper_range]
       type_settings = @type.settings[lower_range, ent_settings.length]
       export_settings(ent_settings, type_settings)
@@ -237,7 +244,7 @@ module KMP3D
       export_settings(settings[0...6], @type.external_settings[0...6])
       @writer.write_byte(0)
       speed_mod = settings[6].to_f
-      @writer.bytes += speed_mod == 1.0 ? "\0\0" : [speed_mod].pack("g")[0,2]
+      @writer.bytes += speed_mod == 1.0 ? "\0\0" : [speed_mod].pack("g")[0, 2]
     end
 
     def error(message)

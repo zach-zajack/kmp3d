@@ -47,9 +47,9 @@ module KMP3D
     def to_html
       tag(:div, :class => "hybrid") do
         checkboxes * br + br + \
-        "Group number if applicable: " + \
-        tag(:input, :id => "hybridGroup", :type => "text", :size => "2", \
-          :value => @group, :onchange => callback("setHybridGroup"))
+          "Group number if applicable: " + \
+          tag(:input, :id => "hybridGroup", :type => "text", :size => "2", \
+                      :value => @group, :onchange => callback("setHybridGroup"))
       end
     end
 
@@ -71,7 +71,7 @@ module KMP3D
       Data.hybrid_types.map do |type|
         value = @hybrid_types[type.type_name]
         checkbox(type.name, {:id => "hybrid#{type.type_name}", :value => value,
-          :onclick => callback("setHybridType", type.type_name)}, value)
+                             :onclick => callback("setHybridType", type.type_name)}, value)
       end
     end
   end

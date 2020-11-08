@@ -7,7 +7,7 @@ class Sketchup::Entity
     nil
   end
 
-  def type?(type_name)
+  def type?(_type_name)
     false
   end
 
@@ -18,7 +18,7 @@ class Sketchup::Entity
   def kmp3d_settings_insert(index, value)
   end
 
-  def kmp3d_id(type_name)
+  def kmp3d_id(_type_name)
     nil
   end
 end
@@ -29,7 +29,7 @@ class Sketchup::ComponentInstance
   end
 
   def model_type
-    definition.path[definition.path.rindex(/[\\\/]/)+1...-4]
+    definition.path[definition.path.rindex(%r{[\\/]}) + 1...-4]
   end
 
   def type?(type_name)
@@ -63,20 +63,19 @@ class Sketchup::ComponentInstance
     pos.y =  array[14].to_m
     pos.z = -array[13].to_m
     return pos if model_type == "point" && !type?("GOBJ")
+
     sign = KMP3D::KMPMath.determinant(array) <=> 0
     scale = []
-    scale.x = array[0...3].distance([0,0,0])
-    scale.y = array[8...11].distance([0,0,0]) * sign
-    scale.z = array[4...7].distance([0,0,0])
+    scale.x = array[0...3].distance([0, 0, 0])
+    scale.y = array[8...11].distance([0, 0, 0]) * sign
+    scale.z = array[4...7].distance([0, 0, 0])
     array = \
-      array[0...3].map  { |a| a/scale.x } + [array[3]] + \
-      array[4...7].map  { |a| a/scale.z } + [array[7]] + \
-      array[8...11].map { |a| a/scale.y } + array[11..-1]
+      array[0...3].map  { |a| a / scale.x } + [array[3]] + \
+      array[4...7].map  { |a| a / scale.z } + [array[7]] + \
+      array[8...11].map { |a| a / scale.y } + array[11..-1]
     rot = KMP3D::KMPMath.matrix_to_euler(array)
     return pos + rot if model_type == "vector"
-    if model_type == "checkpoint"
-      return KMP3D::KMPMath.checkpoint_transform(pos.x, pos.z, rot.y, scale.z)
-    end
-    return pos + rot + scale
+    return pos + rot + scale if model_type != "checkpoint"
+    return KMP3D::KMPMath.checkpoint_transform(pos.x, pos.z, rot.y, scale.z)
   end
 end

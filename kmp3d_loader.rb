@@ -1,5 +1,5 @@
-require "sketchup.rb"
-require "extensions.rb"
+require "sketchup"
+require "extensions"
 
 module KMP3D
   DIR = File.dirname(__FILE__)

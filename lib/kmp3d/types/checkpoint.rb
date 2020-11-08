@@ -29,7 +29,7 @@ module KMP3D
         Data.entities_in_group(type_name, group).each do |ent|
           pos = ent.transformation.origin
           rot = KMPMath.matrix_to_euler(ent.transformation.to_a)
-          scale = ent.transformation.to_a[4...7].distance([0,0,0]).m
+          scale = ent.transformation.to_a[4...7].distance([0, 0, 0]).m
           points = KMPMath.checkpoint_transform(pos.x, pos.y, -rot.y, scale)
           p1 = points[0..1] + [pos.z]
           p2 = points[2..3] + [pos.z]
@@ -52,21 +52,26 @@ module KMP3D
       when 0 then comp.transform!(Geom::Transformation.translation(pos - \
         [0, 1500.m, 0]))
       when 1
-        comp.transform!(Geom::Transformation.scaling(@prev, \
-          1.0, scale(pos), 1.0))
-        comp.transform!(Geom::Transformation.rotation(@prev, [0,0,1], \
-          angle(pos)))
+        comp.transform!(
+          Geom::Transformation.scaling(@prev, 1.0, scale(pos), 1.0)
+        )
+        comp.transform!(
+          Geom::Transformation.rotation(@prev, [0, 0, 1], angle(pos))
+        )
       when 2
         return comp unless change_direction?(pos)
-        comp.transform!(Geom::Transformation.rotation(@avg, [0,0,1], Math::PI))
+        comp.transform!(
+          Geom::Transformation.rotation(@avg, [0, 0, 1], Math::PI)
+        )
       end
     end
 
     def advance_steps(pos)
       if @step == 1
-        @slope = (@prev.y - pos.y)/(@prev.x - pos.x)
+        @slope = (@prev.y - pos.y) / (@prev.x - pos.x)
         @prev_angle = angle(pos)
-        @avg = [(pos.x + @prev.x)/2, (pos.y + @prev.y)/2, (pos.z + @prev.z)/2]
+        @avg = \
+          [(pos.x + @prev.x) / 2, (pos.y + @prev.y) / 2, (pos.z + @prev.z) / 2]
       end
       @prev = pos
       @step += 1
@@ -84,19 +89,24 @@ module KMP3D
 
     def import(pos1, pos2, group, settings)
       @prev = pos1
-      avg = [(pos2.x + pos1.x)/2, (pos2.y + pos1.y)/2]
+      avg = [(pos2.x + pos1.x) / 2, (pos2.y + pos1.y) / 2]
       avg.z = closest_kmp3d_entity_height(avg)
       comp = Data.entities.add_instance(model, avg)
       comp.transform!(Geom::Transformation.scaling(avg, 1.0, scale(pos2), 1.0))
-      comp.transform!(Geom::Transformation.rotation(avg, [0,0,1], angle(pos2)))
+      comp.transform!(
+        Geom::Transformation.rotation(avg, [0, 0, 1], angle(pos2))
+      )
       comp.name = "KMP3D #{type_name}(#{group}|#{settings * '|'})"
       comp.layer = name
     end
 
     def select_point(ent)
       respawn = Data.get_entity("JGPT", ent.kmp3d_settings[1])
-      Data.selection.contains?(ent) ? \
-        Data.selection.add(respawn) : Data.selection.remove(respawn)
+      if Data.selection.contains?(ent)
+        Data.selection.add(respawn)
+      else
+        Data.selection.remove(respawn)
+      end
     end
 
     def set_kmp3d_points
@@ -109,7 +119,7 @@ module KMP3D
     def coob_active?(areas, c)
       areas.any? do |area|
         p1, p2 = area.kmp3d_settings[5..6].map { |p| p.to_i }
-        (([p1, p2].min...[p1, p2].max) === c) ^ (p1 > p2)
+        (([p1, p2].min...[p1, p2].max).include?(c)) ^ (p1 > p2)
       end
     end
 

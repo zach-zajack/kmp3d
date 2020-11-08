@@ -8,7 +8,7 @@ module KMP3D
       comp.transform!(Geom::Transformation.translation(pos))
     end
 
-    def advance_steps(pos)
+    def advance_steps(_pos)
       0
     end
 
@@ -22,7 +22,7 @@ module KMP3D
       comp.layer = name
     end
 
-    def draw_connected_points(view, pos, selection=false)
+    def draw_connected_points(view, _pos, selection=false)
       view.line_width = 5
       groups.times do |group|
         view.drawing_color = (@group == group && selection ? "Blue" : "DarkRed")
@@ -77,10 +77,10 @@ module KMP3D
     def initialize
       @name = "Routes"
       @external_settings = [
-        Settings.new(:dropdown, :byte, "Setting 1", 0, ["Verbatim", "Smooth"]),
+        Settings.new(:dropdown, :byte, "Setting 1", 0, %w[Verbatim Smooth]),
         Settings.new(
           :dropdown, :byte, "Setting 2", 0, ["Cyclic motion", "Back and forth"]
-        ),
+        )
       ]
       @settings = [
         Settings.new(:text, :uint16, "Time (1/60s)", "60"),

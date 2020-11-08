@@ -1,23 +1,23 @@
 module KMP3D
   module HTMLHelpers
-    def tag(name, attributes = {})
+    def tag(name, attributes={})
       content = "#{yield}</#{name}>" if block_given?
       return "<#{name}#{attributes_to_html(attributes)}>#{content}"
     end
 
-    def sidenav(index, callback_method, options = [])
+    def sidenav(index, callback_method, options=[])
       tag(:div, :class => "sidenav") do
         sidenav_children(index, callback_method, options).join("")
       end
     end
 
-    def select(selected_id, attributes = {}, options = [])
+    def select(selected_id, attributes={}, options=[])
       tag(:select, attributes) do
-        select_children(selected_id, attributes, options).join("")
+        select_children(selected_id, options).join("")
       end
     end
 
-    def checkbox(label, attributes = {}, checked = false)
+    def checkbox(label, attributes={}, checked=false)
       attributes[:type] = "checkbox"
       attributes[:checked] = "true" if checked
       tag(:label) { tag(:input, attributes) + label }
@@ -27,7 +27,7 @@ module KMP3D
       "<br/>"
     end
 
-    def callback(name = "", args = "")
+    def callback(name="", args="")
       "window.location='skp:#{name}@#{args}';"
     end
 
@@ -71,7 +71,7 @@ module KMP3D
       end
     end
 
-    def select_children(selected_id, attributes, options)
+    def select_children(selected_id, options)
       i = 0
       options.map do |option|
         opts = {:value => i}

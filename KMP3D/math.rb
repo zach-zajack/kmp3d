@@ -31,6 +31,7 @@ module KMP3D
         else rot = r2
         end
       end
+      rot.map! { |r| r > 180 ? r - 360 : r }
       return rot
     end
 

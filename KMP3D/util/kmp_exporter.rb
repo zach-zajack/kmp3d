@@ -145,27 +145,32 @@ module KMP3D
       ent.kmp_transform.each { |v| @writer.write_float(v) }
     end
 
-    def export_settings(ent, lower_range = 0, upper_range = -1)
+    def export_ent_settings(ent, lower_range = 0, upper_range = -1)
       ent_settings = ent.kmp3d_settings[lower_range + 1..upper_range]
       type_settings = @type.settings[lower_range, ent_settings.length]
+      export_settings(ent_settings, type_settings)
+    end
+
+    def export_settings(ent_settings, type_settings)
       type_settings.zip(ent_settings).each do |template, setting|
         case template.input
         when :byte then @writer.write_byte(setting)
         when :float then @writer.write_float(setting)
         when :int16 then @writer.write_int16(setting)
         when :uint16 then @writer.write_uint16(setting)
+        when :uint32 then @writer.write_uint32(setting)
         end
       end
     end
 
     def export_ent(ent)
       write_kmp_transform(ent)
-      export_settings(ent)
+      export_ent_settings(ent)
     end
 
     def export_ckpt(ent)
       write_kmp_transform(ent)
-      export_settings(ent)
+      export_ent_settings(ent)
       last_index = Data.entities_in_group("CKPT", ent.kmp3d_group).length - 1
       prev_index = @index == 0 ? 0xFF : @index - 1
       next_index = @index == last_index ? 0xFF : @index + 1
@@ -175,15 +180,15 @@ module KMP3D
 
     def export_gobj(ent)
       @writer.write_uint16(Objects::LIST[ent.kmp3d_group].id)
-      export_settings(ent, 0, 1)
+      export_ent_settings(ent, 0, 1)
       write_kmp_transform(ent)
-      export_settings(ent, 1)
+      export_ent_settings(ent, 1)
     end
 
     def export_area(ent)
-      export_settings(ent, 0, 4)
+      export_ent_settings(ent, 0, 4)
       write_kmp_transform(ent)
-      export_settings(ent, 4)
+      export_ent_settings(ent, 4)
     end
 
     def export_came(ent)
@@ -191,7 +196,7 @@ module KMP3D
       type_index = ent.kmp3d_group.to_i
       type = CAME::CAMTYPES[type_index]
       @writer.write_byte(type_index)
-      export_settings(ent, 0, 8)
+      export_ent_settings(ent, 0, 8)
       write_came_position(ent, type, settings)
       @writer.write_csv_float(settings[9]) # rotation
       @writer.write_float(settings[10]) # zoom start
@@ -224,18 +229,15 @@ module KMP3D
     end
 
     def write_section_stgi
+      @type = Data.type_by_typename("STGI")
       Sketchup.status_text = "KMP3D: Exporting STGI..."
       write_section_offset
       write_section_header("STGI", 1, 0)
-      settings = Data.type_by_typename("STGI").table[1]
-      @writer.write_byte(settings[0]) # lap count
-      @writer.write_byte(settings[1]) # pole position
-      @writer.write_byte(settings[2]) # driver distance
-      @writer.write_byte(0) # flare
+      settings = @type.table[1]
+      export_settings(settings[0...6], @type.external_settings[0...6])
       @writer.write_byte(0)
-      @writer.write_uint32(0xFFFFFF4B) # color
-      @writer.write_byte(0)
-      @writer.bytes += [settings[3].to_f].pack("g")[0,2]
+      speed_mod = settings[6].to_f
+      @writer.bytes += speed_mod == 1.0 ? "\0\0" : [speed_mod].pack("g")[0,2]
     end
 
     def error(message)

@@ -197,6 +197,7 @@ module KMP3D
       when :float then valid_float(value)
       when :int16 then valid_int_within(value, -0x7FFF, 0x7FFF)
       when :uint16 then valid_int_within(value, -1, 0xFFFF)
+      when :uint32 then valid_int_within(value, -1, 0xFFFFFFFF)
       when :vec3
         vec3 = value.split(",", -1)
         vec3.length == 3 && vec3.all? { |v| valid_float(v) }

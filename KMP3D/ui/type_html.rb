@@ -85,7 +85,6 @@ module KMP3D
       case setting.type
       when :text then tag(:input, attributes.merge(:type => "text"))
       when :dropdown then select(value.to_i, attributes, setting.opts)
-      when :checkbox then checkbox("", attributes, value == "true")
       when :path
         attributes = {:id => id, :onclick => callback("objPathChange", id)}
         path = value.path

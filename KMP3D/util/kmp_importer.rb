@@ -105,16 +105,16 @@ module KMP3D
         hexify = setting.default.to_s[0, 2] == "0x"
         case setting.input
         when :byte then format(@parser.read_byte, hexify)
-        when :float then format(@parser.read_float, hexify)
+        when :float then @parser.read_float
         when :int16 then format(@parser.read_int16, hexify)
         when :uint16 then format(@parser.read_uint16, hexify)
+        when :uint32 then format(@parser.read_uint32, hexify)
         end
       end
     end
 
     def format(num, hexify)
-      num += 0x10000 if num < 0
-      hexify && num != 0 ? "0x" + ("%x" % num).upcase : num
+      hexify && num >= 10 ? "0x" + ("%x" % num).upcase : num
     end
 
     def import_vector
@@ -196,14 +196,11 @@ module KMP3D
     end
 
     def import_stgi
-      lap_count = @parser.read_byte
-      pole_pos = @parser.read_byte
-      distance = @parser.read_byte
-      @parser.head += 6 # lens flare settings
+      settings = import_settings(@type.external_settings[0...6])
       @parser.read_byte # ignore first byte for speed mod
       speed_mod = (@parser.next_bytes(2) + "\0\0").unpack("F").first
       speed_mod = 1.0 if speed_mod == 0.0 # backwards compatibility
-      @type.table[1] = [lap_count, pole_pos, distance, speed_mod]
+      @type.table[1] = settings + [speed_mod]
       @type.save_settings
     end
 

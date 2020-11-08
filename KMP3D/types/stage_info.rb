@@ -8,6 +8,11 @@ module KMP3D
         Settings.new(
           :dropdown, :byte, "Driver Distance", "0", ["Normal", "Closer"]
         ),
+        Settings.new(:dropdown, :byte, "Lens Flare", "0",
+          ["Enabled", "Disabled"]
+        ),
+        Settings.new(:hidden, :byte, "Padding", "0"),
+        Settings.new(:text, :uint32, "Flare Color (RGBA)", "0xE6E6E64B"),
         Settings.new(:text, :float, "Speed Modifier", "1.0")
       ]
       super

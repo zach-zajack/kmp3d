@@ -1,13 +1,11 @@
 module KMP3D
   class Tool
-    include HTMLHelpers
-    include Callbacks
-    include Observer
+    include HTMLHelpers, Callbacks, Observer
 
     def initialize
       @dlg = UI::WebDialog.new("KMP3D", false, "KMP3D")
       @ip = Sketchup::InputPoint.new
-      @css = File.open("#{DIR}/css/default.css").read
+      @css = File.open("#{DIR}/app/css/default.css").read
       @scroll_types = 0
       @scroll_table = 0
       @type_index = 0

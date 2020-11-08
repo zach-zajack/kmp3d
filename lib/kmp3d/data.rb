@@ -90,18 +90,18 @@ module KMP3D
     end
 
     def load_def(name)
-      model.definitions.load("#{DIR}/models/#{name}.skp")
+      model.definitions.load("#{DIR}/app/skps/#{name}.skp")
     end
 
     def load_obj(id)
       path = "objects/#{Objects::LIST[id].model}"
-      File.file?("#{DIR}/models/#{path}.skp") ? \
+      File.file?("#{DIR}/app/skps/#{path}.skp") ? \
         load_def(path) : load_def("point")
     end
 
     def load_kmp3d_model
       return if model.get_attribute("KMP3D", "KMP3D-model?", false)
-      Dir["#{DIR}/models/*.skp"].each { |d| model.definitions.load(d) }
+      Dir["#{DIR}/app/skps/*.skp"].each { |d| model.definitions.load(d) }
       @types.each { |t| layers.add(t.name).visible = false }
       model.set_attribute("KMP3D", "KMP3D-model?", true)
     end

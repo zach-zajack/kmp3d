@@ -1,0 +1,1 @@
+zip -r ../KMP3D.rbz app lib kmp3d_loader.rb

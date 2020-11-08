@@ -1,5 +1,5 @@
 module KMP3D
-  module TypeHTML
+  module Table
     def to_html
       table = tag(:table) do
         if on_external_settings?

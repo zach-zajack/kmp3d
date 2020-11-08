@@ -1,6 +1,6 @@
 module KMP3D
   class Type
-    include HTMLHelpers, TypeHTML
+    include HTMLHelpers, Table
 
     attr_reader :name, :external_settings, :settings
     attr_accessor :group, :table, :step

@@ -69,7 +69,9 @@ module KMP3D
 
     def update_group(value, row, col)
       Data.model.start_operation("Update object group")
-      Data.entities_in_group(type_name, group_id(row)).each do |ent|
+      Data.entities.each do |ent|
+        next unless ent.type?("GOBJ") && ent.kmp3d_group == group_id(row)
+
         # change the definition to the default if the object name is changed
         if col.to_i == 0
           definition = Data.load_obj(value)
@@ -77,6 +79,7 @@ module KMP3D
           ent.edit_setting(0, value)
           ent.definition = definition
         end
+
         # change the definition to the path if the object path is changed
         ent.definition = value if col.to_i == 1
       end

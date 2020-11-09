@@ -13,11 +13,11 @@ module KMP3D
       @rail_dist  = @rail_start.distance(@rail_end).to_m
       @rail_prog  = 0
       @next_came  = @settings[0]
-      @zoom_vel   = @settings[2].to_f
-      @view_vel   = @settings[3].to_f
-      @zoom_prog  = @settings[4].to_f
-      @zoom_end   = @settings[5].to_f
-      @total_time = @settings[6].to_f
+      @zoom_vel   = @settings[4].to_f
+      @view_vel   = @settings[5].to_f
+      @zoom_prog  = @settings[10].to_f
+      @zoom_end   = @settings[11].to_f
+      @total_time = @settings[14].to_f
       @start_time = Time.now
       @prev_time  = Time.now
     end
@@ -59,7 +59,7 @@ module KMP3D
 
     def route_path(ent)
       return [Route.new(ent.transformation.origin, 0)] unless @type.route
-      return Data.entities_in_group("POTI", @settings[1]).map do |ent|
+      return Data.entities_in_group("POTI", @settings[2]).map do |ent|
         Route.new(ent.transformation.origin, ent.kmp3d_settings[1].to_f)
       end
     end

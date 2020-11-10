@@ -147,14 +147,26 @@ module KMP3D
     def nextFrame(view)
       ratio = time / (30 * MKW_FRAMERATE)
       enpt = KMP3D::KMPMath.bezier_at(@enpt, ratio)
-      # TODO: area priority
-      area = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, enpt) }.first
-      get_ent_settings(Data.get_entity("CAME", area.kmp3d_settings[3])) if area
+      # use camera 0 for the first 5 seconds
+      switch_camera(enpt) if time > 5 * MKW_FRAMERATE
       pos = KMP3D::KMPMath.bezier_at(points, ratio)
       pos, tgt = camera_data(enpt, pos)
       view.camera = Sketchup::Camera.new(pos, tgt, Z_AXIS, true, zoom)
       view.show_frame
       return ratio < 1
+    end
+
+    def switch_camera(enpt)
+      # TODO: area priority
+      area = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, enpt) }.first
+      return unless area
+
+      @cam = area.kmp3d_settings[3]
+      return if @prev_cam == @cam
+
+      puts "Switching to camera ID #{@cam}"
+      get_ent_settings(Data.get_entity("CAME", @cam)) if area
+      @prev_cam = @cam
     end
 
     def camera_data(player_pos, pos)

@@ -57,6 +57,8 @@ module KMP3D
       @triangles = parse_triangles(sect3_offset, sect4_offset)
 
       add_faces
+      # Put the camera in a more favorable position when done
+      Data.model.active_view.zoom_extents
     end
 
     def add_faces

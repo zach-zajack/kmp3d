@@ -64,6 +64,19 @@ module KMP3D
       comp.layer = name
     end
 
+    def inputs
+      # settings added due to next point using previous settings
+      inputs = [[-1, false] + @settings.map { |s| s.default }]
+      Data.entities.each do |ent|
+        next unless ent.type?("GOBJ") && ent.kmp3d_group == group_id(@group)
+
+        id = ent.kmp3d_id(type_name)
+        selected = Data.selection.include?(ent)
+        inputs << [id, selected] + ent.kmp3d_settings[1..-1]
+      end
+      return inputs
+    end
+
     def group_id(i)
       @table[i.to_i + 1][0]
     end

@@ -54,8 +54,9 @@ module KMP3D
       "Click to add a new object."
     end
 
-    def import(pos, rot, _scale, group, settings)
+    def import(pos, rot, scale, group, settings)
       comp = Data.entities.add_instance(Data.load_obj(group), pos)
+      comp.transform!(Geom::Transformation.scaling(pos, *scale))
       comp.transform!(Geom::Transformation.rotation(pos, [1, 0, 0],  rot[0]))
       comp.transform!(Geom::Transformation.rotation(pos, [0, 0, 1],  rot[1]))
       comp.transform!(Geom::Transformation.rotation(pos, [0, 1, 0], -rot[2]))

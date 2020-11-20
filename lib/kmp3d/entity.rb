@@ -57,14 +57,15 @@ class Sketchup::ComponentInstance
   end
 
   def kmp_transform
-    array = transformation.to_a
+    t = transformation
+    array = t.to_a
     pos = []
     pos.x =  array[12].to_m
     pos.y =  array[14].to_m
     pos.z = -array[13].to_m
     return pos if model_type == "point" && !type?("GOBJ")
 
-    sign = KMP3D::KMPMath.determinant(array) <=> 0
+    sign = (t.xaxis.cross(t.yaxis) == t.zaxis ? 1 : -1)
     scale = []
     scale.x = array[0...3].distance([0, 0, 0])
     scale.y = array[8...11].distance([0, 0, 0]) * sign

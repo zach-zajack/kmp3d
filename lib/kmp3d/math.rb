@@ -2,12 +2,6 @@ module KMP3D
   module KMPMath
     module_function
 
-    def determinant(array)
-      array[0] * array[6] * array[9] + array[0] * array[5] * array[10] + \
-        array[1] * array[6] * array[8] + array[1] * array[4] * array[10] + \
-        array[2] * array[5] * array[8] + array[2] * array[4] * array[9]
-    end
-
     def matrix_to_euler(array)
       # solution based off http://www.gregslabaugh.net/publications/euler.pdf
       if array[1].abs == 1.0

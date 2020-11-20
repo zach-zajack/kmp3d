@@ -10,6 +10,7 @@ module KMP3D
       )
       return if path.nil?
 
+      path += ".kmp" if path[-3..-1] != "kmp"
       Data.reload(self)
       @writer = BinaryWriter.new(path)
       File.exist?(path) ? write_merged(path) : write_scratch

@@ -6,7 +6,8 @@ module KMP3D
 
     def import
       path = UI.openpanel(
-        "Select a file to import from.", Data.model_dir, "KMP|*.kmp||"
+        "Select a file to import from.", Data.model_dir,
+        "KMP|*.kmp|All files|*||"
       )
       return if path.nil?
 

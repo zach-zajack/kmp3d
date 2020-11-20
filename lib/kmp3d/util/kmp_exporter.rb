@@ -2,8 +2,8 @@ module KMP3D
   module KMPExporter
     module_function
 
-    def export
-      path = UI.savepanel(
+    def export(path=nil)
+      path ||= UI.savepanel(
         "Select a file to export to.",
         Data.model_dir,
         "KMP|*.kmp||"

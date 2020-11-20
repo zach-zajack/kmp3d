@@ -4,8 +4,8 @@ module KMP3D
 
     Group = Struct.new(:range, :id)
 
-    def import
-      path = UI.openpanel(
+    def import(path=nil)
+      path ||= UI.openpanel(
         "Select a file to import from.", Data.model_dir,
         "KMP|*.kmp|All files|*||"
       )

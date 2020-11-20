@@ -125,8 +125,9 @@ module KMP3D
         @writer.write_byte(Data.entities_before_group(type_name, i).length)
         # length
         @writer.write_byte(Data.entities_in_group(type_name, i).length)
-        prev_groups = (@type.prev_groups[i] + Array.new(6, 0xFF))[0, 6]
-        next_groups = (@type.next_groups[i] + Array.new(6, 0xFF))[0, 6]
+        @type.generate_next_groups_table
+        prev_groups = (@type.prev_groups(i) + Array.new(6, 0xFF))[0, 6]
+        next_groups = (@type.next_groups(i) + Array.new(6, 0xFF))[0, 6]
         prev_groups.each { |prev_group| @writer.write_byte(prev_group) }
         next_groups.each { |next_group| @writer.write_byte(next_group) }
         @writer.write_uint16(0) # padding

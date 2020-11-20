@@ -117,18 +117,20 @@ module KMP3D
       return comp
     end
 
-    def next_groups
-      @table[1..-1].map { |row| row[0].split(",").map { |i| i.to_i } }
+    def generate_next_groups_table
+      @next_groups_table = table[1..-1].map do |row|
+        row[0].split(",").map { |i| i.to_i }
+      end
     end
 
-    def prev_groups
-      Array.new(groups) do |i|
-        next_groups.reduce([]) do |indices, grp|
-          prev = next_groups.index(grp)
-          # discard indices if they don't concern us or have already been added
-          next indices unless grp.include?(i) && indices[-1] != prev
-          indices << prev
-        end
+    def next_groups(row)
+      @next_groups_table[row]
+    end
+
+    def prev_groups(row)
+      @next_groups_table.each do |next_grps|
+        next unless next_grps.include?(row)
+        return groups.times.select { |i| @next_groups_table[i] == next_grps }
       end
     end
   end

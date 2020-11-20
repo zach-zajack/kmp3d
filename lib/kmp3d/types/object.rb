@@ -86,16 +86,16 @@ module KMP3D
       Data.entities.each do |ent|
         next unless ent.type?("GOBJ") && ent.kmp3d_group == group_id(row)
 
+        case col.to_i
         # change the definition to the default if the object name is changed
-        if col.to_i == 0
+        when 0
           definition = Data.load_obj(value)
           @table[row.to_i + 1][1] = definition
           ent.edit_setting(0, value)
           ent.definition = definition
-        end
-
         # change the definition to the path if the object path is changed
-        ent.definition = value if col.to_i == 1
+        when 1 then ent.definition = value
+        end
       end
       super
       Data.model.commit_operation

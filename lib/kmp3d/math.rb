@@ -20,12 +20,12 @@ module KMP3D
         r2.y = 180 - r1.y
         r2.x = Math.atan2(array[9] / cos, -array[5] / cos).radians
         r2.z = Math.atan2(-array[2] / cos, -array[0] / cos).radians
-        rot = if r1.select { |v| v.abs < 1e-6 }.length >= \
-                 r2.select { |v| v.abs < 1e-6 }.length then r1
+        rot = if r1.select { |v| v.abs < 1e-5 }.length >= \
+                 r2.select { |v| v.abs < 1e-5 }.length then r1
               else r2
               end
       end
-      rot.map! { |r| r > 180 ? r - 360 : r }
+      rot.map! { |r| r > 180 + 1e-5 ? r - 360 : r }
       return rot
     end
 

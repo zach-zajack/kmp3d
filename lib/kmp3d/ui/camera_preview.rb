@@ -138,7 +138,7 @@ module KMP3D
           e.transformation.origin
         end
         # always pick the first group in a split path
-        grp = type.table[grp+1][0].split(",").first.to_i
+        grp = type.table[grp + 1][0].split(",").first.to_i
         break if grp == 0
       end
       return enpts

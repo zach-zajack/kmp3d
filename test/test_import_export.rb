@@ -6,19 +6,19 @@ module KMP3D
       Setting.new(:float, "Position X"),
       Setting.new(:float, "Position Y"),
       Setting.new(:float, "Position Z")
-    ]
+    ].freeze
 
     ROTATION = [
       Setting.new(:float, "Rotation X"),
       Setting.new(:float, "Rotation Y"),
       Setting.new(:float, "Rotation Z")
-    ]
+    ].freeze
 
     SCALE = [
       Setting.new(:float, "Scale X"),
       Setting.new(:float, "Scale Y"),
       Setting.new(:float, "Scale Z")
-    ]
+    ].freeze
 
     GROUP = [
       Setting.new(:byte, "Group start"),
@@ -26,7 +26,7 @@ module KMP3D
       *Array.new(6) { |i| Setting.new(:byte, "Prev group #{i}") },
       *Array.new(6) { |i| Setting.new(:byte, "Next group #{i}") },
       Setting.new(:uint16, "Padding")
-    ]
+    ].freeze
 
     SECTIONS = {
       "KTPT" => [
@@ -140,10 +140,10 @@ module KMP3D
         Setting.new(:byte, "Enable lens flare"),
         Setting.new(:byte, "Padding"),
         Setting.new(:uint32, "Flare color"),
-        Setting.new(:byte,  "Padding"),
+        Setting.new(:byte, "Padding"),
         Setting.new(:uint16, "Speed mod")
       ]
-    }
+    }.freeze
 
     def initialize
       super

@@ -1,7 +1,5 @@
 module KMP3D
   class TestImportExport < KMP3DTest
-    include KMP
-
     def initialize(path)
       super
       Data.entities.each { |ent| ent.erase! }
@@ -33,21 +31,23 @@ module KMP3D
       entries = assert_match(:uint16, "Entry count")
       assert_match(:uint16, "Additional value")
       if section == "POTI"
-        entries.times do
-          poti_entries = assert_match(:uint16, "POTI Entry count")
-          assert_match(:byte, "POTI Route Setting 1")
-          assert_match(:byte, "POTI Route Setting 2")
-          poti_entries.times { compare_section_entries("POTI") }
+        entries.times do |i|
+          poti_entries = assert_match(:uint16, "POTI #{i} Entry count")
+          assert_match(:byte, "POTI #{i} Route Setting 1")
+          assert_match(:byte, "POTI #{i} Route Setting 2")
+          poti_entries.times { |j| compare_sect_entries("POTI", "#{i},#{j}") }
         end
       else
-        entries.times { compare_section_entries(section) }
+        entries.times { |i| compare_sect_entries(section, i) }
       end
     end
 
     private
 
-    def compare_section_entries(sect)
-      SECTIONS[sect].each { |s| assert_match(s.datatype, "#{sect} #{s.msg}") }
+    def compare_sect_entries(sect, id)
+      KMP3D::KMP::SECTIONS[sect].each do |s|
+        assert_match(s.datatype, "#{sect} #{id} #{s.msg}")
+      end
     end
 
     def assert_match(datatype, msg)

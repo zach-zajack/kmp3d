@@ -20,7 +20,8 @@ module KMP3D
   require "#{DIR}/lib/kmp3d/util/kcl_importer"
   require "#{DIR}/lib/kmp3d/util/kmp_importer"
   require "#{DIR}/lib/kmp3d/util/kmp_exporter"
-  require "#{DIR}/lib/kmp3d/objects"
+  require "#{DIR}/lib/kmp3d/kmpdata/objects"
+  require "#{DIR}/lib/kmp3d/kmpdata/kmp"
   require "#{DIR}/lib/kmp3d/entity"
   require "#{DIR}/lib/kmp3d/data"
 

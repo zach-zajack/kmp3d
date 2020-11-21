@@ -25,6 +25,12 @@ module KMP3D
         puts "Assertion failed: #{msg}"
       end
     end
+
+    def assert_equal(v1, v2, msg)
+      match = (v1 == v2) || \
+        (v1.is_a?(Float) || v2.is_a?(Float)) && (v1 - v2).abs < 1e-5
+      assert(match, msg + " mismatch: #{v1} != #{v2}")
+    end
   end
 
   require "#{DIR}/test/test_import_export"

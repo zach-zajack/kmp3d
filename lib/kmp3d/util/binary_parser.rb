@@ -2,8 +2,8 @@ module KMP3D
   class BinaryParser
     attr_accessor :bytes, :head
 
-    def initialize(path)
-      @bytes = File.open(path, "rb").read
+    def initialize(path=nil)
+      @bytes = File.open(path, "rb").read if path
       @head = 0
     end
 

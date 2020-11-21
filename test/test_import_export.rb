@@ -4,18 +4,20 @@ module KMP3D
 
     def initialize
       super
-      Dir["#{DIR}/test/kmps/*.kmp"].each do |old_path|
+      Dir["#{DIR}/test/kmps/*.kmp"].each do |path|
         start_test
-        new_path = old_path[0...-4] + "-new.kmp"
         Data.entities.each { |ent| ent.erase! }
-        KMPImporter.import(old_path)
-        KMPExporter.export(new_path)
-        @old_parser = BinaryParser.new(old_path)
-        @new_parser = BinaryParser.new(new_path)
+
+        KMPImporter.import(path)
+        @old_parser = BinaryParser.new(path)
+
+        new_bytes = KMPExporter.test_export
+        @new_parser = BinaryParser.new
+        @new_parser.bytes = new_bytes
+
         compare_header
         15.times { compare_section }
-        puts "Done comparing #{old_path}"
-        File.delete(new_path)
+        puts "Done comparing #{path}"
         print_results
       end
     end

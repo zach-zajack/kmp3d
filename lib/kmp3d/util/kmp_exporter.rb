@@ -2,7 +2,7 @@ module KMP3D
   module KMPExporter
     module_function
 
-    def export(path=nil)
+    def export
       path ||= UI.savepanel(
         "Select a file to export to.",
         Data.model_dir,
@@ -18,6 +18,14 @@ module KMP3D
       @writer.write_to_file
       Sketchup.status_text = "KMP3D: Finished exporting!"
       UI.beep
+    end
+
+    # export without writing to a file
+    def test_export
+      @writer = BinaryWriter.new
+      write_scratch
+      @writer.insert_uint32(4, @writer.head)
+      return @writer.bytes
     end
 
     def write_scratch

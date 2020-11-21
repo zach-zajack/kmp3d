@@ -2,7 +2,7 @@ module KMP3D
   class BinaryWriter
     attr_accessor :bytes
 
-    def initialize(path)
+    def initialize(path=nil)
       @path = path
       @bytes = ""
     end

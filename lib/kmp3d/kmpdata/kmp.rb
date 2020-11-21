@@ -38,16 +38,13 @@ module KMP3D
       "ENPT" => [
         *POSITION,
         Setting.new(:float, "Size"),
-        Setting.new(:uint16, "Setting 1"),
-        Setting.new(:byte, "Setting 2"),
-        Setting.new(:byte, "Setting 3")
+        *Array.new(2) { |i| Setting.new(:uint16, "Setting #{i + 1}") }
       ],
       "ENPH" => GROUP,
       "ITPT" => [
         *POSITION,
         Setting.new(:float, "Size"),
-        Setting.new(:uint16, "Setting 1"),
-        Setting.new(:uint16, "Setting 2")
+        *Array.new(2) { |i| Setting.new(:uint16, "Setting #{i + 1}") }
       ],
       "ITPH" => GROUP,
       "CKPT" => [
@@ -68,14 +65,7 @@ module KMP3D
         *ROTATION,
         *SCALE,
         Setting.new(:uint16, "Route"),
-        Setting.new(:uint16, "Setting 1"),
-        Setting.new(:uint16, "Setting 2"),
-        Setting.new(:uint16, "Setting 3"),
-        Setting.new(:uint16, "Setting 4"),
-        Setting.new(:uint16, "Setting 5"),
-        Setting.new(:uint16, "Setting 6"),
-        Setting.new(:uint16, "Setting 7"),
-        Setting.new(:uint16, "Setting 8"),
+        *Array.new(8) { |i| Setting.new(:uint16, "Setting #{i + 1}") },
         Setting.new(:uint16, "Flags")
       ],
       "POTI" => [
@@ -91,8 +81,7 @@ module KMP3D
         *POSITION,
         *ROTATION,
         *SCALE,
-        Setting.new(:uint16, "Setting 1"),
-        Setting.new(:uint16, "Setting 2"),
+        *Array.new(2) { |i| Setting.new(:uint16, "Setting #{i + 1}") },
         Setting.new(:byte, "Route ID"),
         Setting.new(:byte, "ENPT ID"),
         Setting.new(:uint16, "Padding")

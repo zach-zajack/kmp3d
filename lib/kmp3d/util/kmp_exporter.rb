@@ -152,8 +152,8 @@ module KMP3D
       @type.groups.times do |i|
         ents = Data.entities_in_group("POTI", i)
         @writer.write_uint16(ents.length)
-        @writer.write_byte(@type.table[i + 1][0] == "true" ? 1 : 0) # smooth
-        @writer.write_byte(@type.table[i + 1][1] == "true" ? 1 : 0) # cyclic
+        @writer.write_byte(@type.table[i + 1][0]) # smooth
+        @writer.write_byte(@type.table[i + 1][1]) # cyclic
         ents.each { |ent| export_ent(ent) }
       end
     end

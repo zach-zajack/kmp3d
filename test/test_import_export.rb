@@ -2,24 +2,21 @@ module KMP3D
   class TestImportExport < KMP3DTest
     include KMP
 
-    def initialize
+    def initialize(path)
       super
-      Dir["#{DIR}/test/kmps/*.kmp"].each do |path|
-        start_test
-        Data.entities.each { |ent| ent.erase! }
+      Data.entities.each { |ent| ent.erase! }
 
-        KMPImporter.import(path)
-        @old_parser = BinaryParser.new(path)
+      KMPImporter.import(path)
+      @old_parser = BinaryParser.new(path)
+      new_bytes = KMPExporter.test_export
 
-        new_bytes = KMPExporter.test_export
-        @new_parser = BinaryParser.new
-        @new_parser.bytes = new_bytes
+      @new_parser = BinaryParser.new
+      @new_parser.bytes = new_bytes
 
-        compare_header
-        15.times { compare_section }
-        puts "Done comparing #{path}"
-        print_results
-      end
+      compare_header
+      15.times { compare_section }
+      puts "Done comparing #{path}"
+      print_results
     end
 
     def compare_header

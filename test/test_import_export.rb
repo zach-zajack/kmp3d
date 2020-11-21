@@ -2,7 +2,7 @@ module KMP3D
   class TestImportExport < KMP3DTest
     def initialize(path)
       super
-      Data.entities.each { |ent| ent.erase! }
+      Data.entities.each { |ent| ent.erase! if ent.kmp3d_object? }
 
       KMPImporter.import(path)
       @old_parser = BinaryParser.new(path)

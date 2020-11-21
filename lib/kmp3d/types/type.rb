@@ -12,8 +12,8 @@ module KMP3D
       @group = 0
       @step = 0
       if @external_settings # external settings deal with groups, mostly
-        @table = Data.model.get_attribute \
-          "KMP3D", type_name, [Array.new(@external_settings.length)]
+        @table = Data.model.get_attribute("KMP3D", type_name, \
+           [Array.new(@external_settings.length)])
         add_group(true) if @table.length == 1
       end
     end

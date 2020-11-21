@@ -1,6 +1,7 @@
 module KMP3D
   class KMP3DTest
     def initialize(*_args)
+      Data.signal_reload
       Data.reload(self)
       Data.load_kmp3d_model
       puts "Starting #{self.class.name}..."

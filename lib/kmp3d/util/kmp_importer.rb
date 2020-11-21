@@ -75,7 +75,6 @@ module KMP3D
         (@gobj_ids.uniq - existing_ids).each do |id|
           @type.table << [id, Data.load_obj(id)]
         end
-        @type.save_settings
       when "POTI" then entries.times { |i| import_poti(i) }
       when "AREA" then entries.times { import_area }
       when "CAME"
@@ -94,7 +93,6 @@ module KMP3D
       @parser.read_uint16 # padding
       @type = Data.type_by_typename(type_name)
       @type.table[index + 1] = [next_groups * ", "]
-      @type.save_settings
       return Group.new((first_index...first_index + length))
     end
 
@@ -168,7 +166,6 @@ module KMP3D
       smooth = @parser.read_byte
       cyclic = @parser.read_byte
       @type.table[index + 1] = [smooth, cyclic]
-      @type.save_settings
       points.times do
         position = @parser.read_position3d
         settings = import_settings(@type.settings)
@@ -204,7 +201,6 @@ module KMP3D
       speed_mod = (@parser.next_bytes(2) + "\0\0").unpack("F").first
       speed_mod = 1.0 if speed_mod == 0.0 # backwards compatibility
       @type.table[1] = settings + [speed_mod]
-      @type.save_settings
     end
 
     def error(message)

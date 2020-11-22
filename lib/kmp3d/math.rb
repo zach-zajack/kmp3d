@@ -29,6 +29,28 @@ module KMP3D
       return rot
     end
 
+    def euler_to_matrix(x, y, z)
+      [
+        Math.cos(y) * Math.cos(z),
+        Math.sin(x) * Math.sin(y) * Math.cos(z) - Math.cos(x) * Math.sin(z),
+        Math.cos(x) * Math.sin(y) * Math.cos(z) + Math.sin(x) * Math.sin(z),
+
+        Math.cos(y) * Math.sin(z),
+        Math.sin(x) * Math.sin(y) * Math.sin(z) + Math.cos(x) * Math.cos(z),
+        Math.cos(x) * Math.sin(y) * Math.sin(z) - Math.sin(x) * Math.cos(z),
+
+        -Math.sin(y),
+        Math.sin(x) * Math.cos(y),
+        Math.cos(x) * Math.cos(y)
+      ]
+    end
+
+    def euler_equal?(euler1, euler2)
+      euler_to_matrix(*euler1).zip(euler_to_matrix(*euler2)).all? do |e1, e2|
+        (e1 - e2).abs < 1e-5
+      end
+    end
+
     def checkpoint_transform(x, y, angle, scale)
       angle = (90 - angle).degrees
       scale *= 1500

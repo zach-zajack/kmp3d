@@ -8,12 +8,6 @@ module KMP3D
       Setting.new(:float, "Position Z")
     ].freeze
 
-    ROTATION = [
-      Setting.new(:float, "Rotation X"),
-      Setting.new(:float, "Rotation Y"),
-      Setting.new(:float, "Rotation Z")
-    ].freeze
-
     SCALE = [
       Setting.new(:float, "Scale X"),
       Setting.new(:float, "Scale Y"),
@@ -31,7 +25,7 @@ module KMP3D
     SECTIONS = {
       "KTPT" => [
         *POSITION,
-        *ROTATION,
+        Setting.new(:rotation, "Rotation"),
         Setting.new(:int16, "Index"),
         Setting.new(:uint16, "Padding")
       ],
@@ -62,7 +56,7 @@ module KMP3D
         Setting.new(:uint16, "ID"),
         Setting.new(:uint16, "Padding"),
         *POSITION,
-        *ROTATION,
+        Setting.new(:rotation, "Rotation"),
         *SCALE,
         Setting.new(:uint16, "Route"),
         *Array.new(8) { |i| Setting.new(:uint16, "Setting #{i + 1}") },
@@ -79,7 +73,7 @@ module KMP3D
         Setting.new(:byte, "Camera ID"),
         Setting.new(:byte, "Priority"),
         *POSITION,
-        *ROTATION,
+        Setting.new(:rotation, "Rotation"),
         *SCALE,
         *Array.new(2) { |i| Setting.new(:uint16, "Setting #{i + 1}") },
         Setting.new(:byte, "Route ID"),
@@ -97,7 +91,7 @@ module KMP3D
         Setting.new(:byte, "Start flag"),
         Setting.new(:byte, "Movie flag"),
         *POSITION,
-        *ROTATION,
+        Setting.new(:rotation, "Rotation"),
         Setting.new(:float, "Zoom start"),
         Setting.new(:float, "Zoom end"),
         *POSITION,
@@ -106,19 +100,19 @@ module KMP3D
       ],
       "JGPT" => [
         *POSITION,
-        *ROTATION,
+        Setting.new(:rotation, "Rotation"),
         Setting.new(:uint16, "ID"),
         Setting.new(:int16, "Range")
       ],
       "CNPT" => [
         *POSITION,
-        *ROTATION,
+        Setting.new(:rotation, "Rotation"),
         Setting.new(:uint16, "ID"),
         Setting.new(:int16, "Shoot effect")
       ],
       "MSPT" => [
         *POSITION,
-        *ROTATION,
+        Setting.new(:rotation, "Rotation"),
         Setting.new(:uint16, "ID"),
         Setting.new(:uint16, "Padding")
       ],

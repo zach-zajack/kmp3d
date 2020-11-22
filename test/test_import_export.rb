@@ -47,7 +47,11 @@ module KMP3D
 
     def compare_sect_entries(sect, id)
       KMP3D::KMP::SECTIONS[sect].each do |s|
-        assert_match(s.datatype, "#{sect} #{id} #{s.msg}")
+        if s.datatype == :rotation
+          assert_rotation("#{sect} #{id}")
+        else
+          assert_match(s.datatype, "#{sect} #{id} #{s.msg}")
+        end
       end
     end
 
@@ -55,6 +59,16 @@ module KMP3D
       old, new = get_data_comparison(datatype)
       assert_equal(new, old, msg)
       return old
+    end
+
+    def assert_rotation(msg)
+      old = @old_parser.read_rotation
+      new = @new_parser.read_rotation
+      match = KMP3D::KMPMath.euler_equal?(old, new)
+      # approximate for readability
+      old.map! { |o| o.radians.to_i }
+      new.map! { |n| n.radians.to_i }
+      assert(match, "#{msg} Rotation mismatch: #{old} != #{new}")
     end
 
     def get_data_comparison(datatype)

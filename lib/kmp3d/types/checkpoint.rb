@@ -90,7 +90,7 @@ module KMP3D
     def import(pos1, pos2, group, settings)
       @prev = pos1
       avg = [(pos2.x + pos1.x) / 2, (pos2.y + pos1.y) / 2]
-      avg.z = closest_kmp3d_entity_height(avg)
+      avg.z = closest_enpt_height(avg)
       comp = Data.entities.add_instance(model, avg)
       comp.transform!(Geom::Transformation.scaling(avg, 1.0, scale(pos2), 1.0))
       comp.transform!(
@@ -109,9 +109,9 @@ module KMP3D
       end
     end
 
-    def set_kmp3d_points
-      @kmp3d_points = Data.entities.select { |ent| ent.kmp3d_object? }
-      @kmp3d_points.map! { |ent| ent.transformation.origin }
+    def set_enpt
+      @enpt = Data.kmp3d_entities("ENPT")
+      @enpt.map! { |ent| ent.transformation.origin }
     end
 
     private
@@ -123,11 +123,9 @@ module KMP3D
       end
     end
 
-    def closest_kmp3d_entity_height(pos)
-      sorted = @kmp3d_points.sort do |ent1, ent2|
-        pos.distance([ent1.x, ent1.y]) <=> pos.distance([ent2.x, ent2.y])
-      end
-      sorted.first.z
+    def closest_enpt_height(pos)
+      @enpt.sort! { |ent| pos.distance([ent.x, ent.y]) }
+      @enpt.first.z
     end
 
     def angle(pos)

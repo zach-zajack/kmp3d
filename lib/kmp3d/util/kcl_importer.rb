@@ -62,7 +62,7 @@ module KMP3D
     end
 
     def add_faces
-      Data.model.start_operation("Import KCL")
+      Data.model.start_operation("Import KCL", true)
       @triangles.each do |flag, triangles|
         mesh = Geom::PolygonMesh.new(0, triangles.length)
         triangles.each { |t| mesh.add_polygon(t) }

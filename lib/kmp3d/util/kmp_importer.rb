@@ -12,7 +12,7 @@ module KMP3D
       return if path.nil?
 
       ask_kcl_import(path)
-      Data.model.start_operation("Import KMP")
+      Data.model.start_operation("Import KMP", true)
       @parser = BinaryParser.new(path)
       @gobj_ids = []
       read_header
@@ -67,7 +67,7 @@ module KMP3D
       when "ENPT" then entries.times { |i| import_point(@enph, i) }
       when "ITPT" then entries.times { |i| import_point(@itph, i) }
       when "CKPT"
-        @type.set_kmp3d_points # prevents lookup every time a point is added
+        @type.set_enpt # prevents lookup every time a point is added
         entries.times { |i| import_ckpt(i) }
       when "GOBJ"
         entries.times { import_gobj }

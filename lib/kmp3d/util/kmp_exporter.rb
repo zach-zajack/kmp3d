@@ -90,7 +90,7 @@ module KMP3D
         write_section("ITPT") { |ent| export_ent(ent) }
         write_group("ITPH", "ITPT")
       when "CKPT"
-        write_section("CKPT") { |ent| export_ckpt(ent) }
+        write_section_ckpt
         write_group("CKPH", "CKPT")
       when "GOBJ" then write_section("GOBJ") { |ent| export_gobj(ent) }
       when "POTI" then write_section_poti
@@ -113,15 +113,11 @@ module KMP3D
 
     def write_section(type_name)
       Sketchup.status_text = "KMP3D: Exporting #{type_name}..."
-      @index = 0
       @type = Data.type_by_typename(type_name)
       ents = Data.kmp3d_entities(type_name)
       write_section_offset
       write_section_header(type_name, ents.length, 0)
-      ents.each do |ent|
-        yield ent
-        @index += 1
-      end
+      ents.each { |ent| yield ent }
     end
 
     def write_group(sect_name, type_name)
@@ -140,6 +136,29 @@ module KMP3D
         prev_groups.each { |prev_group| @writer.write_byte(prev_group) }
         next_groups.each { |next_group| @writer.write_byte(next_group) }
         @writer.write_uint16(0) # padding
+      end
+    end
+
+    def write_section_ckpt
+      Sketchup.status_text = "KMP3D: Exporting CKPT..."
+      @type = Data.type_by_typename("CKPT")
+      total_ents = Data.kmp3d_entities("CKPT").length
+      write_section_offset
+      write_section_header("CKPT", total_ents, 0)
+      index = 0
+      prev_nil_index = 0
+      next_nil_index = -1
+      @type.groups.times do |i|
+        ents = Data.entities_in_group("CKPT", i)
+        next_nil_index += ents.length
+        ents.each do |ent|
+          write_kmp_transform(ent)
+          export_ent_settings(ent)
+          @writer.write_byte(index == prev_nil_index ? 0xFF : index - 1)
+          @writer.write_byte(index == next_nil_index ? 0xFF : index + 1)
+          index += 1
+        end
+        prev_nil_index += ents.length
       end
     end
 
@@ -183,16 +202,6 @@ module KMP3D
     def export_ent(ent)
       write_kmp_transform(ent)
       export_ent_settings(ent)
-    end
-
-    def export_ckpt(ent)
-      write_kmp_transform(ent)
-      export_ent_settings(ent)
-      last_index = Data.entities_in_group("CKPT", ent.kmp3d_group).length - 1
-      prev_index = @index == 0 ? 0xFF : @index - 1
-      next_index = @index == last_index ? 0xFF : @index + 1
-      @writer.write_byte(prev_index)
-      @writer.write_byte(next_index)
     end
 
     def export_gobj(ent)

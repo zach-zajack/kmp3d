@@ -7,7 +7,7 @@ module KMP3D
   rebuild_files = menu.add_submenu("1:1 Rebuild file")
 
   Dir["#{DIR}/test/kmps/*.kmp"].each do |path|
-    cmd = UI::Command.new(path[path.rindex(%r{[\\/]}) + 1..-1]) do
+    cmd = UI::Command.new(File.basename(path)) do
       TestImportExport.new(path)
     end
     rebuild_files.add_item(cmd)

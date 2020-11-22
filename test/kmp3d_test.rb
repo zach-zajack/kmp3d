@@ -1,18 +1,20 @@
 module KMP3D
   class KMP3DTest
     def initialize(*_args)
+      puts "------------------------------------"
       Data.signal_reload
       Data.reload(self)
       Data.load_kmp3d_model
-      puts "Starting #{self.class.name}..."
       @passed = 0
       @total  = 0
     end
 
     def print_results
+      puts "------------------"
       puts "Passed: #{@passed}"
       puts "Failed: #{@total - @passed}"
       puts "Total: #{@total}"
+      puts ""
     end
 
     def assert(value, msg)
@@ -20,7 +22,7 @@ module KMP3D
       if value
         @passed += 1
       else
-        puts "Assertion failed: #{msg}"
+        puts "* Assertion failed: #{msg}"
       end
     end
 

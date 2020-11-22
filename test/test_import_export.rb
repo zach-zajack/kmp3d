@@ -2,18 +2,18 @@ module KMP3D
   class TestImportExport < KMP3DTest
     def initialize(path)
       super
+      puts "Rebuilding #{File.basename(path)}..."
       Data.entities.each { |ent| ent.erase! if ent.kmp3d_object? }
 
       KMPImporter.import(path)
       @old_parser = BinaryParser.new(path)
-      new_bytes = KMPExporter.test_export
 
+      new_bytes = KMPExporter.test_export
       @new_parser = BinaryParser.new
       @new_parser.bytes = new_bytes
 
       compare_header
       15.times { compare_section }
-      puts "Done comparing #{path}"
       print_results
     end
 

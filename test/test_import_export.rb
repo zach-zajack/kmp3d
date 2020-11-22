@@ -5,12 +5,16 @@ module KMP3D
       puts "Rebuilding #{File.basename(path)}..."
       Data.entities.each { |ent| ent.erase! if ent.kmp3d_object? }
 
+      start = Time.now
       KMPImporter.import(path)
       @old_parser = BinaryParser.new(path)
+      puts "Import time: #{Time.now - start}"
 
+      start = Time.now
       new_bytes = KMPExporter.test_export
       @new_parser = BinaryParser.new
       @new_parser.bytes = new_bytes
+      puts "Export time: #{Time.now - start}"
 
       compare_header
       15.times { compare_section }

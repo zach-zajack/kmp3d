@@ -95,7 +95,7 @@ module KMP3D
       when "GOBJ" then write_section("GOBJ") { |ent| export_gobj(ent) }
       when "POTI" then write_section_poti
       when "AREA" then write_section("AREA") { |ent| export_area(ent) }
-      when "CAME" then write_section("CAME") { |ent| export_came(ent) }
+      when "CAME" then write_section_came
       when "STGI" then write_section_stgi
       end
     end
@@ -177,6 +177,30 @@ module KMP3D
       end
     end
 
+    def write_section_came
+      Sketchup.status_text = "KMP3D: Exporting CAME..."
+      @type = Data.type_by_typename("CAME")
+      ents = Data.kmp3d_entities("CAME")
+      write_section_offset
+      @writer.write("CAME")
+      @writer.write_uint16(ents.length)
+      @writer.write_byte(@type.op_cam_index)
+      @writer.write_byte(@type.vid_cam_index)
+      ents.each do |ent|
+        settings = ent.kmp3d_settings[1..-1]
+        type_index = ent.kmp3d_group.to_i
+        type = CAME::CAMTYPES[type_index]
+        @writer.write_byte(type_index)
+        export_ent_settings(ent, 0, 8)
+        write_came_position(ent, type, settings)
+        @writer.write_csv_float(settings[9]) # rotation
+        @writer.write_float(settings[10]) # zoom start
+        @writer.write_float(settings[11]) # zoom end
+        write_came_rails(ent, type, settings)
+        @writer.write_float(settings[14]) # time
+      end
+    end
+
     def write_kmp_transform(ent)
       ent.kmp_transform.each { |v| @writer.write_float(v) }
     end
@@ -215,20 +239,6 @@ module KMP3D
       export_ent_settings(ent, 0, 4)
       write_kmp_transform(ent)
       export_ent_settings(ent, 4)
-    end
-
-    def export_came(ent)
-      settings = ent.kmp3d_settings[1..-1]
-      type_index = ent.kmp3d_group.to_i
-      type = CAME::CAMTYPES[type_index]
-      @writer.write_byte(type_index)
-      export_ent_settings(ent, 0, 8)
-      write_came_position(ent, type, settings)
-      @writer.write_csv_float(settings[9]) # rotation
-      @writer.write_float(settings[10]) # zoom start
-      @writer.write_float(settings[11]) # zoom end
-      write_came_rails(ent, type, settings)
-      @writer.write_float(settings[14]) # time
     end
 
     def write_came_position(ent, type, settings)

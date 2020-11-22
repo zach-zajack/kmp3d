@@ -1,6 +1,6 @@
 module KMP3D
   class CAME < Type
-    attr_accessor :op_cam_index
+    attr_accessor :op_cam_index, :vid_cam_index
 
     CamType = Struct.new(:name, :model, :route, :opening, :rel_pos)
     CAMTYPES = [
@@ -15,7 +15,8 @@ module KMP3D
 
     def initialize
       @name = "Cameras"
-      @op_cam_index = Data.model.get_attribute("KMP3D", "CAME", 0)
+      @op_cam_index  = Data.model.get_attribute("KMP3D", "OPCAME", 0)
+      @vid_cam_index = Data.model.get_attribute("KMP3D", "VIDCAME", 0)
       @settings = [
         Settings.new(:text,   :byte,   "Next", "0xFF"),
         Settings.new(:hidden, :byte,   "Camshake", "0"),
@@ -184,7 +185,8 @@ module KMP3D
     end
 
     def save_settings
-      Data.model.set_attribute("KMP3D", "CAME", @op_cam_index)
+      Data.model.set_attribute("KMP3D", "OPCAME", @op_cam_index)
+      Data.model.set_attribute("KMP3D", "VIDCAME", @vid_cam_index)
     end
 
     private

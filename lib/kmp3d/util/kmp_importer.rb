@@ -78,7 +78,8 @@ module KMP3D
       when "POTI" then entries.times { |i| import_poti(i) }
       when "AREA" then entries.times { import_area }
       when "CAME"
-        @type.op_cam_index = extra_data1
+        @type.op_cam_index  = extra_data1
+        @type.vid_cam_index = extra_data2
         entries.times { import_came }
       when "STGI" then import_stgi
       end

@@ -29,7 +29,8 @@ module KMP3D
     def compare_section
       section = assert_match(:magic, "Section ID")
       entries = assert_match(:uint16, "#{section} Entry count")
-      assert_match(:uint16, "#{section} Additional value")
+      assert_match(:byte, "#{section} Additional value 1")
+      assert_match(:byte, "#{section} Additional value 2")
       if section == "POTI"
         entries.times do |i|
           poti_entries = assert_match(:uint16, "POTI #{i} Entry count")

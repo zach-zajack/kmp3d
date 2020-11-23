@@ -68,11 +68,7 @@ module KMP3D
     def assert_rotation(msg)
       old = @old_parser.read_rotation
       new = @new_parser.read_rotation
-      match = KMP3D::KMPMath.euler_equal?(old, new)
-      # approximate for readability
-      old.map! { |o| o.radians.to_i }
-      new.map! { |n| n.radians.to_i }
-      assert(match, "#{msg} Rotation mismatch: #{old} != #{new}")
+      assert_euler_equal(old, new, msg)
     end
 
     def get_data_comparison(datatype)

@@ -45,12 +45,6 @@ module KMP3D
       ]
     end
 
-    def euler_equal?(euler1, euler2)
-      euler_to_matrix(*euler1).zip(euler_to_matrix(*euler2)).all? do |e1, e2|
-        (e1 - e2).abs < 1e-5
-      end
-    end
-
     def checkpoint_transform(x, y, angle, scale)
       angle = (90 - angle).degrees
       scale *= 1500

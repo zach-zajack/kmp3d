@@ -98,6 +98,7 @@ module KMP3D
       )
       comp.name = "KMP3D #{type_name}(#{group}|#{settings * '|'})"
       comp.layer = name
+      return comp
     end
 
     def select_point(ent)

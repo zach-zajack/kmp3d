@@ -20,6 +20,7 @@ module KMP3D
       comp = Data.entities.add_instance(model, pos)
       comp.name = "KMP3D #{type_name}(#{group}|#{settings * '|'})"
       comp.layer = name
+      return comp
     end
 
     def draw_connected_points(view, _pos, selection=false)

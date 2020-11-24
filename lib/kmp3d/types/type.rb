@@ -132,6 +132,7 @@ module KMP3D
         next unless next_grps.include?(row)
         return groups.times.select { |i| @next_groups_table[i] == next_grps }
       end
+      return [] # if no groups found
     end
   end
 end

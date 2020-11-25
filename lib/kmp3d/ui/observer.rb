@@ -95,7 +95,7 @@ module KMP3D
 
     def onPreSaveModel(_)
       Data.model.abort_operation
-      Data.types.each { |_type| @type.save_settings }
+      Data.types.each { |type| type.save_settings }
     end
 
     def onTransactionUndo(_) # replace with onCancel at some point

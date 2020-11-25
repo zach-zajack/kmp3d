@@ -1,7 +1,30 @@
 module KMP3D
-  module CameraPreview
+  class CameraPreview
     Route = Struct.new(:pos, :speed)
+    Path  = Struct.new(:points, :prog)
     MKW_FRAMERATE = 59.94
+
+    def initialize(ent)
+      get_ent_settings(ent)
+      @prev_time = Time.now
+    end
+
+    def get_ent_settings(ent)
+      @group      = ent.kmp3d_group.to_i
+      @camtype    = CAME::CAMTYPES[@group]
+      @settings   = ent.kmp3d_settings[1..-1]
+      @route      = Path.new(route_path(ent), 0)
+      @rail_start, @rail_end = came_rails(ent)
+      @rail_dist  = @rail_start.distance(@rail_end).to_m
+      @rail_prog  = 0
+      @next_came  = @settings[0]
+      @zoom_vel   = @settings[4].to_f
+      @view_vel   = @settings[5].to_f
+      @zoom_prog  = @settings[10].to_f
+      @zoom_end   = @settings[11].to_f
+      @total_time = @settings[14].to_f
+      @start_time = Time.now
+    end
 
     def rel_pos
       x, y, z = @settings[12].split(",")
@@ -20,15 +43,16 @@ module KMP3D
       Geom::Transformation.interpolate(p1, p2, t).origin
     end
 
-    # def next_pos
-    #  return @points[0].pos if @points.length == 1
-    #  @point_prog += delta * @points[0].speed * MKW_FRAMERATE
-    #  dist = @points[0].pos.distance(@points[1].pos).to_m
-    #  ratio = @point_prog/dist
-    #  return lerp(@points[0].pos, @points[1].pos, ratio) if ratio <= 1
-    #  @points.shift
-    #  return next_pos
-    # end
+    def next_pos(path)
+      loop do
+        return path.points[0].pos if path.points.length == 1
+        path.prog += delta * path.points[0].speed * MKW_FRAMERATE
+        ratio = path.prog/path.points[0].pos.distance(path.points[1].pos).to_m
+        return lerp(path.points[0].pos, path.points[1].pos, ratio) if ratio <= 1
+        path.prog = 0
+        path.points.shift
+      end
+    end
 
     def target
       @rail_prog += delta * @view_vel * 100 / MKW_FRAMERATE
@@ -57,41 +81,11 @@ module KMP3D
       line = ents.select { |e| e.typename == "ConstructionLine" }.first
       return [line.start, line.end]
     end
-
-    def points
-      @points.map { |p| p.pos }
-    end
   end
 
-  class CameraOpening
-    include CameraPreview
-
-    def initialize(ent)
-      get_ent_settings(ent)
-    end
-
-    def get_ent_settings(ent)
-      @group      = ent.kmp3d_group.to_i
-      @camtype    = CAME::CAMTYPES[@group]
-      @settings   = ent.kmp3d_settings[1..-1]
-      @points     = route_path(ent)
-      @point_prog = 0
-      @rail_start, @rail_end = came_rails(ent)
-      @rail_dist  = @rail_start.distance(@rail_end).to_m
-      @rail_prog  = 0
-      @next_came  = @settings[0]
-      @zoom_vel   = @settings[4].to_f
-      @view_vel   = @settings[5].to_f
-      @zoom_prog  = @settings[10].to_f
-      @zoom_end   = @settings[11].to_f
-      @total_time = @settings[14].to_f
-      @start_time = Time.now
-      @prev_time  = Time.now
-    end
-
+  class CameraOpening < CameraPreview
     def nextFrame(view)
-      # TODO: replace n-order bezier with piecewise lines/cubic parametrics
-      pos = KMP3D::KMPMath.bezier_at(points, time / @total_time)
+      pos = next_pos(@route)
       view.camera = Sketchup::Camera.new(pos, target, Z_AXIS, true, zoom)
       view.show_frame
       @prev_time = Time.now
@@ -103,39 +97,21 @@ module KMP3D
     end
   end
 
-  class CameraReplay
-    include CameraPreview
-
+  class CameraReplay < CameraPreview
     def initialize(ent)
-      @start_time = Time.now
-      @prev_time  = Time.now
-      get_ent_settings(ent)
-      @enpt = enpt_route
+      super
+      @enpt = Path.new(enpt_path, 0)
       @area = Data.kmp3d_entities("AREA")
     end
 
-    def get_ent_settings(ent)
-      @group      = ent.kmp3d_group.to_i
-      @camtype    = CAME::CAMTYPES[@group]
-      @settings   = ent.kmp3d_settings[1..-1]
-      @points     = route_path(ent)
-      @point_prog = 0
-      @rail_start, @rail_end = came_rails(ent)
-      @rail_dist  = @rail_start.distance(@rail_end).to_m
-      @rail_prog  = 0
-      @zoom_vel   = @settings[4].to_f
-      @view_vel   = @settings[5].to_f
-      @zoom_prog  = @settings[10].to_f
-      @zoom_end   = @settings[11].to_f
-    end
-
-    def enpt_route
+    def enpt_path
       enpts = []
       grp = 0
       type = Data.type_by_typename("ENPT")
+      speed = 50 * Data.type_by_typename("STGI").table[1][6].to_f # speedmod
       loop do
         enpts += Data.entities_in_group("ENPT", grp).map do |e|
-          e.transformation.origin
+          Route.new(e.transformation.origin, speed)
         end
         # always pick the first group in a split path
         grp = type.table[grp + 1][0].split(",").first.to_i
@@ -145,15 +121,14 @@ module KMP3D
     end
 
     def nextFrame(view)
-      ratio = time / (30 * MKW_FRAMERATE)
-      enpt = KMP3D::KMPMath.bezier_at(@enpt, ratio)
+      enpt = next_pos(@enpt)
       # use camera 0 for the first 5 seconds
       switch_camera(enpt) if time > 5 * MKW_FRAMERATE
-      pos = KMP3D::KMPMath.bezier_at(points, ratio)
-      pos, tgt = camera_data(enpt, pos)
+      pos, tgt = camera_data(enpt, next_pos(@route))
       view.camera = Sketchup::Camera.new(pos, tgt, Z_AXIS, true, zoom)
       view.show_frame
-      return ratio < 1
+      @prev_time = Time.now
+      return @enpt.points.length > 1
     end
 
     def switch_camera(enpt)

@@ -41,10 +41,6 @@ module KMP3D
       CAMTYPES.map { |type| type.name } << "Camera Settings"
     end
 
-    def camera?
-      true
-    end
-
     def hide_point?
       CAMTYPES[@group].model != :point && @step < 2
     end
@@ -57,7 +53,7 @@ module KMP3D
     end
 
     def transform(comp, pos)
-      comp.transform!(Geom::Transformation.translation(pos))
+      comp.move!(Geom::Transformation.translation(pos))
     end
 
     def advance_steps(pos)

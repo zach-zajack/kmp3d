@@ -1,5 +1,5 @@
 module KMP3D
-  class STGI < Type
+  class STGI < GroupType
     def initialize
       @name = "Stage Info"
       @external_settings = [
@@ -16,6 +16,10 @@ module KMP3D
         Settings.new(:text, :float, "Speed Modifier", "1.0")
       ]
       super
+    end
+
+    def group_options
+      ""
     end
 
     def on_external_settings?

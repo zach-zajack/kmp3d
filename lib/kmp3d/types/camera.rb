@@ -133,6 +133,10 @@ module KMP3D
       return comp
     end
 
+    def group_options
+      sidenav(@group, "switchGroup", camtype)
+    end
+
     def select_point(ent)
       route = ent.kmp3d_settings[3]
       return if ["0xFF", "-1", "255"].include?(route)

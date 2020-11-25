@@ -47,7 +47,7 @@ module KMP3D
       loop do
         return path.points[0].pos if path.points.length == 1
         path.prog += delta * path.points[0].speed * MKW_FRAMERATE
-        ratio = path.prog/path.points[0].pos.distance(path.points[1].pos).to_m
+        ratio = path.prog / path.points[0].pos.distance(path.points[1].pos).to_m
         return lerp(path.points[0].pos, path.points[1].pos, ratio) if ratio <= 1
         path.prog = 0
         path.points.shift

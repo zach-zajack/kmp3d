@@ -1,5 +1,5 @@
 module KMP3D
-  class GOBJ < Type
+  class GOBJ < GroupType
     def initialize
       @name = "Objects"
       @external_settings = [
@@ -23,6 +23,10 @@ module KMP3D
       super
     end
 
+    def sequential_id?
+      false
+    end
+
     def settings_name
       ""
     end
@@ -36,10 +40,6 @@ module KMP3D
 
     def model
       @table[@group + 1][1]
-    end
-
-    def object?
-      true
     end
 
     def transform(comp, pos)

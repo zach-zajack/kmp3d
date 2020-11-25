@@ -50,21 +50,6 @@ module KMP3D
       sidenav(@type_index, "switchType", Data.types.map { |type| type.name })
     end
 
-    def type_groups
-      return sidenav(@type.group, "switchGroup", @type.camtype) if @type.camera?
-      return "" unless @type.external_settings
-
-      len = @type.groups
-      settings = (0..len).map do |i|
-        if i == len then "#{@type.settings_name} Settings"
-        else "#{@type.settings_name} #{@type.group_id(i)}"
-        end
-      end
-      sidenav(@type.group, "switchGroup", settings) + \
-        tag(:button, :onclick => callback("addGroup")) \
-          { "Add #{@type.settings_name}" }
-    end
-
     def linked_types
       linked = []
       linked << "Routes"      if @type.name == "Cameras"
@@ -87,10 +72,12 @@ module KMP3D
 
     def generate_body(table_html)
       tag(:body, {:onload => scroll_onload}) do
-        tag(:div, :id => "types", :onscroll => on_scroll("types"),
-                  :class => "types") { types + type_groups + linked_types } + \
-          tag(:div, :id => "table", :onscroll => on_scroll("table"),
-                    :class => "table") { table_html }
+        html = tag(:div, :id => "type", :onscroll => on_scroll("types")) do
+          types + @type.group_options + linked_types
+        end
+        html + tag(:div, :id => "table", :onscroll => on_scroll("table")) do
+          table_html
+        end
       end
     end
   end

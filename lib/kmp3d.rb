@@ -7,6 +7,7 @@ module KMP3D
   require "#{DIR}/lib/kmp3d/ui/tool"
   require "#{DIR}/lib/kmp3d/ui/table"
   require "#{DIR}/lib/kmp3d/types/type"
+  require "#{DIR}/lib/kmp3d/types/group_type"
   require "#{DIR}/lib/kmp3d/types/point"
   require "#{DIR}/lib/kmp3d/types/vector"
   require "#{DIR}/lib/kmp3d/types/checkpoint"

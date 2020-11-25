@@ -1,5 +1,5 @@
 module KMP3D
-  class CKPT < Type
+  class CKPT < GroupType
     def initialize
       @name = "Checkpoints"
       @external_settings = [Settings.new(:text, :bytes, "Next Group(s)", "0")]
@@ -12,10 +12,6 @@ module KMP3D
     end
 
     def checkpoint?
-      true
-    end
-
-    def sequential_id?
       true
     end
 

@@ -4,13 +4,13 @@ module KMP3D
 
     CamType = Struct.new(:name, :model, :route, :opening, :rel_pos)
     CAMTYPES = [
-      CamType.new("0 Goal",           :point, false, false, true),
-      CamType.new("1 FixSearch",      :point, false, false, false),
-      CamType.new("2 PathSearch",     :point, true, false, false),
-      CamType.new("3 KartFollow",     :point, false, false, true),
-      CamType.new("4 KartPathFollow", :both,  false,  true, false),
-      CamType.new("5 OP_FixMoveAt",   :rails,  true,  true, false),
-      CamType.new("6 OP_PathMoveAt",  :rails,  true,  true, false)
+      CamType.new("0 Goal",        :point, false, false, true),
+      CamType.new("1 Fixed",       :point, false, false, false),
+      CamType.new("2 Path",        :point, true, false, false),
+      CamType.new("3 Follow",      :point, false, false, true),
+      CamType.new("4 FixedMoveAt", :both,  false,  true, false),
+      CamType.new("5 PathMoveAt",  :rails,  true,  true, false),
+      CamType.new("6 FollowPath",  :rails,  true,  true, false)
     ].freeze
 
     def initialize

@@ -4,6 +4,8 @@ module KMP3D
 
     Color = Struct.new(:name, :color)
 
+    IGNORE_FLAG = nil
+
     FLAGS = [
       Color.new("Road", "Gray"),
       Color.new("Slippery Road", "LightSteelBlue"),
@@ -18,22 +20,22 @@ module KMP3D
       Color.new("Solid Fall", "DarkOrange"),
       Color.new("Moving Water", "Turquoise"),
       Color.new("Wall", "DarkSlateGray"),
-      Color.new("Invisible Wall", "LightSlateGray"),
+      IGNORE_FLAG, # invisible wall
       Color.new("Item Wall", "DarkGoldenrod"),
       Color.new("Wall", "DarkSlateGray"),
       Color.new("Fall Boundary", "OrangeRed"),
       Color.new("Cannon Activator", "MediumPurple"),
-      Color.new("Force Recalculation", "MediumOrchid"),
+      IGNORE_FLAG, # force recalculation
       Color.new("Half-pipe Ramp", "SteelBlue"),
       Color.new("Wall", "DarkSlateGray"),
       Color.new("Moving Road", "SlateBlue"),
       Color.new("Gravity Road", "LimeGreen"),
       Color.new("Road", "Gray"),
-      Color.new("Sound Trigger", "MediumTurquoise"),
-      Color.new("Unknown", "White"),
-      Color.new("Effect Trigger", "MediumVioletRed"),
-      Color.new("Unknown", "White"),
-      Color.new("Unknown", "White"),
+      IGNORE_FLAG, # sound trigger
+      IGNORE_FLAG, # unknown
+      IGNORE_FLAG, # effect trigger
+      IGNORE_FLAG, # unknown
+      IGNORE_FLAG, # unknown
       Color.new("Moving Road", "SlateBlue"),
       Color.new("Special Wall", "DarkSlateBlue"),
       Color.new("Wall", "DarkSlateGray")
@@ -63,13 +65,14 @@ module KMP3D
 
     def add_faces
       Data.model.start_operation("Import KCL", true)
-      @triangles.each do |flag, triangles|
+      @triangles.each do |flag_id, triangles|
         mesh = Geom::PolygonMesh.new(0, triangles.length)
         triangles.each { |t| mesh.add_polygon(t) }
         group = Data.model.entities.add_group
-        color = FLAGS[flag & 0x1f]
-        material = Data.model.materials.add(color.name)
-        material.color = color.color
+        flag = FLAGS[flag_id & 0x1f]
+        next if flag == IGNORE_FLAG
+        material = Data.model.materials.add(flag.name)
+        material.color = flag.color
         group.entities.fill_from_mesh(mesh, true, 0, material)
       end
       Data.model.commit_operation

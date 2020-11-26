@@ -28,7 +28,7 @@ module KMP3D
 
     def rel_pos
       x, y, z = @settings[12].split(",")
-      return [x.to_f.m, -z.to_f.m, y.to_f.m]
+      return [x.to_f.m, -z.to_f.m, (y.to_f + 200).m]
     end
 
     def time
@@ -108,22 +108,23 @@ module KMP3D
       enpts = []
       grp = 0
       type = Data.type_by_typename("ENPT")
-      speed = 50 * Data.type_by_typename("STGI").table[1][6].to_f # speedmod
+      speed = 60 * Data.type_by_typename("STGI").table[1][6].to_f # speedmod
+      lap = 0
       loop do
         enpts += Data.entities_in_group("ENPT", grp).map do |e|
           Route.new(e.transformation.origin, speed)
         end
         # always pick the first group in a split path
         grp = type.table[grp + 1][0].split(",").first.to_i
-        break if grp == 0
+        lap += 1 if grp == 0
+        break if lap == 3
       end
       return enpts
     end
 
     def nextFrame(view)
       enpt = next_pos(@enpt)
-      # use camera 0 for the first 5 seconds
-      switch_camera(enpt) if time > 5 * MKW_FRAMERATE
+      switch_camera(enpt)
       pos, tgt = camera_data(enpt, next_pos(@route))
       view.camera = Sketchup::Camera.new(pos, tgt, Z_AXIS, true, zoom)
       view.show_frame

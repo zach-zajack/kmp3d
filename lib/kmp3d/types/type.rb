@@ -68,6 +68,10 @@ module KMP3D
       []
     end
 
+    def visible_layers
+      []
+    end
+
     def group_id(i)
       i
     end

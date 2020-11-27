@@ -145,6 +145,10 @@ module KMP3D
       end
     end
 
+    def linked_types
+      ["Routes", "Objects"]
+    end
+
     def to_html
       if on_external_settings?
         tag(:div, :class => "cameras") { camera_settings_html }

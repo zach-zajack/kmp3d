@@ -36,9 +36,7 @@ module KMP3D
       # prev layers
       @layers.each { |name| layers[name].visible = false }
       @layers = [type_name]
-      @layers << "Routes"   if type_name == "Cameras"
-      @layers << "Cameras"  if type_name == "Area"
-      @layers << "Respawns" if type_name == "Checkpoints"
+      @layers += type_by_name(type_name).visible_layers
       @layers.each { |name| layers[name].visible = true }
     end
 

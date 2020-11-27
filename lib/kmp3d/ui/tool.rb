@@ -51,12 +51,7 @@ module KMP3D
     end
 
     def linked_types
-      linked = []
-      linked << "Routes"      if @type.name == "Cameras"
-      linked << "Cameras"     if @type.name == "Area"
-      linked << "Checkpoints" if @type.name == "Area"
-      linked << "Respawns"    if @type.name == "Checkpoints"
-      checkboxes = linked.map do |type|
+      checkboxes = @type.linked_types.map do |type|
         attribs = {:id => type, :onchange => callback("toggleLayer", type)}
         checkbox(type, attribs, Data.layers[type].visible?)
       end

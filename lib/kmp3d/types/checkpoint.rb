@@ -111,6 +111,14 @@ module KMP3D
       @enpt.map! { |ent| ent.transformation.origin }
     end
 
+    def linked_types
+      ["Respawns"]
+    end
+
+    def visible_layers
+      ["Respawns"]
+    end
+
     private
 
     def coob_active?(areas, c)

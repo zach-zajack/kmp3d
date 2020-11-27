@@ -75,6 +75,14 @@ module KMP3D
         "If the second checkpoint comes before the first, it is disabled the following lap (Riidefi's only)."
     end
 
+    def linked_types
+      ["Cameras", "Checkpoints"]
+    end
+
+    def visible_layers
+      ["Cameras"]
+    end
+
     private
 
     def model_for(value)

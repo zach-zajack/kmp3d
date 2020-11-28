@@ -172,7 +172,9 @@ module KMP3D
 
     def play_replay_cameras
       Data.model.select_tool(self)
-      @camera = CameraReplay.new
+      ent = Data.entities_in_group("CAME", 0).first
+      return UI.messagebox("Missing camera type 0") if ent.nil?
+      @camera = CameraReplay.new(ent)
       Data.model.active_view.animation = @camera
     end
 

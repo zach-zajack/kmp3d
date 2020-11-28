@@ -1,7 +1,7 @@
 module KMP3D
   class CameraPreview
     Route = Struct.new(:pos, :speed)
-    Path  = Struct.new(:points, :prog)
+    Path  = Struct.new(:points, :prog, :smooth)
     MKW_FRAMERATE = 59.94
 
     def initialize(ent)
@@ -14,7 +14,7 @@ module KMP3D
       @group      = ent.kmp3d_group.to_i
       @camtype    = CAME::CAMTYPES[@group]
       @settings   = ent.kmp3d_settings[1..-1]
-      @route      = Path.new(route_path(ent), 0)
+      @route      = Path.new(route_path(ent), 0, route_smooth(ent))
       @rail_start, @rail_end = came_rails(ent)
       @rail_dist  = @rail_start.distance(@rail_end).to_m
       @rail_prog  = 0
@@ -49,6 +49,11 @@ module KMP3D
     end
 
     def next_pos(path)
+      path.smooth && path.points.length >= 4 ? \
+        next_pos_smooth(path) : next_pos_verbatim(path)
+    end
+
+    def next_pos_verbatim(path)
       loop do
         return path.points[0].pos if path.points.length == 1
         path.prog += delta * path.points[0].speed * MKW_FRAMERATE
@@ -57,6 +62,35 @@ module KMP3D
         path.prog = 0
         path.points.shift
       end
+    end
+
+    def next_pos_smooth(path)
+      loop do
+        if path.points.length < 4
+          path.points.shift
+          path.prog = 0
+          return next_pos_verbatim(path)
+        end
+        path.prog += delta * path.points[1].speed * MKW_FRAMERATE
+        ratio = path.prog / path.points[1].pos.distance(path.points[2].pos).to_m
+        return interpolate_spline(path, ratio) if ratio <= 1
+        path.prog = 0
+        path.points.shift
+      end
+    end
+
+    def interpolate_spline(path, ratio)
+      c0 = (1 - ratio)**3 / 6
+      c1 = (3 * ratio**3 - 6 * ratio**2 + 4) / 6
+      c2 = (1 - 3 * (ratio**3 - ratio**2 - ratio)) / 6
+      c3 = ratio**3 / 6
+      x = c0 * path.points[0].pos.x + c1 * path.points[1].pos.x + \
+          c2 * path.points[2].pos.x + c3 * path.points[3].pos.x
+      y = c0 * path.points[0].pos.y + c1 * path.points[1].pos.y + \
+          c2 * path.points[2].pos.y + c3 * path.points[3].pos.y
+      z = c0 * path.points[0].pos.z + c1 * path.points[1].pos.z + \
+          c2 * path.points[2].pos.z + c3 * path.points[3].pos.z
+      return Geom::Point3d.new(x, y, z)
     end
 
     def zoom
@@ -70,6 +104,11 @@ module KMP3D
       return Data.entities_in_group("POTI", @settings[2]).map do |ent|
         Route.new(ent.transformation.origin, ent.kmp3d_settings[1].to_f)
       end
+    end
+
+    def route_smooth(ent)
+      return false unless @camtype.route
+      return Data.type_by_typename("POTI").table[@settings[2].to_i+1][0] == 1
     end
 
     def came_rails(ent)
@@ -121,10 +160,10 @@ module KMP3D
   end
 
   class CameraReplay < CameraPreview
-    def initialize
-      super
+    def initialize(ent)
+      super(ent)
       @draw_current_enpt = true
-      @enpt = Path.new(enpt_path, 0)
+      @enpt = Path.new(enpt_path, 0, true)
       @area = Data.kmp3d_entities("AREA")
     end
 

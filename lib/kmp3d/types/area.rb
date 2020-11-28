@@ -76,7 +76,7 @@ module KMP3D
     end
 
     def linked_types
-      ["Cameras", "Checkpoints"]
+      ["Cameras", "Checkpoints", "Enemy Routes"]
     end
 
     def visible_layers

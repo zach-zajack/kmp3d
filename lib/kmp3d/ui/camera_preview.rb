@@ -5,6 +5,7 @@ module KMP3D
     MKW_FRAMERATE = 59.94
 
     def initialize(ent)
+      @fov = Data.model.active_view.camera.fov
       get_ent_settings(ent)
       @prev_time = Time.now
     end
@@ -54,13 +55,6 @@ module KMP3D
       end
     end
 
-    def target
-      @rail_prog += delta * @view_vel * 100 / MKW_FRAMERATE
-      ratio = @rail_prog / @rail_dist
-      ratio = 1 if ratio > 1
-      lerp(@rail_start, @rail_end, ratio)
-    end
-
     def zoom
       @zoom_prog += delta * @zoom_vel * 100 / MKW_FRAMERATE
       @zoom_prog = @zoom_end if @zoom_prog >= @zoom_end
@@ -81,12 +75,30 @@ module KMP3D
       line = ents.select { |e| e.typename == "ConstructionLine" }.first
       return [line.start, line.end]
     end
+
+    def sketchup_camera(pos, tgt)
+      up = Z_AXIS
+      up = Y_AXIS if (pos - tgt).normalize == Z_AXIS
+      Sketchup::Camera.new(pos, tgt, up, true, zoom)
+    end
+
+    def stop
+      @draw_current_enpt = false
+      return unless @fov
+      Data.model.active_view.camera.fov = @fov
+      @fov = nil
+    end
+
+    def draw_enpt(view)
+      return unless @draw_current_enpt && @enpt
+      view.draw_points(next_pos(@enpt), 20, 3, "red")
+    end
   end
 
   class CameraOpening < CameraPreview
     def nextFrame(view)
       pos = next_pos(@route)
-      view.camera = Sketchup::Camera.new(pos, target, Z_AXIS, true, zoom)
+      view.camera = sketchup_camera(pos, target)
       view.show_frame
       @prev_time = Time.now
       return true if time < @total_time # continue animation if true
@@ -95,11 +107,19 @@ module KMP3D
       get_ent_settings(Data.get_entity("CAME", @next_came))
       return true
     end
+
+    def target
+      @rail_prog += delta * @view_vel * 100 / MKW_FRAMERATE
+      ratio = @rail_prog / @rail_dist
+      ratio = 1 if ratio > 1
+      lerp(@rail_start, @rail_end, ratio)
+    end
   end
 
   class CameraReplay < CameraPreview
     def initialize(ent)
       super
+      @draw_current_enpt = true
       @enpt = Path.new(enpt_path, 0)
       @area = Data.kmp3d_entities("AREA")
     end
@@ -125,8 +145,8 @@ module KMP3D
     def nextFrame(view)
       enpt = next_pos(@enpt)
       switch_camera(enpt)
-      pos, tgt = camera_data(enpt, next_pos(@route))
-      view.camera = Sketchup::Camera.new(pos, tgt, Z_AXIS, true, zoom)
+      pos = ([0, 3, 6].include?(@group) ? enpt + rel_pos : next_pos(@route))
+      view.camera = sketchup_camera(pos, enpt)
       view.show_frame
       @prev_time = Time.now
       return @enpt.points.length > 1
@@ -143,19 +163,6 @@ module KMP3D
       puts "Switching to camera ID #{@cam}"
       get_ent_settings(Data.get_entity("CAME", @cam)) if area
       @prev_cam = @cam
-    end
-
-    def camera_data(player_pos, pos)
-      case @group
-      when 0, 3
-        pos = player_pos + rel_pos
-        tgt = player_pos
-      when 1, 2
-        tgt = player_pos
-      else
-        tgt = target
-      end
-      return pos, tgt
     end
   end
 end

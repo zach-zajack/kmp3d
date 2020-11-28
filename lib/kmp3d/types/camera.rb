@@ -10,7 +10,7 @@ module KMP3D
       CamType.new("3 Follow",      :point, false, false, true),
       CamType.new("4 FixedMoveAt", :both,  false,  true, false),
       CamType.new("5 PathMoveAt",  :rails,  true,  true, false),
-      CamType.new("6 FollowPath",  :rails,  true,  true, false)
+      CamType.new("6 FollowPath",  :point,  true,  true, false)
     ].freeze
 
     def initialize
@@ -146,7 +146,7 @@ module KMP3D
     end
 
     def linked_types
-      ["Routes", "Objects"]
+      ["Routes", "Objects", "Enemy Routes"]
     end
 
     def to_html

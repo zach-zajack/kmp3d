@@ -66,6 +66,7 @@ module KMP3D
         type = Data.type_by_name(layer.name)
         type.draw_connected_points(view, @ip.position, type == @type) if type
       end
+      @camera.draw_enpt(view) if @camera
     end
 
     def onSelectionBulkChange(_)

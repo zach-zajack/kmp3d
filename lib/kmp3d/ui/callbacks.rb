@@ -165,23 +165,22 @@ module KMP3D
     end
 
     def play_opening_cameras
-      @fov = Data.model.active_view.camera.fov
       ent = Data.get_entity("CAME", @type.op_cam_index)
-      Data.model.active_view.animation = CameraOpening.new(ent)
+      @camera = CameraOpening.new(ent)
+      Data.model.active_view.animation = @camera
     end
 
     def play_replay_cameras
-      @fov = Data.model.active_view.camera.fov
+      Data.model.select_tool(self)
       ent = Data.entities_in_group("CAME", 0).first
       return UI.messagebox("Missing camera type 0") if ent.nil?
-      Data.model.active_view.animation = CameraReplay.new(ent)
+      @camera = CameraReplay.new(ent)
+      Data.model.active_view.animation = @camera
     end
 
     def stop_replay_cameras
-      return unless @fov
       Data.model.active_view.animation = nil
-      Data.model.active_view.camera.fov = @fov
-      @fov = nil
+      @camera = nil
     end
 
     private

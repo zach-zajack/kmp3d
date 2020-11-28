@@ -52,7 +52,7 @@ module KMP3D
       table_id = -1
       table = row.zip(settings).map do |col, setting|
         table_id += 1
-        next if setting.type == :hidden
+        next if setting.nil? || setting.type == :hidden
 
         tag(:td, :onclick => callback("focusRow", id)) do
           table_input("#{id},#{table_id}", col, setting)
@@ -65,7 +65,8 @@ module KMP3D
 
     def prompt_columns(settings)
       table = settings.map do |setting|
-        tag(:th) { tag(:span) { setting.prompt } } if setting.type != :hidden
+        next if setting.nil? || setting.type == :hidden
+        tag(:th) { tag(:span) { setting.prompt } }
       end
       table << tag(:th, :style => "width:20px") { "" }
     end

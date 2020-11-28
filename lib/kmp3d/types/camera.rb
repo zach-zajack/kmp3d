@@ -186,7 +186,7 @@ module KMP3D
       settings[5]  = nil unless CAMTYPES[@group].model != :point # viewspeed
       settings[12] = nil unless CAMTYPES[@group].rel_pos # relative position
       settings[14] = nil unless CAMTYPES[@group].opening # time
-      settings.compact!
+      return settings
     end
 
     def save_settings

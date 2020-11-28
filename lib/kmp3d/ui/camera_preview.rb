@@ -1,7 +1,7 @@
 module KMP3D
   class CameraPreview
     Route = Struct.new(:pos, :speed)
-    Path  = Struct.new(:points, :prog, :smooth)
+    Path  = Struct.new(:points, :prog, :smooth, :speed)
     MKW_FRAMERATE = 59.94
 
     def initialize(ent)
@@ -14,7 +14,7 @@ module KMP3D
       @group      = ent.kmp3d_group.to_i
       @camtype    = CAME::CAMTYPES[@group]
       @settings   = ent.kmp3d_settings[1..-1]
-      @route      = Path.new(route_path(ent), 0, route_smooth(ent))
+      @route      = Path.new(route_path(ent), 0, route_smooth(ent), 0)
       @rail_start, @rail_end = came_rails(ent)
       @rail_dist  = @rail_start.distance(@rail_end).to_m
       @rail_prog  = 0
@@ -27,7 +27,7 @@ module KMP3D
       @start_time = Time.now
     end
 
-    def rel_pos(enpt)
+    def rel_pos(enpt) # TODO: make this not choppy + orient correctly
       x, y, z = @settings[12].split(",")
       pt1, pt2 = @enpt.points[0].pos, @enpt.points[1].pos
       vec = Geom::Vector3d.new(x.to_f.m, -z.to_f.m, (y.to_f + 200).m)
@@ -45,7 +45,13 @@ module KMP3D
     end
 
     def lerp(p1, p2, t)
+      t = 1 if t > 1
       Geom::Transformation.interpolate(p1, p2, t).origin
+    end
+
+    def lerp_num(p1, p2, t)
+      t = 1 if t > 1
+      p1 * (1 - t) + p2 * t
     end
 
     def next_pos(path)
@@ -56,8 +62,9 @@ module KMP3D
     def next_pos_verbatim(path)
       loop do
         return path.points[0].pos if path.points.length == 1
-        path.prog += delta * path.points[0].speed * MKW_FRAMERATE
+        path.prog += delta * path.speed * MKW_FRAMERATE
         ratio = path.prog / path.points[0].pos.distance(path.points[1].pos).to_m
+        path.speed = lerp_num(path.points[0].speed, path.points[1].speed, ratio)
         return lerp(path.points[0].pos, path.points[1].pos, ratio) if ratio <= 1
         path.prog = 0
         path.points.shift
@@ -71,8 +78,9 @@ module KMP3D
           path.prog = 0
           return next_pos_verbatim(path)
         end
-        path.prog += delta * path.points[1].speed * MKW_FRAMERATE
+        path.prog += delta * path.speed * MKW_FRAMERATE
         ratio = path.prog / path.points[1].pos.distance(path.points[2].pos).to_m
+        path.speed = lerp_num(path.points[0].speed, path.points[1].speed, ratio)
         return interpolate_spline(path, ratio) if ratio <= 1
         path.prog = 0
         path.points.shift
@@ -163,7 +171,7 @@ module KMP3D
     def initialize(ent)
       super(ent)
       @draw_current_enpt = true
-      @enpt = Path.new(enpt_path, 0, true)
+      @enpt = Path.new(enpt_path, 0, true, 0)
       @area = Data.kmp3d_entities("AREA")
     end
 

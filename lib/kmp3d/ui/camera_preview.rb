@@ -27,9 +27,13 @@ module KMP3D
       @start_time = Time.now
     end
 
-    def rel_pos
+    def rel_pos(enpt)
       x, y, z = @settings[12].split(",")
-      return [x.to_f.m, -z.to_f.m, (y.to_f + 200).m]
+      pt1, pt2 = @enpt.points[0].pos, @enpt.points[1].pos
+      vec = Geom::Vector3d.new(x.to_f.m, -z.to_f.m, (y.to_f + 200).m)
+      angle = Math::PI - Math.atan2(pt2.x - pt1.x, pt2.y - pt1.y)
+      vec.transform!(Geom::Transformation.rotation(enpt, Z_AXIS, angle))
+      return enpt + vec
     end
 
     def time
@@ -128,7 +132,7 @@ module KMP3D
       enpts = []
       grp = 0
       type = Data.type_by_typename("ENPT")
-      speed = 60 * Data.type_by_typename("STGI").table[1][6].to_f # speedmod
+      speed = 45 * Data.type_by_typename("STGI").table[1][6].to_f # speedmod
       lap = 0
       loop do
         enpts += Data.entities_in_group("ENPT", grp).map do |e|
@@ -145,7 +149,7 @@ module KMP3D
     def nextFrame(view)
       enpt = next_pos(@enpt)
       switch_camera(enpt)
-      pos = ([0, 3, 6].include?(@group) ? enpt + rel_pos : next_pos(@route))
+      pos = ([0, 3, 6].include?(@group) ? rel_pos(enpt) : next_pos(@route))
       view.camera = sketchup_camera(pos, enpt)
       view.show_frame
       @prev_time = Time.now

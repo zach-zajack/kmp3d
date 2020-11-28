@@ -37,10 +37,6 @@ module KMP3D
       super
     end
 
-    def camtype
-      CAMTYPES.map { |type| type.name } << "Camera Settings"
-    end
-
     def hide_point?
       CAMTYPES[@group].model != :point && @step < 2
     end
@@ -130,7 +126,8 @@ module KMP3D
     end
 
     def group_options
-      sidenav(@group, "switchGroup", camtype)
+      settings = CAMTYPES.map { |type| type.name } << "Preview Cameras"
+      sidenav(@group, "switchGroup", settings)
     end
 
     def select_point(ent)
@@ -151,7 +148,10 @@ module KMP3D
 
     def to_html
       if on_external_settings?
-        tag(:div, :class => "cameras") { camera_settings_html }
+        tag(:div, :class => "cameras") { camera_settings_html } + \
+        tag(:div, :class => "helper-text") do
+          "You can preview camera setups here. Note these are not entirely accurate, so make sure to test them in the game as well."
+        end
       else
         tag(:table) \
           { table_rows(inputs, @settings) * "" } + \

@@ -121,7 +121,7 @@ module KMP3D
   end
 
   class CameraReplay < CameraPreview
-    def initialize(ent)
+    def initialize
       super
       @draw_current_enpt = true
       @enpt = Path.new(enpt_path, 0)

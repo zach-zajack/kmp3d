@@ -172,7 +172,8 @@ module KMP3D
       super(ent)
       @draw_current_enpt = true
       @enpt = Path.new(enpt_path, 0, true, 0)
-      @area = Data.kmp3d_entities("AREA")
+      @area = \
+        Data.kmp3d_entities("AREA").select { |a| a.kmp3d_settings[2] == "0" }
     end
 
     def enpt_path
@@ -203,16 +204,21 @@ module KMP3D
       return @enpt.points.length > 1
     end
 
+    def get_area(enpt)
+      intersect = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, enpt) }
+      intersect.sort_by! { |a| a.kmp3d_settings[4].to_i } # sort by priority
+      return intersect.last
+    end
+
     def switch_camera(enpt)
-      # TODO: area priority
-      area = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, enpt) }.first
+      area = get_area(enpt)
       return unless area
 
       @cam = area.kmp3d_settings[3]
       return if @prev_cam == @cam
 
       puts "Switching to camera ID #{@cam}"
-      get_ent_settings(Data.get_entity("CAME", @cam)) if area
+      get_ent_settings(Data.get_entity("CAME", @cam))
       @prev_cam = @cam
     end
   end

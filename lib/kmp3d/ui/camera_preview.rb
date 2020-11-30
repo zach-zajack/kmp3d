@@ -227,8 +227,9 @@ module KMP3D
         x, y, z = @settings[12].split(",")
         vec = Geom::Vector3d.new(x.to_f.m, -z.to_f.m, y.to_f.m)
         rel_pos(enpt, vec)
-      when 1, 2 then next_pos(@route)
-      when 6    then rel_pos(enpt, Geom::Vector3d.new(*next_pos(@route).to_a))
+      when 1, 2, 4, 5 then next_pos(@route)
+      when 6 then rel_pos(enpt, Geom::Vector3d.new(*next_pos(@route).to_a))
+      else raise "Unsupported camera type #{@group}"
       end
     end
 

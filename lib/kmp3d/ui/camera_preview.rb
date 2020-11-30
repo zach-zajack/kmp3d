@@ -27,9 +27,10 @@ module KMP3D
       @start_time = Time.now
     end
 
-    def rel_pos(enpt, vec) # TODO: make this not choppy + orient correctly
-      pt1, pt2 = @enpt.points[1].pos, @enpt.points[2].pos
-      angle = Math::PI - Math.atan2(pt2.x - pt1.x, pt2.y - pt1.y)
+    def rel_pos(enpt, vec) # TODO: make this orient correctly
+      ratio = @enpt.prog / @enpt.points[1].pos.distance(@enpt.points[2].pos).to_m
+      tangent = spline_tangent(@enpt, ratio)
+      angle = Math::PI - Math.atan2(tangent.x, tangent.y)
       vec.transform!(Geom::Transformation.rotation(enpt, Z_AXIS, angle))
       # camera is focused at player's head, so we add 200 to the height
       return enpt + vec + [0, 0, 200.m]
@@ -91,6 +92,18 @@ module KMP3D
       c1 = (3 * ratio**3 - 6 * ratio**2 + 4) / 6
       c2 = (1 - 3 * (ratio**3 - ratio**2 - ratio)) / 6
       c3 = ratio**3 / 6
+      return make_spline(path, c0, c1, c2, c3)
+    end
+
+    def spline_tangent(path, ratio)
+      c0 = -(1 - ratio)**2 / 2
+      c1 =  (3 * ratio**2 - 4 * ratio) / 2
+      c2 = -(3 * ratio**2 - 2 * ratio - 1) / 2
+      c3 = ratio**2 / 2
+      return make_spline(path, c0, c1, c2, c3)
+    end
+
+    def make_spline(path, c0, c1, c2, c3)
       x = c0 * path.points[0].pos.x + c1 * path.points[1].pos.x + \
           c2 * path.points[2].pos.x + c3 * path.points[3].pos.x
       y = c0 * path.points[0].pos.y + c1 * path.points[1].pos.y + \

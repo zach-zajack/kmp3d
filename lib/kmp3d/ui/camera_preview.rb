@@ -217,8 +217,7 @@ module KMP3D
 
     def get_area(enpt)
       intersect = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, enpt) }
-      intersect.sort_by! { |a| a.kmp3d_settings[4].to_i } # sort by priority
-      return intersect.last
+      return intersect.max_by { |a| a.kmp3d_settings[4].to_i } # priority
     end
 
     def camera_pos(enpt)

@@ -10,7 +10,7 @@ module KMP3D
       CamType.new("3 Follow",      :point, false, false, true),
       CamType.new("4 FixedMoveAt", :both,  false,  true, false),
       CamType.new("5 PathMoveAt",  :rails,  true,  true, false),
-      CamType.new("6 FollowPath",  :point,  true,  true, false)
+      CamType.new("6 FollowPath",  :point,  true,  false, false)
     ].freeze
 
     def initialize
@@ -30,7 +30,7 @@ module KMP3D
         Settings.new(:hidden, :vec3,   "Rotation", "0, 0, 0"),
         Settings.new(:text,   :float,  "Zoom start", "45.0"),
         Settings.new(:text,   :float,  "Zoom end", "45.0"),
-        Settings.new(:text,   :vec3,   "Relative Pos.", "0, 0, 0"), # view start
+        Settings.new(:text,   :vec3,   "Relative Position", "0, 0, 0"),
         Settings.new(:hidden, :vec3,   "View End", "0, 0, 0"),
         Settings.new(:text,   :float,  "Time", "60.0")
       ]
@@ -88,22 +88,21 @@ module KMP3D
     end
 
     def table_helper_text
-      # Based off http://wiki.tockdom.com/wiki/KMP_Editing/Cameras
       case @group
       when 0
-        "Activates immediately after passing the goal; with the player as the origin, the camera's View Start position both follows and looks at the player. It can be reactivated as a Replay Camera if linked to an AREA, but does not display in spectator (online/waiting) mode."
+        "Activates for a few seconds after the race is completed. Follows the player based on the relative position. Normal position is irrelevant."
       when 1
-        "Camera stays static in View Start location, and always looks towards the player."
+        "Stays at its position and looks at the player."
       when 2
-        "Route controlled, always looks at the player."
+        "Follows a route and looks at the player. Normal position is irrelevant."
       when 3
-        "With the player as the origin, the camera's View Start position both follows and looks at the player."
+        "Follows the player based on the relative position. Normal position is irrelevant."
       when 4
-        "From its position, it looks at View Start and shifts view to View End."
+        "Stays at its position and looks at view start -> view end. Can be used as an opening camera."
       when 5
-        "Opening camera, follows route; from its position, it looks at View Start and shifts view to View End."
+        "Follows a route and looks at view start -> view end. Can be used as an opening camera."
       when 6
-        "Opening camera onboard with same effects as normal drive Camera (unsure)."
+        "Follows the player based on a relative position, where the relative position is instead determined by a route. Normal position is irrelevant."
       else
         "Unused"
       end

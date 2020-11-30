@@ -27,13 +27,12 @@ module KMP3D
       @start_time = Time.now
     end
 
-    def rel_pos(enpt) # TODO: make this not choppy + orient correctly
-      x, y, z = @settings[12].split(",")
-      pt1, pt2 = @enpt.points[0].pos, @enpt.points[1].pos
-      vec = Geom::Vector3d.new(x.to_f.m, -z.to_f.m, (y.to_f + 200).m)
+    def rel_pos(enpt, vec) # TODO: make this not choppy + orient correctly
+      pt1, pt2 = @enpt.points[1].pos, @enpt.points[2].pos
       angle = Math::PI - Math.atan2(pt2.x - pt1.x, pt2.y - pt1.y)
       vec.transform!(Geom::Transformation.rotation(enpt, Z_AXIS, angle))
-      return enpt + vec
+      # camera is focused at player's head, so we add 200 to the height
+      return enpt + vec + [0, 0, 200.m]
     end
 
     def time
@@ -129,7 +128,7 @@ module KMP3D
 
     def sketchup_camera(pos, tgt)
       up = Z_AXIS
-      up = Y_AXIS if (pos - tgt).normalize == Z_AXIS
+      up = Y_AXIS if (pos - tgt).normalize == Z_AXIS # failsafe
       Sketchup::Camera.new(pos, tgt, up, true, zoom)
     end
 
@@ -197,8 +196,7 @@ module KMP3D
     def nextFrame(view)
       enpt = next_pos(@enpt)
       switch_camera(enpt)
-      pos = ([0, 3, 6].include?(@group) ? rel_pos(enpt) : next_pos(@route))
-      view.camera = sketchup_camera(pos, enpt)
+      view.camera = sketchup_camera(camera_pos(enpt), enpt)
       view.show_frame
       @prev_time = Time.now
       return @enpt.points.length > 1
@@ -208,6 +206,17 @@ module KMP3D
       intersect = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, enpt) }
       intersect.sort_by! { |a| a.kmp3d_settings[4].to_i } # sort by priority
       return intersect.last
+    end
+
+    def camera_pos(enpt)
+      case @group
+      when 0, 3
+        x, y, z = @settings[12].split(",")
+        vec = Geom::Vector3d.new(x.to_f.m, -z.to_f.m, y.to_f.m)
+        rel_pos(enpt, vec)
+      when 1, 2 then next_pos(@route)
+      when 6    then rel_pos(enpt, Geom::Vector3d.new(*next_pos(@route).to_a))
+      end
     end
 
     def switch_camera(enpt)

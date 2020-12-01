@@ -1,1 +1,2 @@
-zip -r ../KMP3D.rbz app lib kmp3d_loader.rb
+cp -R {app,lib} kmp3d
+zip -r kmp3d/KMP3D.rbz kmp3d kmp3d_loader.rb

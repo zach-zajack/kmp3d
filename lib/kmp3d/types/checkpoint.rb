@@ -129,7 +129,9 @@ module KMP3D
     end
 
     def closest_enpt_height(pos)
-      @enpt.sort! { |ent| pos.distance([ent.x, ent.y]) }
+      @enpt.sort! do |ent1, ent2|
+        pos.distance([ent1.x, ent1.y]) <=> pos.distance([ent2.x, ent2.y])
+      end
       @enpt.first.z
     end
 

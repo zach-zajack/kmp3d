@@ -12,7 +12,7 @@ module KMP3D
           :dropdown, :byte, "Lens Flare", "0", %w[Enabled Disabled]
         ),
         Settings.new(:hidden, :byte, "Padding", "0"),
-        Settings.new(:text, :uint32, "Flare Color (RGBA)", "0xE6E6E64B"),
+        Settings.new(:text, :color, "Flare Color (RGBA)", "0xE6E6E64B"),
         Settings.new(:text, :float, "Speed Modifier", "1.0")
       ]
       super

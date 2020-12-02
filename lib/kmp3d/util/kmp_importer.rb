@@ -105,11 +105,11 @@ module KMP3D
     def import_settings(settings)
       settings.map do |setting|
         case setting.input
-        when :byte then format(@parser.read_byte, 0xFF)
-        when :float then @parser.read_float
-        when :int16 then @parser.read_int16
+        when :byte   then format(@parser.read_byte, 0xFF)
+        when :float  then @parser.read_float
+        when :int16  then @parser.read_int16
         when :uint16 then format(@parser.read_uint16, 0xFFFF)
-        when :uint32 then @parser.read_uint32
+        when :color  then "0x" + ("%X" % @parser.read_uint32)
         end
       end
     end

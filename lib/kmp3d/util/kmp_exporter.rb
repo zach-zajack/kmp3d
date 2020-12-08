@@ -218,7 +218,7 @@ module KMP3D
         when :float then @writer.write_float(setting)
         when :int16 then @writer.write_int16(setting)
         when :uint16 then @writer.write_uint16(setting)
-        when :uint32 then @writer.write_uint32(setting)
+        when :color then @writer.write_uint32(setting)
         end
       end
     end

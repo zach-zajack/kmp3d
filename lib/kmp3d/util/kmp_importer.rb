@@ -109,7 +109,7 @@ module KMP3D
         when :float  then @parser.read_float
         when :int16  then @parser.read_int16
         when :uint16 then format(@parser.read_uint16, 0xFFFF)
-        when :color  then "0x" + ("%X" % @parser.read_uint32)
+        when :uint32 then "0x" + ("%X" % @parser.read_uint32)
         end
       end
     end

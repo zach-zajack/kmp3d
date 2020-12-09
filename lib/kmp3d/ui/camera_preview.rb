@@ -201,7 +201,7 @@ module KMP3D
         # always pick the first group in a split path
         grp = type.table[grp + 1][0].split(",").first.to_i
         lap += 1 if grp == 0
-        break if lap == 3
+        break if lap == Data.type_by_typename("STGI").table[1][1].to_i
       end
       return enpts
     end

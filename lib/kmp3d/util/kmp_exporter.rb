@@ -84,11 +84,13 @@ module KMP3D
       when "KTPT", "JGPT", "CNPT", "MSPT"
         write_section(type) { |ent| export_ent(ent) }
       when "ENPT"
-        write_section("ENPT") { |ent| export_ent(ent) }
-        write_group("ENPH", "ENPT")
+        write_homologous_sections("ENPH", "ENPT", "ITPT") do |ent|
+          export_ent(ent)
+        end
       when "ITPT"
-        write_section("ITPT") { |ent| export_ent(ent) }
-        write_group("ITPH", "ITPT")
+        write_homologous_sections("ITPH", "ITPT", "ENPT") do |ent|
+          export_ent(ent)
+        end
       when "CKPT"
         write_section_ckpt
         write_group("CKPH", "CKPT")
@@ -118,6 +120,25 @@ module KMP3D
       write_section_offset
       write_section_header(type_name, ents.length, 0)
       ents.each { |ent| yield ent }
+    end
+
+    def write_homologous_sections(sect_name, primary, secondary)
+      Sketchup.status_text = "KMP3D: Exporting #{primary}..."
+      type_name = primary
+      ents = Data.kmp3d_entities(primary)
+      secondary_ents = Data.kmp3d_entities(secondary)
+      msg = "#{primary} section is empty but #{secondary} section" \
+            "is not. Copy #{secondary} settings to #{primary}?"
+      if ents == [] && secondary_ents != [] && \
+        UI.messagebox(msg, MB_YESNO) == IDYES
+        type_name = secondary
+        ents = secondary_ents
+      end
+      @type = Data.type_by_typename(type_name)
+      write_section_offset
+      write_section_header(primary, ents.length, 0)
+      ents.each { |ent| yield ent }
+      write_group(sect_name, type_name)
     end
 
     def write_group(sect_name, type_name)
@@ -218,7 +239,7 @@ module KMP3D
         when :float then @writer.write_float(setting)
         when :int16 then @writer.write_int16(setting)
         when :uint16 then @writer.write_uint16(setting)
-        when :color then @writer.write_uint32(setting)
+        when :uint32 then @writer.write_uint32(setting)
         end
       end
     end

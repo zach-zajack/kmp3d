@@ -159,11 +159,11 @@ module KMP3D
     end
 
     def table_columns(id, row, settings)
-      super(id, camtype_settings(row.clone), camtype_settings(settings.clone))
+      super(id, sieve_settings(row.clone), sieve_settings(settings.clone))
     end
 
     def prompt_columns(settings)
-      super(camtype_settings(settings.clone))
+      super(sieve_settings(settings.clone))
     end
 
     def on_external_settings?
@@ -179,7 +179,7 @@ module KMP3D
       end
     end
 
-    def camtype_settings(settings)
+    def sieve_settings(settings)
       settings[0]  = nil unless CAMTYPES[@group].opening # next camera
       settings[2]  = nil unless CAMTYPES[@group].route # route
       settings[5]  = nil unless CAMTYPES[@group].model != :point # viewspeed

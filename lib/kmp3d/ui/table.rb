@@ -50,7 +50,7 @@ module KMP3D
 
     def table_columns(id, row, settings)
       table_id = -1
-      table = row.zip(settings).map do |col, setting|
+      table = row.zip(sieve_settings(settings.clone)).map do |col, setting|
         table_id += 1
         next if setting.nil? || setting.type == :hidden
 
@@ -64,7 +64,7 @@ module KMP3D
     end
 
     def prompt_columns(settings)
-      table = settings.map do |setting|
+      table = sieve_settings(settings.clone).map do |setting|
         next if setting.nil? || setting.type == :hidden
         tag(:th) { tag(:span) { setting.prompt } }
       end

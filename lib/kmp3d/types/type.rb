@@ -99,6 +99,10 @@ module KMP3D
       false
     end
 
+    def sieve_settings(settings)
+      settings
+    end
+
     def settings_name
       "Group"
     end

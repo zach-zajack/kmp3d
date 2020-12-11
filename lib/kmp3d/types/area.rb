@@ -18,7 +18,7 @@ module KMP3D
     def initialize
       @name = "Area"
       @settings = [
-        Settings.new(:dropdown, :byte, "Shape", "0", %w[Cube Cylinder]),
+        Settings.new(:dropdown, :byte, "Shape", "0", %w[Box Cylinder]),
         Settings.new(:text, :byte, "Camera ID", "0xFF"),
         Settings.new(:text, :byte, "Priority", "0"),
         Settings.new(:text, :uint16, "Setting 1", "0"),

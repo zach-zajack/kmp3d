@@ -174,12 +174,14 @@ module KMP3D
     end
 
     def import_area
-      settings = import_settings(@type.settings[0...4])
+      settings = import_settings(@type.settings[0...1])
+      type_index = @parser.read_byte
+      settings += import_settings(@type.settings[1...3])
       position = @parser.read_position3d
       rotation = @parser.read_rotation
       scale = @parser.read_scale
-      settings += import_settings(@type.settings[4..-1])
-      @type.import(position, rotation, scale, 0, settings)
+      settings += import_settings(@type.settings[3..-1])
+      @type.import(position, rotation, scale, type_index, settings)
     end
 
     def import_came

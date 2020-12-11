@@ -210,7 +210,7 @@ module KMP3D
       ents.each do |ent|
         settings = ent.kmp3d_settings[1..-1]
         type_index = ent.kmp3d_group.to_i
-        type = CAME::CAMTYPES[type_index]
+        type = CAME::CAM_TYPES[type_index]
         @writer.write_byte(type_index)
         export_ent_settings(ent, 0, 8)
         write_came_position(ent, type, settings)
@@ -257,9 +257,11 @@ module KMP3D
     end
 
     def export_area(ent)
-      export_ent_settings(ent, 0, 4)
+      export_ent_settings(ent, 0, 1)
+      @writer.write_byte(ent.kmp3d_group.to_i)
+      export_ent_settings(ent, 1, 3)
       write_kmp_transform(ent)
-      export_ent_settings(ent, 4)
+      export_ent_settings(ent, 3)
     end
 
     def write_came_position(ent, type, settings)

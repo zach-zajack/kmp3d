@@ -3,7 +3,7 @@ module KMP3D
     attr_accessor :op_cam_index, :vid_cam_index
 
     CamType = Struct.new(:name, :model, :route, :opening, :rel_pos)
-    CAMTYPES = [
+    CAM_TYPES = [
       CamType.new("0 Goal",        :point, false, false, true),
       CamType.new("1 Fixed",       :point, false, false, false),
       CamType.new("2 Path",        :point, true, false, false),
@@ -38,7 +38,7 @@ module KMP3D
     end
 
     def hide_point?
-      CAMTYPES[@group].model != :point && @step < 2
+      CAM_TYPES[@group].model != :point && @step < 2
     end
 
     def draw_connected_points(view, pos, _selection=false)
@@ -53,7 +53,7 @@ module KMP3D
     end
 
     def advance_steps(pos)
-      case CAMTYPES[@group].model
+      case CAM_TYPES[@group].model
       when :rails
         # needed for add_comp
         add_rails(pos) if @step == 1
@@ -70,7 +70,7 @@ module KMP3D
     end
 
     def helper_text
-      case CAMTYPES[@group].model
+      case CAM_TYPES[@group].model
       when :point
         "Click to place the position of the camera."
       when :rails
@@ -110,7 +110,7 @@ module KMP3D
 
     def import(pos, rail_start, rails_end, group, settings)
       @group = group
-      camtype_model = CAMTYPES[group].model
+      camtype_model = CAM_TYPES[group].model
       if camtype_model == :point
         comp = Data.entities.add_instance(model, pos)
       else
@@ -125,7 +125,7 @@ module KMP3D
     end
 
     def group_options
-      settings = CAMTYPES.map { |type| type.name } << "Preview Cameras"
+      settings = CAM_TYPES.map { |type| type.name } << "Preview Cameras"
       sidenav(@group, "switchGroup", settings)
     end
 
@@ -171,7 +171,7 @@ module KMP3D
     end
 
     def add_comp(comp)
-      if CAMTYPES[@group].model == :point
+      if CAM_TYPES[@group].model == :point
         super(comp)
       else
         comp.erase!
@@ -180,11 +180,11 @@ module KMP3D
     end
 
     def sieve_settings(settings)
-      settings[0]  = nil unless CAMTYPES[@group].opening # next camera
-      settings[2]  = nil unless CAMTYPES[@group].route # route
-      settings[5]  = nil unless CAMTYPES[@group].model != :point # viewspeed
-      settings[12] = nil unless CAMTYPES[@group].rel_pos # relative position
-      settings[14] = nil unless CAMTYPES[@group].opening # time
+      settings[0]  = nil unless CAM_TYPES[@group].opening # next camera
+      settings[2]  = nil unless CAM_TYPES[@group].route # route
+      settings[5]  = nil unless CAM_TYPES[@group].model != :point # viewspeed
+      settings[12] = nil unless CAM_TYPES[@group].rel_pos # relative position
+      settings[14] = nil unless CAM_TYPES[@group].opening # time
       return settings
     end
 

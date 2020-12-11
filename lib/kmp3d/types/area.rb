@@ -109,6 +109,15 @@ module KMP3D
       end
     end
 
+    def sieve_settings(settings)
+      settings[1] = nil unless @group == 0 # Cameras
+      settings[3] = nil unless AREA_TYPES[@group].use_params # Setting 1
+      settings[4] = nil unless AREA_TYPES[@group].use_params # Setting 2
+      settings[5] = nil unless @group == 3 # Route
+      settings[6] = nil unless @group == 4 # Enemy route
+      return settings
+    end
+
     def linked_types
       ["Cameras", "Checkpoints", "Enemy Routes"]
     end

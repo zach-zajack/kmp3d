@@ -8,7 +8,7 @@ module KMP3D
       ]
       @settings = [
         Settings.new(:text, :uint16, "Ref ID", "0x0"),
-        Settings.new(:text, :uint16, "Route ID", "0xFFFF"),
+        Settings.new(:text, :uint16, "Route ID", "-1"),
         Settings.new(:text, :uint16, "S1", "0"),
         Settings.new(:text, :uint16, "S2", "0"),
         Settings.new(:text, :uint16, "S3", "0"),

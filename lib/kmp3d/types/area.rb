@@ -19,12 +19,12 @@ module KMP3D
       @name = "Area"
       @settings = [
         Settings.new(:dropdown, :byte, "Shape", "0", %w[Box Cylinder]),
-        Settings.new(:text, :byte, "Camera ID", "0xFF"),
+        Settings.new(:text, :byte, "Camera ID", "-1"),
         Settings.new(:text, :byte, "Priority", "0"),
         Settings.new(:text, :uint16, "Setting 1", "0"),
         Settings.new(:text, :uint16, "Setting 2", "0"),
-        Settings.new(:text, :byte, "Route ID", "0xFF"),
-        Settings.new(:text, :byte, "Enemy route ID", "0xFF"),
+        Settings.new(:text, :byte, "Route ID", "-1"),
+        Settings.new(:text, :byte, "Enemy route ID", "-1"),
         Settings.new(:hidden, :uint16, "Padding", "0")
       ]
       super

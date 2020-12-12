@@ -18,9 +18,9 @@ module KMP3D
       @op_cam_index  = Data.model.get_attribute("KMP3D", "OPCAME", 0)
       @vid_cam_index = Data.model.get_attribute("KMP3D", "VIDCAME", 0)
       @settings = [
-        Settings.new(:text,   :byte,   "Next", "0xFF"),
+        Settings.new(:text,   :byte,   "Next", "-1"),
         Settings.new(:hidden, :byte,   "Camshake", "0"),
-        Settings.new(:text,   :byte,   "Route", "0xFF"),
+        Settings.new(:text,   :byte,   "Route", "-1"),
         Settings.new(:hidden, :uint16, "Point vel.", "0"),
         Settings.new(:text,   :uint16, "Zoom vel.", "5"),
         Settings.new(:text,   :uint16, "View vel.", "0"),

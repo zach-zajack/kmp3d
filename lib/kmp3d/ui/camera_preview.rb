@@ -12,7 +12,7 @@ module KMP3D
 
     def get_ent_settings(ent)
       @group      = ent.kmp3d_group.to_i
-      @camtype    = CAME::CAMTYPES[@group]
+      @camtype    = CAME::CAM_TYPES[@group]
       @settings   = ent.kmp3d_settings[1..-1]
       @route      = Path.new(route_path(ent), 0, route_smooth(ent), 0)
       @rail_start, @rail_end = came_rails(ent)
@@ -185,7 +185,7 @@ module KMP3D
       @draw_current_enpt = true
       @enpt = Path.new(enpt_path, 0, true, 0)
       @area = \
-        Data.kmp3d_entities("AREA").select { |a| a.kmp3d_settings[2] == "0" }
+        Data.kmp3d_entities("AREA").select { |a| a.kmp3d_group == "0" }
     end
 
     def enpt_path
@@ -218,7 +218,7 @@ module KMP3D
     def get_area(enpt)
       intersect = @area.select { |a| KMP3D::KMPMath.intersect_area?(a, enpt) }
       return intersect.max do |a1, a2|
-        a1.kmp3d_settings[4].to_i <=> a2.kmp3d_settings[4].to_i
+        a1.kmp3d_settings[3].to_i <=> a2.kmp3d_settings[3].to_i
       end
     end
 
@@ -238,7 +238,7 @@ module KMP3D
       area = get_area(enpt)
       return unless area
 
-      @cam = area.kmp3d_settings[3]
+      @cam = area.kmp3d_settings[2]
       return if @prev_cam == @cam
 
       puts "Switching to camera ID #{@cam}"

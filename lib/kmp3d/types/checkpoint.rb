@@ -20,7 +20,7 @@ module KMP3D
       c = 0
       oob_areas = Data.kmp3d_entities("AREA").select \
         { |area| area.kmp3d_settings[2].to_i == 10 }
-      groups.times do |group|
+      num_groups.times do |group|
         color = (@group == group && selection ? "Blue" : "Aqua")
         Data.entities_in_group(type_name, group).each do |ent|
           pos = ent.transformation.origin

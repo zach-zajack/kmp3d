@@ -145,8 +145,8 @@ module KMP3D
       Sketchup.status_text = "KMP3D: Exporting #{type_name}..."
       @type = Data.type_by_typename(type_name)
       write_section_offset
-      write_section_header(sect_name, @type.groups, 0)
-      @type.groups.times do |i|
+      write_section_header(sect_name, @type.num_groups, 0)
+      @type.num_groups.times do |i|
         # start
         @writer.write_byte(Data.entities_before_group(type_name, i).length)
         # length
@@ -169,7 +169,7 @@ module KMP3D
       index = 0
       prev_nil_index = 0
       next_nil_index = -1
-      @type.groups.times do |i|
+      @type.num_groups.times do |i|
         ents = Data.entities_in_group("CKPT", i)
         next_nil_index += ents.length
         ents.each do |ent|
@@ -188,8 +188,8 @@ module KMP3D
       @type = Data.type_by_typename("POTI")
       total_ents = Data.kmp3d_entities("POTI").length
       write_section_offset
-      write_section_header("POTI", @type.groups, total_ents)
-      @type.groups.times do |i|
+      write_section_header("POTI", @type.num_groups, total_ents)
+      @type.num_groups.times do |i|
         ents = Data.entities_in_group("POTI", i)
         @writer.write_uint16(ents.length)
         @writer.write_byte(@type.table[i + 1][0]) # smooth

@@ -91,7 +91,7 @@ module KMP3D
       self.class.name[7..-1]
     end
 
-    def groups
+    def num_groups
       1
     end
 

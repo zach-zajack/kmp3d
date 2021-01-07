@@ -15,20 +15,20 @@ module KMP3D
       Data.model.set_attribute("KMP3D", type_name, @table)
     end
 
-    def add_group(_init=false)
-      @table << @external_settings.map { |s| s.default }
+    def add_group(init=false)
+      @table << @external_settings.map { |s| s.default } if !init || num_groups == 0
     end
 
-    def groups
+    def num_groups
       @table.length - 1
     end
 
     def on_external_settings?
-      @group == groups
+      @group == num_groups
     end
 
     def group_options
-      settings = (0...groups).map { |i| "#{settings_name} #{group_id(i)}" }
+      settings = (0...num_groups).map { |i| "#{settings_name} #{group_id(i)}" }
       settings << "#{settings_name} Settings"
       sn = sidenav(@group, "switchGroup", settings)
       sn + tag(:button, :onclick => callback("addGroup")) do
@@ -49,7 +49,7 @@ module KMP3D
     def prev_groups(row)
       @next_groups_table.each do |next_grps|
         next unless next_grps.include?(row)
-        return groups.times.select { |i| @next_groups_table[i] == next_grps }
+        return num_groups.times.select { |i| @next_groups_table[i] == next_grps }
       end
       return [] # if no groups found
     end

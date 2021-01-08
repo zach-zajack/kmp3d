@@ -74,9 +74,9 @@ module KMP3D
     def initialize
       @name = "Routes"
       @external_settings = [
-        Settings.new(:dropdown, :byte, "Setting 1", 0, %w[Verbatim Smooth]),
+        Settings.new(:dropdown, :byte, "Type", 0, %w[Segmented Spline]),
         Settings.new(
-          :dropdown, :byte, "Setting 2", 0, ["Cyclic motion", "Back and forth"]
+          :dropdown, :byte, "Loop Behavior", 0, ["Cyclic", "Back and forth"]
         )
       ]
       @settings = [

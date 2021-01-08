@@ -4,7 +4,7 @@ module KMP3D
 
     Group = Struct.new(:range, :id)
 
-    def import(path=nil)
+    def import(path=nil, silent=false)
       path ||= UI.openpanel(
         "Select a file to import from.", Data.model_dir,
         "KMP|*.kmp|All files|*||"
@@ -21,7 +21,7 @@ module KMP3D
       section_offsets.each { |section_offset| read_section(section_offset) }
       Data.model.commit_operation
       Sketchup.status_text = "KMP3D: Finished importing!"
-      UI.beep
+      UI.beep unless silent
     end
 
     def ask_kcl_import(path)

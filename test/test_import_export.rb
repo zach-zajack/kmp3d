@@ -6,7 +6,7 @@ module KMP3D
       Data.entities.each { |ent| ent.erase! if ent.kmp3d_object? }
 
       start = Time.now
-      KMPImporter.import(path)
+      KMPImporter.import(path, true)
       @old_parser = BinaryParser.new(path)
       puts "Import time: #{Time.now - start}"
 

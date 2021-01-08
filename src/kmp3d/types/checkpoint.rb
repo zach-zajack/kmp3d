@@ -5,7 +5,7 @@ module KMP3D
       @external_settings = [Settings.new(:text, :bytes, "Next Group(s)", "0")]
       @settings = [
         Settings.new(:text, :byte, "Respawn ID", "0"),
-        Settings.new(:text, :byte, "Type", "0xFF")
+        Settings.new(:text, :byte, "Type", "-1")
       ]
       @groups = []
       super

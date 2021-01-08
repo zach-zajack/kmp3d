@@ -116,7 +116,6 @@ module KMP3D
     end
 
     def format(num, size, hexify)
-      num = (num == size ? -1 : num) # make -1 if max value
       hexify ? "0x" + ("%x" % num).upcase : num
     end
 

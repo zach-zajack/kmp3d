@@ -82,10 +82,6 @@ module KMP3D
       @types.select { |type| type.name == name }.first
     end
 
-    def hybrid_types
-      @hybrid_types
-    end
-
     def load_def(name)
       model.definitions.load("#{DIR}/app/skps/#{name}.skp")
     end
@@ -135,11 +131,7 @@ module KMP3D
       selection.add_observer(@observer)
       @types = [
         KTPT.new, ENPT.new, ITPT.new, CKPT.new, GOBJ.new, POTI.new,
-        AREA.new, CAME.new, JGPT.new, CNPT.new, MSPT.new, STGI.new, Hybrid.new
-      ]
-      @hybrid_types = [
-        KTPT.new, ENPT.new, ITPT.new,
-        POTI.new, JGPT.new, CNPT.new, MSPT.new
+        AREA.new, CAME.new, JGPT.new, CNPT.new, MSPT.new, STGI.new
       ]
     end
 

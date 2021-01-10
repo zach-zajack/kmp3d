@@ -12,8 +12,6 @@ module KMP3D
       @dlg.add_action_callback("inputChange") { |_, id| edit_value(id) }
       @dlg.add_action_callback("toggleLayer") { |_, id| toggle_layer(id) }
       @dlg.add_action_callback("objPathChange") { |_, id| obj_path_change(id) }
-      @dlg.add_action_callback("setHybridType") { |_, id| set_hybrid_type(id) }
-      @dlg.add_action_callback("setHybridGroup") { set_hybrid_group }
       @dlg.add_action_callback("typesScroll") { |_, px| @scroll_types = px }
       @dlg.add_action_callback("setOpCamIdx") { set_op_camera_index }
       @dlg.add_action_callback("playOpening") { play_opening_cameras }
@@ -125,19 +123,7 @@ module KMP3D
       @type.update_setting(ent, value, col) if setting_valid?(setting, value)
       update_row(ent)
     end
-
-    def set_hybrid_type(id)
-      # includes nil
-      @type.hybrid_types[id] = @dlg.get_element_value("hybrid#{id}") != "true"
-      refresh_html
-    end
-
-    def set_hybrid_group
-      value = @dlg.get_element_value("hybridGroup")
-      @type.group = value.to_i if valid?(:byte, value)
-      refresh_html
-    end
-
+    
     def switch_type(id)
       @type.step = 0
       @type_index = id.to_i

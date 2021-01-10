@@ -30,7 +30,7 @@ module KMP3D
 
     def write_scratch
       write_header
-      Data.types[0...-1].each { |type| write_section_name(type.type_name) }
+      Data.types.each { |type| write_section_name(type.type_name) }
     end
 
     def write_merged(path)

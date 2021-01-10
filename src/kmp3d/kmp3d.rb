@@ -15,7 +15,6 @@ module KMP3D
   require "#{DIR}/types/area"
   require "#{DIR}/types/camera"
   require "#{DIR}/types/stage_info"
-  require "#{DIR}/types/hybrid"
   require "#{DIR}/util/binary_parser"
   require "#{DIR}/util/binary_writer"
   require "#{DIR}/util/kcl_importer"

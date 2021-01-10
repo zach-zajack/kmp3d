@@ -115,9 +115,14 @@ module KMP3D
       selection.remove_observer(@observer)
       dict = Data.model.attribute_dictionaries["KMP3D"]
       dict.keys.clone.each { |k, _v| dict.delete_key(k) }
+      erase_kmp3d_ents
       @types.each { |t| layers.remove(t.name, true) }
       Data.model.commit_operation
       signal_reload
+    end
+
+    def erase_kmp3d_ents
+      entities.each { |ent| ent.erase! if ent.kmp3d_object? }
     end
 
     def reload(observer)

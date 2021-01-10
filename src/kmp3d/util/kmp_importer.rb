@@ -5,6 +5,12 @@ module KMP3D
     Group = Struct.new(:range, :id)
 
     def import(path=nil, silent=false)
+      if Data.entities.any? { |ent| ent.kmp3d_object? }
+        msg = "KMP3D points were found in the current model. " \
+              "Would you like to overwrite them?"
+        Data.erase_kmp3d_ents if UI.messagebox(msg, MB_YESNO) == IDYES
+      end
+
       path ||= UI.openpanel(
         "Select a file to import from.", Data.model_dir,
         "KMP|*.kmp|All files|*||"
@@ -28,8 +34,8 @@ module KMP3D
       kcl_path = File.dirname(path) + "/course.kcl"
       return unless File.exist?(kcl_path)
 
-      msg = "A course.kcl file was found in the directory of the KMP file." \
-            " Would you like to import it as well?"
+      msg = "A course.kcl file was found in the directory of the KMP file. " \
+            "Would you like to import it as well?"
       KCLImporter.import(kcl_path) if UI.messagebox(msg, MB_YESNO) == IDYES
     end
 

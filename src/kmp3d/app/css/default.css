@@ -6,6 +6,8 @@
 
 body {
   margin: 0;
+  position: relative;
+  height: 100vh;
   background-color: #eee;
 }
 

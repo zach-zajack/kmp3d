@@ -9,7 +9,7 @@ module KMP3D
 
   DIR = File.join(File.dirname(__FILE__), "kmp3d")
   URL = "https://api.github.com/repositories/198107090/releases/latest"
-  VERSION = "v7.0"
+  VERSION = "v7.1"
 
   def check_updates
     json = JSON.parse(open(URL).read)
@@ -25,10 +25,13 @@ module KMP3D
     File.open(path, "wb") { |f| f.write(rbz) }
     begin
       Sketchup.install_from_archive(path, false)
-    rescue Interrupt
     rescue Exception => error
       UI.messagebox("Error during unzip: " + error.to_s)
+      return
     end
+    dlg = UI::WebDialog.new("KMP3D Changelog", true, nil, 600, 800, 600, 800)
+    dlg.set_html(open("#{DIR}/app/html/changelog.html").read)
+    dlg.show
   end
 
   unless file_loaded?(__FILE__)

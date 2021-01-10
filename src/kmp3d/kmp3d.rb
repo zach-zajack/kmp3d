@@ -38,6 +38,9 @@ module KMP3D
     KMPImporter.import
     tool.refresh_html
   end
+  clear_kmp3d_data_cmd = UI::Command.new("Clear all KMP3D data on this file") do
+    Data.clear_kmp3d_data
+  end
 
   Sketchup.add_observer(tool)
   Data.signal_reload
@@ -47,6 +50,7 @@ module KMP3D
   menu.add_item(kmp_exporter_cmd)
   menu.add_item(kmp_importer_cmd)
   menu.add_item(kcl_importer_cmd)
+  menu.add_item(clear_kmp3d_data_cmd)
 
   toolbar = UI::Toolbar.new("KMP3D")
   toolbar.add_item(tool_cmd)

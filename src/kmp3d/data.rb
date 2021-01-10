@@ -107,13 +107,27 @@ module KMP3D
       model.set_attribute("KMP3D", "KMP3D-model?", true)
     end
 
+    def clear_kmp3d_data
+      return unless @initialized
+      model.select_tool(nil)
+      Data.model.start_operation("Import KMP", true)
+      model.remove_observer(@observer)
+      selection.remove_observer(@observer)
+      dict = Data.model.attribute_dictionaries["KMP3D"]
+      dict.keys.clone.each { |k, _v| dict.delete_key(k) }
+      @types.each { |t| layers.remove(t.name, true) }
+      Data.model.commit_operation
+      signal_reload
+    end
+
     def reload(observer)
-      return unless @reload
+      return if @initialized
 
       @layers = []
-      @reload = false
-      model.add_observer(observer)
-      selection.add_observer(observer)
+      @initialized = true
+      @observer = observer
+      model.add_observer(@observer)
+      selection.add_observer(@observer)
       @types = [
         KTPT.new, ENPT.new, ITPT.new, CKPT.new, GOBJ.new, POTI.new,
         AREA.new, CAME.new, JGPT.new, CNPT.new, MSPT.new, STGI.new, Hybrid.new
@@ -125,7 +139,7 @@ module KMP3D
     end
 
     def signal_reload
-      @reload = true
+      @initialized = false
     end
   end
 end

@@ -3,7 +3,7 @@ module KMP3D
     def initialize(path)
       super
       puts "Rebuilding #{File.basename(path)}..."
-      Data.entities.each { |ent| ent.erase! if ent.kmp3d_object? }
+      Data.erase_kmp3d_ents
 
       start = Time.now
       KMPImporter.import(path, true)

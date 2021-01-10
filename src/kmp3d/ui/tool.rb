@@ -66,7 +66,7 @@ module KMP3D
     end
 
     def generate_body(table_html)
-      tag(:body, {:onload => scroll_onload}) do
+      tag(:body, :onload => scroll_onload) do
         html = tag(:div, :id => "type", :onscroll => on_scroll("types")) do
           types + @type.group_options + linked_types
         end

@@ -123,7 +123,7 @@ module KMP3D
       @type.update_setting(ent, value, col) if setting_valid?(setting, value)
       update_row(ent)
     end
-    
+
     def switch_type(id)
       @type.step = 0
       @type_index = id.to_i

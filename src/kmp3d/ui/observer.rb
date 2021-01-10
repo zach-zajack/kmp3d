@@ -99,7 +99,8 @@ module KMP3D
       Data.types.each { |type| type.save_settings }
     end
 
-    def onTransactionUndo(_) # TODO: replace with onCancel at some point
+    # TODO: replace with onCancel at some point
+    def onTransactionUndo(_)
       return if !tool_active? || @undone
 
       @undone = true # prevent recursion

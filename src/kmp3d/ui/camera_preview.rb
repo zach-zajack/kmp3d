@@ -14,7 +14,7 @@ module KMP3D
       @group      = ent.kmp3d_group.to_i
       @camtype    = CAME::CAM_TYPES[@group]
       @settings   = ent.kmp3d_settings[1..-1]
-      @route      = Path.new(route_path(ent), 0, route_smooth(ent), 0)
+      @route      = Path.new(route_path(ent), 0, route_smooth, 0)
       @rail_start, @rail_end = came_rails(ent)
       @rail_dist  = @rail_start.distance(@rail_end).to_m
       @rail_prog  = 0
@@ -27,7 +27,8 @@ module KMP3D
       @start_time = Time.now
     end
 
-    def rel_pos(enpt, vec) # TODO: make this orient correctly
+    # TODO: make this orient correctly
+    def rel_pos(enpt, vec)
       ratio = @enpt.prog / @enpt.points[1].pos.distance(@enpt.points[2].pos).to_m
       tangent = spline_tangent(@enpt, ratio)
       angle = Math::PI - Math.atan2(tangent.x, tangent.y)
@@ -55,8 +56,11 @@ module KMP3D
     end
 
     def next_pos(path)
-      path.smooth && path.points.length >= 4 ? \
-        next_pos_smooth(path) : next_pos_verbatim(path)
+      if path.smooth && path.points.length >= 4
+        next_pos_smooth(path)
+      else
+        next_pos_verbatim(path)
+      end
     end
 
     def next_pos_verbatim(path)
@@ -126,9 +130,9 @@ module KMP3D
       end
     end
 
-    def route_smooth(ent)
+    def route_smooth
       return false unless @camtype.route
-      return Data.type_by_typename("POTI").table[@settings[2].to_i+1][0] == 1
+      return Data.type_by_typename("POTI").table[@settings[2].to_i + 1][0] == 1
     end
 
     def came_rails(ent)

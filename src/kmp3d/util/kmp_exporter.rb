@@ -130,7 +130,7 @@ module KMP3D
       msg = "#{primary} section is empty but #{secondary} section" \
             "is not. Copy #{secondary} settings to #{primary}?"
       if ents == [] && secondary_ents != [] && \
-        UI.messagebox(msg, MB_YESNO) == IDYES
+         UI.messagebox(msg, MB_YESNO) == IDYES
         type_name = secondary
         ents = secondary_ents
       end

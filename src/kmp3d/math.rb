@@ -66,7 +66,8 @@ module KMP3D
       bezier_at(pts, t)
     end
 
-    def intersect_area?(area, pt) # TODO: cylinder calculation
+    # TODO: cylinder calculation
+    def intersect_area?(area, pt)
       min = area.bounds.min
       max = area.bounds.max
       min.x < pt.x && min.y < pt.y && min.z < pt.z && \

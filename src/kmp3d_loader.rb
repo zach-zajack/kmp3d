@@ -21,16 +21,16 @@ module KMP3D
     return if UI.messagebox(msg, MB_YESNO) == IDNO
 
     rbz = open(json["assets"][0]["browser_download_url"]).read
-	  path = "#{DIR}/kmp3d.rbz"
+    path = "#{DIR}/kmp3d.rbz"
     File.open(path, "wb") { |f| f.write(rbz) }
     begin
       Sketchup.install_from_archive(path, false)
-    rescue Exception => error
-      UI.messagebox("Error during unzip: " + error.to_s)
+    rescue Exception => e
+      UI.messagebox("Error during unzip: " + e.to_s)
       return
     end
     dlg = UI::WebDialog.new("KMP3D Changelog", true, nil, 600, 800, 600, 800)
-    dlg.set_html(open("#{DIR}/app/html/changelog.html").read)
+    dlg.set_file("#{DIR}/app/html/changelog.html")
     dlg.show
   end
 

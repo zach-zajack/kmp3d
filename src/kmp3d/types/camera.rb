@@ -148,9 +148,9 @@ module KMP3D
     def to_html
       if on_external_settings?
         tag(:div, :class => "cameras") { camera_settings_html } + \
-        tag(:div, :class => "helper-text") do
-          "You can preview camera setups here. Note these are not entirely accurate, so make sure to test them in the game as well."
-        end
+          tag(:div, :class => "helper-text") do
+            "You can preview camera setups here. Note these are not entirely accurate, so make sure to test them in the game as well."
+          end
       else
         tag(:table) \
           { table_rows(inputs, @settings) * "" } + \
